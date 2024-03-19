@@ -3,7 +3,7 @@
 - [LineageOS: Samsung Galaxy A3 (2017) - SM-A320FL - a3y17lte](https://gist.github.com/felbinger/864f48accc3d634c098f9d9126188415)
 
 ## Asus Nexus 7
-- Original firmware: [developers.google.com/android/ota7](https://developers.google.com/android/ota#razor)
+- Original firmware: [developers.google.com/android/ota](https://developers.google.com/android/ota#razor)
 - LinageOS: [wiki.lineageos.org/devices/flox/install](https://wiki.lineageos.org/devices/flox/install).
 - Nethunter: [pentestit.de/kali-nethunter-2020-teil-1-installation-auf-nexus-7/](https://pentestit.de/kali-nethunter-2020-teil-1-installation-auf-nexus-7/)
 - Flash TWRP
@@ -34,3 +34,8 @@
 
   # sudo fastboot reboot recovery
   ```
+
+## Google Pixel 4a
+- Original firmware: [developers.google.com/android/ota](https://developers.google.com/android/ota#sunfish)
+- LineageOS: [wiki.lineageos.org/devices/sunfish/](https://wiki.lineageos.org/devices/sunfish/)
+- GrapheneOS: [grapheneos.org/releases](https://grapheneos.org/releases#sunfish-stable)
