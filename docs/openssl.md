@@ -52,3 +52,21 @@ openssl pkcs12 -in filename.p12 -out newfile.crt.pem -clcerts -nokeys
 # extract private key
 openssl pkcs12 -in filename.p12 -out newfile.key.pem -nocerts -nodes
 ```
+
+### Extract s/mime certificate from signed email
+1. Export signed message from Evolution as mbox file (context menu -> save as file)
+2. Extract smime.p7s from .mbox file and add PKCS7 header
+   ```
+   -----BEGIN PKCS7-----
+   MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgMFADCABgkqhkiG9w0BBwEAAKCAMIIH
+   VjCCBT6gAwIBAgIDSRKYMA0GCSqGSIb3DQEBCwUAMFwxCzAJBgNVBAYTAkRFMRkwFwYDVQQKExBQ
+   S0ktMS1WZXJ3YWx0dW5nMRMwEQYDVQQLEwpCdW5kZXN3ZWhyMR0wGwYDVQQDExRCdyBWLVBLSSBD
+   ...
+   ItC1Jda7G3OItYH1shivhFNKOOK1gSDErsuY8wgLwIExtKEKDhcum2ivwu2Hy0L0/wm5gzG1dUj6
+   1iUYZDDXfQAAAAAAAA==
+   -----END PKCS7-----
+   ```
+3. Export certificate from PKCS7 container
+   ```
+   openssl pkcs7 -print_certs -in smime.p7s -out smime.cer
+   ```

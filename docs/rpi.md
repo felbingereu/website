@@ -2,6 +2,10 @@
 - [pinout.xyz](https://pinout.xyz/)
 - [RaspberryPI OS](https://www.raspberrypi.com/software/operating-systems/)
 
+## Image Selection
+RPi 3, 4, zero 2w: arm64
+all other models: armhf
+
 ## Setup
 ```shell
 # navigate to boot partition of the image
@@ -23,13 +27,6 @@ _EOF
 ```
 
 ## Runtime
-### Disable HDMI port
-Stop the TVService deamon using (add it to the file `/etc/rc.local` to do it on every startup):
-```
-/usr/bin/tvservice -o
-```
-You can reenable you hdmi port using `/usr/bin/tvservice -p`
-
 ### Disable LEDs
 Add the following two lines to the file: `/boot/config.txt`
 ```
