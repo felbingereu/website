@@ -53,7 +53,7 @@ openssl pkcs12 -in filename.p12 -out newfile.crt.pem -clcerts -nokeys
 openssl pkcs12 -in filename.p12 -out newfile.key.pem -nocerts -nodes
 ```
 
-### Extract s/mime certificate from signed email
+## Extract s/mime certificate from signed email
 1. Export signed message from Evolution as mbox file (context menu -> save as file)
 2. Extract smime.p7s from .mbox file and add PKCS7 header
    ```
@@ -70,3 +70,9 @@ openssl pkcs12 -in filename.p12 -out newfile.key.pem -nocerts -nodes
    ```
    openssl pkcs7 -print_certs -in smime.p7s -out smime.cer
    ```
+
+## Symmetric Encryption/Decryption
+```
+openssl enc -e -a -pbkdf2 -aes-256-ofb -in plain.txt -out cipher.txt
+openssl enc -d -a -pbkdf2 -aes-256-ofb -in cipher.txt -out plain.txt
+```
