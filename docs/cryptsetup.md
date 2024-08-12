@@ -1,10 +1,10 @@
 # Cryptsetup
 ## Decrypt using ssh
-If you want to encrypt your system using cryptsetup to make it more difficult 
+If you want to encrypt your system using cryptsetup to make it more difficult
 for curious administrators or attackers who were able to take over a hypervisor
-to access your data (at least if the virtual machine was previously offline), 
-it is a good idea to set up the dropbear ssh server. This allows you to enter 
-a password for decryption via ssh, instead of using the Proxmox vnc console, 
+to access your data (at least if the virtual machine was previously offline),
+it is a good idea to set up the dropbear ssh server. This allows you to enter
+a password for decryption via ssh, instead of using the Proxmox vnc console,
 where copy/paste cannot be used.
 
 ```sh
@@ -25,8 +25,8 @@ update-initramfs -u
 ```
 
 ## Nuke password
-Additionally you may want to create a nuke password for cryptsetup. If an 
-attacker tries to log in with this password, all key information is deleted 
+Additionally you may want to create a nuke password for cryptsetup. If an
+attacker tries to log in with this password, all key information is deleted
 from the luks-header, so that it is impossible to decrypt it again.
 
 ```sh
@@ -35,7 +35,7 @@ echo NukePassword | /usr/lib/cryptsetup-nuke-password/crypt --generate
 update-initramfs -u
 ```
 
-Afterwards, the system can continue to be used as normal. If the nuke password 
+Afterwards, the system can continue to be used as normal. If the nuke password
 is entered, the key information in the luks-header is irrevocably deleted.
 
 For this reason, you should create a backup of the luks-headers. This can be

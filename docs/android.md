@@ -27,7 +27,7 @@
   OKAY [ 24.086s]
   Finished. Total time: 24.086s
 
-  # sudo fastboot flash recovery twrp-3.5.2_9-0-flo.img 
+  # sudo fastboot flash recovery twrp-3.5.2_9-0-flo.img
   Sending 'recovery' (10060 KB)                      OKAY [  0.325s]
   Writing 'recovery'                                 OKAY [  0.386s]
   Finished. Total time: 0.723s

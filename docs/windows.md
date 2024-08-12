@@ -23,7 +23,7 @@ These instructions also work if:
    REM format partition as fat32
    format quick fs=fat32 label="System"
    ```
-   If more disk space is required to create the fat32 system (16 MB is not enough!), the C: partition can be reduced in size: 
+   If more disk space is required to create the fat32 system (16 MB is not enough!), the C: partition can be reduced in size:
    ```cmd
    REM select C:\ (replace n with the id of the root partition (probally the largest one))
    list part
