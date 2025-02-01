@@ -54,5 +54,9 @@ markdown_extensions:
 plugins:
   - git-revision-date
   - git-revision-date-localized
+  - offline
   - search:
       lang: en
+  - blog:
+      blog_dir: blog
+      archive: false
