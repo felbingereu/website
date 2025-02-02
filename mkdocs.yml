@@ -1,9 +1,4 @@
 site_name: Knowledgebase
-site_url: https://kb.felbinger.eu/
-repo_name: felbingereu/knowledgebase
-repo_url: https://github.com/felbingereu/knowledgebase/
-site_author: https://github.com/felbinger
-edit_uri: https://github.dev/felbingereu/knowledgebase/blob/main/docs
 
 theme:
   name: 'material'

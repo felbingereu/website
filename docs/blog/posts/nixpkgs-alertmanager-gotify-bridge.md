@@ -1,18 +1,20 @@
 ---
-date: 2025-01-30
+date:
+  created: 2025-01-30
+  updated: 2025-02-02
 authors: 
-  - nicof2000
+- nicof2000
 ---
 
 # NixOS: Erstellen eines neuen Pakets
 
-Dieser Artikel entstand, weil ein Bekannter von mir mich darum gebeten hatte, ihm zu zeigen,
-wie man eine Software für NixOS packetiert und dieses anschließend in <github.com/nixos/nixpkgs>
-hinzufügt. Konkret ging es um das Paket `alertmanager-gotify-bridge`, das eine Brücke zwischen
-dem Prometheus Alertmanager und Gotify bildet. Ziel war es, nicht nur das Paket zu erstellen,
-sondern auch den gesamten Prozess zu verstehen, um es später selbstständig in das offizielle
-nixpkgs-Repository einzubringen. Ich entschloss mich, den gesamten Ablauf zu dokumentieren,
-damit auch andere diesen Prozess nachvollziehen können.
+Dieser Artikel entstand, weil ein Bekannter mich bat, ihm zu zeigen, wie man eine Software
+für Nix paketiert und in [github.com/nixos/nixpkgs](https://github.com/nixos/nixpkgs) integriert.
+Konkret ging es um das Paket `alertmanager-gotify-bridge`, das eine Brücke zwischen dem Prometheus
+Alertmanager und Gotify bildet. Ziel war es, nicht nur das Paket zu erstellen, sondern auch den
+gesamten Prozess zu verstehen, um es später selbstständig in das offizielle nixpkgs-Repository
+einzubringen. Um diesen Ablauf für andere nachvollziehbar zu machen, entschied ich mich, ihn
+umfassend zu dokumentieren.
 
 <!-- more -->
 
