@@ -1,5 +1,8 @@
 site_name: felbinger.eu
 
+exclude_docs: |
+  !.well-known
+
 theme:
   name: 'material'
   palette:

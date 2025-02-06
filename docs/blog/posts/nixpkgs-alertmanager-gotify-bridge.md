@@ -1,7 +1,7 @@
 ---
 date:
   created: 2025-01-30
-  updated: 2025-02-02
+  updated: 2025-02-06
 authors: 
 - nicof2000
 ---
@@ -22,8 +22,6 @@ umfassend zu dokumentieren.
     - [Contributing Guide](https://nix.dev/contributing/index.html) lesen
 
     - GitHub Account anlegen
-
-    - Package Request Issue in <github.com/nixos/nixpkgs> anlegen und sich selbst zuweisen.
 
     - Fork von <github.com/nixos/nixpkgs> erstellen
 
@@ -68,7 +66,7 @@ umfassend zu dokumentieren.
     git commit -m "maintainers: add <handle>"
     ```
 
-4. Software analysieren: Programmiersprache und Lizenz bestimmen
+4. Software analysieren: Programmiersprache und Lizenz bestimmen:  
     Nix bietet eine Vielzahl von Modulen zur Unterstützung unterschiedlicher Programmiersprachen. Daher ist
     der erste Schritt, die Programmiersprache der Software zu identifizieren. Sobald die Sprache bestimmt ist,
     kann man sich im [Language Framework](https://nixos.org/manual/nixpkgs/stable/#chap-language-support) der
@@ -103,7 +101,7 @@ umfassend zu dokumentieren.
       vendorHash = lib.fakeHash;
 
       meta = {
-        description = "A bridge between Prometheus AlertManager and a Gotify server";
+        description = "Bridge between Prometheus AlertManager and a Gotify server";
         homepage = "https://github.com/DRuggeri/alertmanager_gotify_bridge";
         changelog = "https://github.com/DRuggeri/alertmanager_gotify_bridge/releases/tag/v${version}";
         license = lib.licenses.asl20;
