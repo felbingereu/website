@@ -2,6 +2,7 @@ site_name: felbinger.eu
 
 exclude_docs: |
   !.well-known
+  !robots.txt
 
 theme:
   name: 'material'
