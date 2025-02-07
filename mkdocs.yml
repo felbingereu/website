@@ -1,5 +1,8 @@
 site_name: felbinger.eu
 site_url: https://felbinger.eu/
+copyright: >-
+  Copyright &copy; 2020 - 2024 Nico Felbinger &nbsp; – &nbsp;
+  <a href="#__consent">Change cookie settings</a>
 
 exclude_docs: |
   !.well-known
@@ -63,3 +66,21 @@ plugins:
   - blog:
       blog_dir: blog
       archive: false
+
+extra:
+  generator: false  # remove footer: Made with Material for MkDocs
+  consent:
+    title: Cookie consent
+    cookies:
+      analytics:
+        name: Google Analytics
+        checked: false
+    actions:
+      - accept
+      - manage
+      - reject
+    description: >-
+      We use cookies to recognize your repeated visits and preferences, as well
+      as to measure the effectiveness of our documentation and whether users
+      find what they're searching for. With your consent, you're helping us to
+      make my documentation better.
