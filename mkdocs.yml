@@ -7,6 +7,9 @@ exclude_docs: |
 
 theme:
   name: 'material'
+  # paths are relative to the docs folder
+  logo: media/favicon-32x32.png
+  favicon: media/favicon.ico
   palette:
     - media: "(prefers-color-scheme: light)"
       scheme: default
