@@ -188,5 +188,12 @@ $RECYCLE.BIN/
 *.lnk
 
 # End of https://www.toptal.com/developers/gitignore/api/linux,macos,windows,jetbrains+all,visualstudiocode
+
+# the development environment
 .direnv
+
+# the rendered site (result of mkdocs build)
 site
+
+# the directory to which privacy plugin downloads assets to
+.cache

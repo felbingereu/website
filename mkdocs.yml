@@ -1,7 +1,10 @@
 site_name: felbinger.eu
 site_url: https://felbinger.eu/
 copyright: >-
-  Copyright &copy; 2020 - 2024 Nico Felbinger &nbsp; – &nbsp;
+  Copyright &copy; 2020 - 2024 Nico Felbinger
+  &nbsp; – &nbsp;
+  <a href="/imprint.html">Imprint</a>
+  &nbsp; – &nbsp;
   <a href="#__consent">Change cookie settings</a>
 
 exclude_docs: |
@@ -61,6 +64,7 @@ plugins:
   - git-revision-date
   - git-revision-date-localized
   - offline
+  - privacy
   - search:
       lang: en
   - blog:
