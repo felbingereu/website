@@ -61,8 +61,10 @@ markdown_extensions:
       generic: true
 
 plugins:
-  - git-revision-date
-  - git-revision-date-localized
+  - git-revision-date-localized:
+      exclude:
+        - blog/archive/*
+        - blog/category/*
   - offline
   - privacy
   - search:
@@ -70,6 +72,7 @@ plugins:
   - blog:
       blog_dir: blog
       archive: false
+      categories: true
 
 extra:
   generator: false  # remove footer: Made with Material for MkDocs

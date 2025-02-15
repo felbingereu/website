@@ -2,8 +2,10 @@
 date:
   created: 2025-01-30
   updated: 2025-02-06
-authors: 
+authors:
 - nicof2000
+categories:
+- NixOS
 ---
 
 # NixOS: Erstellen eines neuen Pakets
@@ -34,10 +36,10 @@ umfassend zu dokumentieren.
     Da die NixOS-Maintainer den master-Branch aufgrund von GitHub-Schutzmechanismen nicht bearbeiten können -
     insbesondere, weil GitHub Action Workflows dort direkt ausgeführt würden - ist es sinnvoll, einen neuen
     Feature-Branch zu erstellen.
-    
+
     Dies hilft auch dabei, mögliche Merge-Konflikte zu lösen, besonders wenn man noch nicht viel Erfahrung im
     Umgang mit Git hat.
-    
+
     ```shell
     git checkout -b alertmanager-gotify-bridge
     ```
@@ -66,7 +68,7 @@ umfassend zu dokumentieren.
     git commit -m "maintainers: add <handle>"
     ```
 
-4. Software analysieren: Programmiersprache und Lizenz bestimmen:  
+4. Software analysieren: Programmiersprache und Lizenz bestimmen:
     Nix bietet eine Vielzahl von Modulen zur Unterstützung unterschiedlicher Programmiersprachen. Daher ist
     der erste Schritt, die Programmiersprache der Software zu identifizieren. Sobald die Sprache bestimmt ist,
     kann man sich im [Language Framework](https://nixos.org/manual/nixpkgs/stable/#chap-language-support) der
@@ -156,7 +158,7 @@ umfassend zu dokumentieren.
     ```nix
     patches = [ ./go.sum.patch ./go.mod.patch ];
     ```
-    
+
     Nachdem das Programm erneut gebaut wurde und der `vendorHash` aktualisiert wurde, ist der Build erfolgreich.
     ```nix
     {

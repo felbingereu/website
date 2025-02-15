@@ -3,6 +3,8 @@ date:
   created: 2025-02-15
 authors:
 - nicof2000
+categories:
+- NixOS
 ---
 
 # NixOS: Cherry-Picken von Commits

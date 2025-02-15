@@ -4,6 +4,8 @@ date:
 authors:
 - nicof2000
 readtime: 5
+categories:
+- NixOS
 ---
 
 # Warum ich NixOS nutze
