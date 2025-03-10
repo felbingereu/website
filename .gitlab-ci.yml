@@ -1,0 +1,19 @@
+variables:
+  PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
+
+cache:
+  key: "${CI_COMMIT_REF_SLUG}"
+  paths:
+    - .cache/pip
+
+before_script:
+  - python -m pip install --upgrade pip
+  - pip install -r requirements.txt
+
+build:
+  image: python:3.13
+  script:
+    - mkdocs build --strict
+  artifacts:
+    paths:
+      - site/
