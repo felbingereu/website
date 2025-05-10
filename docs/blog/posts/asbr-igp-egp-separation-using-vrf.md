@@ -9,10 +9,10 @@ categories:
 
 # NixOS: ASBR mit VRF zur Separierung von EGP und IGP
 
-In unserem Netzwerk betreiben wir einen ASBR (Autonomous System Border Router) auf Basis von
-NixOS, [ifstate](https://ifstate.net/) und [FRRouting](https://frrouting.org/). Unser Ziel
-war die Separierung von EGP (Exterior Gateway Protocol) und IGP (Interior Gateway Protocol)
-mittels einer VRF (Virtual Routing and Forwarding).
+In unserem Netzwerk betreiben wir einen ASBR (Autonomous System Boundary Router) auf Basis
+von NixOS, [ifstate](https://ifstate.net/) und [FRRouting](https://frrouting.org/). Unser
+Ziel war die Separierung von EGP (Exterior Gateway Protocol) und IGP (Interior Gateway
+Protocol) mittels einer VRF (Virtual Routing and Forwarding).
 
 <!-- more -->
 
@@ -28,9 +28,9 @@ Tabelle wurde eine Default-Route konfiguriert, die den Traffic über die VRF pub
 An die VRF public wiederum sind drei Upstream-Provider angebunden: A, B und C. Während die
 Provider A und B jeweils eine vollständige IPv6-Routingtabelle (auch als Default-Free Zone
 (DFZ) bekannt) bereitstellen, delegiert Upstream Provider C zusätzlich einige IPv4 Adressen
-in Form, die von uns als PA (Provider Aggregatable) Assignment ansehen werden können. Anders
-als die beiden anderen Upstream Provider liefert C jedoch keine vollständige Routingtabelle,
-sondern lediglich eine Default-Route per BGP (default-originate).
+in Form eines PA (Provider Aggregatable) Assignment. Anders als die beiden anderen Upstream
+Provider liefert C jedoch keine vollständige Routingtabelle, sondern lediglich eine
+Default-Route per BGP (default-originate).
 
 In diesem Blog-Artikel dient die öffentliche IPv4 12.34.56.78 als Beispieladresse aus dem
 delegierten Netzwerk.
@@ -132,7 +132,7 @@ ob die Route wie gewünscht abgelehnt wird.
 
 Von Upstream Provider C empfangene Routen anzeigen:
 ```
-[root@asbr:~]# vtysh -c 'show ip bgp vrf public neighbors 172.20.20.1 received'
+[root@asbr:~]# vtysh -c 'show ip bgp vrf public neighbors 172.20.20.1 received-routes'
 BGP table version is 2, local router ID is 12.34.56.78, vrf id 7
 Default local pref 100, local AS OWN_ASN
 Status codes:  s suppressed, d damped, h history, u unsorted, * valid, > best, = multipath,
@@ -145,6 +145,12 @@ RPKI validation codes: V valid, I invalid, N Not found
 *> 0.0.0.0/0        172.20.20.1                             0 ASN_UPSTREAM_C i
 
 Total number of prefixes 1 (1 filtered)
+```
+
+Die Default-Route wird gefiltert und erscheint daher nicht in den akzeptierten Routen,
+die in die RIB übernommen werden:
+```
+[root@asbr:~]# vtysh -c 'show ip bgp vrf public neighbors 172.20.20.1 routes'
 ```
 </details>
 
@@ -203,41 +209,42 @@ rtt min/avg/max/mdev = 33.285/33.285/33.285/0.000 ms
 00:00:00.746991 eth0  Out IP 172.20.20.2 > 10.0.0.2: ICMP echo reply, id 24, seq 19, length 64
 ```
 
-Es darf also keine Default Route innerhalb der VRF verwendet werden, da sonst dass Forwarding beeinträchtigt wird.
+Es darf also keine Default Route innerhalb der VRF verwendet werden, da sonst das Forwarding beeinträchtigt wird.
 
-Das Verhalten lässt sich mit einem Blick auf die Policy Routing-Regeln teilweise nachvollziehen:
+
+Ohne Default-Route wird ein Paket vom Client wie folgt durch den ASBR geleitet.
 
 ```
 [root@asbr:~]# ip rule
-0:	from all lookup local
+0:	    from all lookup local
 1000:	from all lookup [l3mdev-table]
 32766:	from all lookup main
 32767:	from all lookup default
 ```
 
-Wird vom Client ein Ping ausgeführt, folgt die Paketverarbeitung einer bestimmten Reihenfolge.
-Zunächst greift die `lookup local`-Regel - diese wird aber übersprungen, da das Ziel keine lokale
+Zunächst greift die `lookup local`-Policy - diese wird aber übersprungen, da das Ziel keine lokale
 Adresse ist. Auch die Regel `lookup [l3mdev-table]` wird anfangs übersprungen, weil das Paket aus
-der GRT (IGP) stammt und somit keinen VRF-Kontext hat. Stattdessen gelangt das Paket zur Regel
-`lookup main`. Dort existiert eine Default-Route, die auf das Interface der VRF public zeigt, also
-wird das Paket dorthin weitergeleitet. Innerhalb der VRF greift dann erneut die Routing-Logik.
-Zunächst wird die Default-Route von Upstream Provider C verwendet, um das Paket nach außen zu senden.
+der GRT (IGP) stammt und somit keinen VRF-Kontext hat. Schließlich gelangt das Paket zur Regel
+`lookup main`. Die FIB der GRT beinhaltet eine Default-Route, die das Paket in die VRF public
+routet. Innerhalb dieser gibt es eine Connected/Kernel Route, die das Paket über eth3 an Upstream
+Provider C weiterleitet. Dabei wird das Paket ebenfalls auf die öffentliche IPv4 Adresse genattet.
 
-Kommt jedoch eine Antwort zurück, wird diese über das Interface in der VRF empfangen - wodurch nun
-`lookup [l3mdev-table]` aktiv wird. Existiert in der VRF public eine Default-Route, wird diese
-verwendet, selbst wenn sie für diesen Rückweg ungeeignet ist. Der Lookup-Vorgang endet dann dort,
-ohne zur main-Tabelle weiterzuspringen. Das führt dazu, dass keine passende Rückroute gefunden wird
-und die Antwortpakete ins Leere (zu Upstream Provider C) laufen. Nur wenn keine Default-Route in der
-VRF existiert, scheitert der Lookup dort, und das System folgt der Chain weiter zur main-Tabelle, wo
-eine geeignete Rückroute zur Verfügung steht.
+Eine Default-Route in der FIB der VRF Public sorgt für zwei Probleme:
 
-Warum tcpdump bei vorhandener Default-Route keinerlei ausgehende Pakete mehr anzeigt, bleibt allerdings eine offene
-Frage.
+1. Aus unbekannten Gründen erfolgt kein Forwarding von Paketen aus der GRT. Auch mittels tcpdump
+   war nicht nachvollziehbar, ob das Forwarding von der GRT in die VRF public oder von VRF public
+   zu Upstream Provider C fehlschlägt und dies falsch in tcpdump dargestellt wird.
+
+2. Wird ein Paket aus eth3 (Upstream Provider C) empfangen, hat dieses einen VRF Kontext, wodurch
+   nach der `lookup local`-Policy die Regel `lookup [l3mdev-table]` zutrifft. Dadurch wird in der
+   FIB der VRF public nach einer passenden Route zum Ziel gesucht. Diese wird in Form der
+   Default-Route gefunden, wodurch das Paket sofort zurück zum Upstream Provider C geschickt wird.
+   Es findet also kein `lookup main` statt.
 
 Da wir von den delegierten Adressen des Upstream Providers C abhängig sind, musste eine Lösung
 für dieses Problem gefunden werden. Da sich diese Abhängigkeit ausschließlich auf IPv4 bezieht,
 wurde zunächst die IPv6-BGP-Sitzung deaktiviert. Im Anschluss wurden die notwendigen IPv4-Routen
-(0.0.0.0/0 ohne Bogon-Präfixe) generiert und statisch in der VRF public definiert:
+(0.0.0.0/0 ohne Bogon-Präfixe) generiert und statisch in der FIB der VRF public definiert:
 
 ```python
 from netaddr import IPSet
