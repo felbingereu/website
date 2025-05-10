@@ -103,27 +103,27 @@ ip prefix-list export seq 2 deny 0.0.0.0/0 le 32
 ip route 12.34.56.78/32 Null0
 !
 vrf public
-ip protocol bgp route-map set-src
+  ip protocol bgp route-map set-src
 exit-vrf
 !
 router bgp OWN_ASN vrf public
-bgp router-id 12.34.56.78
-no bgp default ipv4-unicast
-no bgp network import-check
-neighbor 172.20.20.1 remote-as ASN_UPSTREAM_C
-!
-address-family ipv4 unicast
-  network 12.34.56.78/32
-  neighbor 172.20.20.1 activate
-  neighbor 172.20.20.1 remove-private-AS
-  neighbor 172.20.20.1 soft-reconfiguration inbound
-  neighbor 172.20.20.1 prefix-list import in
-  neighbor 172.20.20.1 prefix-list export out
-exit-address-family
+  bgp router-id 12.34.56.78
+  no bgp default ipv4-unicast
+  no bgp network import-check
+  neighbor 172.20.20.1 remote-as ASN_UPSTREAM_C
+  !
+  address-family ipv4 unicast
+    network 12.34.56.78/32
+    neighbor 172.20.20.1 activate
+    neighbor 172.20.20.1 remove-private-AS
+    neighbor 172.20.20.1 soft-reconfiguration inbound
+    neighbor 172.20.20.1 prefix-list import in
+    neighbor 172.20.20.1 prefix-list export out
+  exit-address-family
 exit
 !
 route-map set-src permit 1
-set src 12.34.56.78
+  set src 12.34.56.78
 exit
 ```
 
