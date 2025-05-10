@@ -3,8 +3,10 @@ date:
   created: 2025-05-10
 authors:
 - nicof2000
+- tnt2k
 categories:
 - NixOS
+- Networking
 ---
 
 # NixOS: ASBR mit VRF zur Separierung von EGP und IGP
