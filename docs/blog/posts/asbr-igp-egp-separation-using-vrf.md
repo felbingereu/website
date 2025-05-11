@@ -12,9 +12,9 @@ categories:
 # NixOS: ASBR mit VRF zur Separierung von EGP und IGP
 
 In unserem Netzwerk betreiben wir einen ASBR (Autonomous System Boundary Router) auf Basis
-von NixOS, [ifstate](https://ifstate.net/) und [FRRouting](https://frrouting.org/). Unser
-Ziel war die Separierung von EGP (Exterior Gateway Protocol) und IGP (Interior Gateway
-Protocol) mittels einer VRF (Virtual Routing and Forwarding).
+von NixOS, [ifstate](https://ifstate.net/) und [FRRouting](https://frrouting.org/). Ziel war
+es, das EGP (Exterior Gateway Protocol) und das IGP (Interior Gateway Protocol) mittels
+einer VRF (Virtual Routing and Forwarding) voneinander zu trennen.
 
 <!-- more -->
 
