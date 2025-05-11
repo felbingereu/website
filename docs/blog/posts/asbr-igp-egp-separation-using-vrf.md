@@ -57,7 +57,7 @@ rtt min/avg/max/mdev = 28.909/28.909/28.909/0.000 ms
 00:00:00.059831 eth3  In  IP 1.1.1.1 > 12.34.56.78: ICMP echo reply, id 3, seq 1, length 64
 ```
 
-Nachdem dies Erfolgreich war, wurde geprüft, ob der Client ebenfalls eine Verbindung aufbauen
+Nachdem dies erfolgreich war, wurde geprüft, ob der Client ebenfalls eine Verbindung aufbauen
 kann:
 
 ```
