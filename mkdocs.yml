@@ -74,6 +74,9 @@ plugins:
       blog_dir: blog
       archive: false
       categories: true
+  - redirects:
+      redirect_maps:
+        'index.md': 'blog/index.md'
 
 extra:
   generator: false  # remove footer: Made with Material for MkDocs
