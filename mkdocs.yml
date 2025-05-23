@@ -62,10 +62,6 @@ markdown_extensions:
       generic: true
 
 plugins:
-  - git-revision-date-localized:
-      exclude:
-        - blog/archive/*
-        - blog/category/*
   - offline
   - privacy
   - search:
