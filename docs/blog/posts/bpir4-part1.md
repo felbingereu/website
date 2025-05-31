@@ -1,0 +1,937 @@
+---
+date:
+  created: 2025-05-31
+authors:
+- nicof2000
+categories:
+- NixOS
+- Networking
+readtime: 5
+---
+
+# NixOS Router: Banana PI R4
+
+Der [Banana Pi R4](https://wiki.banana-pi.org/Banana_Pi_BPI-R4) ist ein leistungsfähiges und dabei preislich sehr attraktives Netzwerkgerät, das speziell für anspruchsvolle Anwendungen entwickelt wurde. Ausgestattet mit dem MediaTek MT7988 SoC und bis zu 8 GB DDR4-RAM bietet er eine starke Grundlage für moderne Netzwerkinfrastrukturen. Besonders hervorzuheben sind die beiden integrierten SFP+ Schnittstellen, die High-Speed-Datenübertragungen mit bis zu 10 Gbit/s ermöglichen. Durch die Unterstützung von Wi-Fi 6, einem M.2-Steckplatz für NVMe- oder 5G-Module sowie vielseitigen GPIO-Pins ist der BPI-R4 äußerst flexibel und erweiterbar.
+
+<!-- more -->
+
+Für das Vorgängermodell, den Banana Pi R3, gibt es bereits eine größtenteils funktionale NixOS-Implementierungen. Siehe [Router 2023: Part 1](https://github.com/ghostbuster91/blogposts/blob/main/router2023/main.md), [Router 2023: Part 2](https://github.com/ghostbuster91/blogposts/blob/main/router2023-part2/main.md), [Beispielkonfiguration](https://github.com/nakato/nixos-bpir3-example).
+
+Mitte 2024 entwickelte sich aus dieser Beispielkonfiguration ein [NixOS Modul für Einplatinencomputer](https://github.com/nakato/nixos-sbc), welches auch die Unterstützung des BPI-R4 anstrebt. Unabhängig davon dokumentierte ein anderer Nutzer seinen Fortschritt in einem eigenen [Git Repository](https://github.com/newAM/nixos-bpi-r4).
+
+Die Suche nach einem Anbieter, der die 8-GB-Variante des Banana Pi R4 inklusive Zubehör nach Deutschland liefert, erwies sich als herausfordernd. Letztendlich habe ich mich für folgenden Artikel entschieden: [amazon.de/dp/B0F2HZSH3L](https://www.amazon.de/dp/B0F2HZSH3L).
+Abweichend zur Produktbeschreibung und den Abbildungen wurde anstatt eines US-Netzteils ein EU-Netzteil mitgeliefert.
+
+![Lieferumfang](./../../media/posts/bpir4-package.png)
+
+Der Zusammenbau gestaltet sich dank der ausführlichen Anleitung unter [docs.banana-pi.org/en/BPI-R4/BPI-R4_Accessory_installation](https://docs.banana-pi.org/en/BPI-R4/BPI-R4_Accessory_installation) äußerst einfach und problemlos. Vorerst habe ich bewusst auf den Einbau des Wireless-Moduls verzichtet, da dieses für die ersten Tests und einen der geplanten Anwendungszwecke nicht zwingend erforderlich ist und sich dadurch potenzielle Fehlerquellen vermeiden lassen.
+
+Zwei [DIP-Schalter](https://de.wikipedia.org/wiki/DIP-Schalter) erlauben die Auswahl des Bootmediums. Zunächst stellte ich diese auf die Position 01, um vom NAND-Chip zu booten. Auf meinem Board war dort OpenWRT in der Version 21.02 installiert.
+
+<details>
+<summary>Bootlog von OpenWRT 21.02 auf NAND</summary>
+<pre>
+F0: 102B 0000
+FA: 1042 0000
+FA: 1042 0000 [0200]
+F9: 0000 0000
+V0: 0000 0000 [0001]
+00: 0000 0000
+BP: 0600 0041 [0000]
+G0: 1190 0000
+EC: 0000 0000 [1000]
+MK: 0000 0000 [0000]
+T0: 0000 01AD [0101]
+Jump to BL
+
+NOTICE:  BL2: v2.11.0(release):
+NOTICE:  BL2: Built : 11:21:00, Mar  8 2025
+NOTICE:  WDT: [40000000] Software reset (reboot)
+NOTICE:  CPU: MT7988
+NOTICE:  EMI: DDR4 4BG mode
+NOTICE:  EMI: Using DDR unknown settings
+NOTICE:  EMI: Detected DRAM size: 8192 MB
+NOTICE:  EMI: complex R/W mem test passed
+WARNING: CASN page check failed
+WARNING: Fail to read CASN page. Try reading parameter page
+NOTICE:  SPI_NAND parses attributes from parameter page.
+NOTICE:  SPI_NAND Detected ID 0xef
+NOTICE:  Page size 2048, Block size 131072, size 268435456
+NOTICE:  Initializing NMBM ...
+NOTICE:  Signature found at block 2047 [0x0ffe0000]
+NOTICE:  First info table with writecount 0 found in block 1920
+NOTICE:  Second info table with writecount 0 found in block 1923
+NOTICE:  NMBM has been successfully attached in read-only mode
+NOTICE:  BL2: Booting BL31
+NOTICE:  BL31: v2.11.0(release):
+NOTICE:  BL31: Built : 11:21:04, Mar  8 2025
+
+
+U-Boot 2024.10-rc2 (Mar 08 2025 - 11:10:17 +0800)
+
+CPU:   MediaTek MT7988
+Model: mt7988-rfb
+       (mediatek,mt7988-spim-nand-rfb)
+DRAM:  8 GiB
+Core:  48 devices, 12 uclasses, devicetree: separate
+
+Initializing NMBM ...
+spi-nand: spi_nand spi_nand@0: CASN page check failed
+spi-nand: spi_nand spi_nand@0: Fallback to read ID
+spi-nand: spi_nand spi_nand@0: Winbond SPI NAND was found.
+spi-nand: spi_nand spi_nand@0: 256 MiB, block size: 128 KiB, page size: 2048, OOB size: 128
+Could not find a valid device for nmbm0
+Signature found at block 2047 [0x0ffe0000]
+First info table with writecount 0 found in block 1920
+Second info table with writecount 0 found in block 1923
+NMBM has been successfully attached
+
+Loading Environment from MTD... *** Warning - bad CRC, using default environment
+
+In:    serial@11000000
+Out:   serial@11000000
+Err:   serial@11000000
+Net:
+Warning: ethernet@15100000 (eth0) using random MAC address - 1e:71:e6:23:3d:be
+eth0: ethernet@15100000
+
+  *** U-Boot Boot Menu ***
+
+      1. Startup system (Default)
+      2. Upgrade firmware
+      3. Upgrade ATF BL2
+      4. Upgrade ATF FIP
+      5.   Upgrade ATF BL31 only
+      6.   Upgrade bootloader only
+      7. Upgrade single image
+      8. Load image
+      9. Start Web failsafe
+      0. U-Boot console
+
+
+  Press UP/DOWN to move, ENTER to select, ESC to quit
+
+ubi0: attaching mtd6
+ubi0: scanning is finished
+ubi0: attached mtd6 (name "ubi", size 112 MiB)
+ubi0: PEB size: 131072 bytes (128 KiB), LEB size: 126976 bytes
+ubi0: min./max. I/O unit sizes: 2048/2048, sub-page size 2048
+ubi0: VID header offset: 2048 (aligned 2048), data offset: 4096
+ubi0: good PEBs: 900, bad PEBs: 0, corrupted PEBs: 0
+ubi0: user volume: 3, internal volumes: 1, max. volumes count: 128
+ubi0: max/mean erase counter: 2/0, WL threshold: 4096, image sequence number: 1717567889
+ubi0: available PEBs: 0, total reserved PEBs: 900, PEBs reserved for bad PEB handling: 38
+Volume firmware not found!
+No size specified -> Using max size (4190208)
+Read 4190208 bytes from volume kernel to 0000000044000000
+## Loading kernel from FIT Image at 44000000 ...
+   Using 'config-1' configuration
+   Trying 'kernel-1' kernel subimage
+     Description:  ARM64 OpenWrt Linux-5.4.271
+     Type:         Kernel Image
+     Compression:  lzma compressed
+     Data Start:   0x440000e8
+     Data Size:    4079828 Bytes = 3.9 MiB
+     Architecture: AArch64
+     OS:           Linux
+     Load Address: 0x48080000
+     Entry Point:  0x48080000
+     Hash algo:    crc32
+     Hash value:   66074b12
+     Hash algo:    sha1
+     Hash value:   9e960a57792a18b1218da2e9808060d1336fa155
+   Verifying Hash Integrity ... crc32+ sha1+ OK
+## Loading fdt from FIT Image at 44000000 ...
+   Using 'config-1' configuration
+   Trying 'fdt-1' fdt subimage
+     Description:  ARM64 OpenWrt BPI-R4-NAND device tree blob
+     Type:         Flat Device Tree
+     Compression:  uncompressed
+     Data Start:   0x443e42f8
+     Data Size:    35220 Bytes = 34.4 KiB
+     Architecture: AArch64
+     Hash algo:    crc32
+     Hash value:   f38f6e07
+     Hash algo:    sha1
+     Hash value:   70587200d406deca7988ece4511e85aa3a1407ec
+   Verifying Hash Integrity ... crc32+ sha1+ OK
+   Booting using the fdt blob at 0x443e42f8
+Working FDT set to 443e42f8
+   Uncompressing Kernel Image to 48080000
+   Loading Device Tree to 00000000ff7ea000, end 00000000ff7f5993 ... OK
+Working FDT set to ff7ea000
+Add 'ramoops@42ff0000' node failed: FDT_ERR_EXISTS
+
+Starting kernel ...
+
+[    0.000000] Booting Linux on physical CPU 0x0000000000 [0x411fd090]
+[    0.000000] Linux version 5.4.271 (linux@Ubuntu18.04.2-Devel) (gcc version 8.4.0 (OpenWrt GCC 8.4.0 unknown)) #0 SMP Wed Jun 5 06:11:29 2024
+[    0.000000] Machine model: Bananapi BPI-R4
+[    0.000000] earlycon: uart8250 at MMIO32 0x0000000011000000 (options '')
+[    0.000000] printk: bootconsole [uart8250] enabled
+[    0.000000] On node 0 totalpages: 2094272
+[    0.000000]   DMA32 zone: 12288 pages used for memmap
+[    0.000000]   DMA32 zone: 0 pages reserved
+[    0.000000]   DMA32 zone: 783552 pages, LIFO batch:63
+[    0.000000]   Normal zone: 20480 pages used for memmap
+[    0.000000]   Normal zone: 1310720 pages, LIFO batch:63
+[    0.000000] psci: probing for conduit method from DT.
+[    0.000000] psci: PSCIv1.1 detected in firmware.
+[    0.000000] psci: Using standard PSCI v0.2 function IDs
+[    0.000000] psci: MIGRATE_INFO_TYPE not supported.
+[    0.000000] psci: SMC Calling Convention v1.0
+[    0.000000] percpu: Embedded 20 pages/cpu s44376 r8192 d29352 u81920
+[    0.000000] pcpu-alloc: s44376 r8192 d29352 u81920 alloc=20*4096
+[    0.000000] pcpu-alloc: [0] 0 [0] 1 [0] 2 [0] 3
+[    0.000000] Detected VIPT I-cache on CPU0
+[    0.000000] CPU features: detected: GIC system register CPU interface
+[    0.000000] CPU features: kernel page table isolation disabled by kernel configuration
+[    0.000000] CPU features: detected: Spectre-BHB
+[    0.000000] Built 1 zonelists, mobility grouping on.  Total pages: 2061504
+[    0.000000] Kernel command line: console=ttyS0,115200n1 loglevel=8  			    earlycon=uart8250,mmio32,0x11000000 			    pci=pcie_bus_perf
+[    0.000000] Dentry cache hash table entries: 1048576 (order: 11, 8388608 bytes, linear)
+[    0.000000] Inode-cache hash table entries: 524288 (order: 10, 4194304 bytes, linear)
+[    0.000000] mem auto-init: stack:off, heap alloc:off, heap free:off
+[    0.000000] software IO TLB: mapped [mem 0xfb7ea000-0xff7ea000] (64MB)
+[    0.000000] Memory: 8138456K/8377088K available (8382K kernel code, 602K rwdata, 2468K rodata, 512K init, 293K bss, 238632K reserved, 0K cma-reserved)
+[    0.000000] SLUB: HWalign=64, Order=0-3, MinObjects=0, CPUs=4, Nodes=1
+[    0.000000] rcu: Hierarchical RCU implementation.
+[    0.000000] rcu: 	CONFIG_RCU_FANOUT set to non-default value of 32.
+[    0.000000] rcu: RCU calculated value of scheduler-enlistment delay is 25 jiffies.
+[    0.000000] NR_IRQS: 64, nr_irqs: 64, preallocated irqs: 0
+[    0.000000] GICv3: GIC: Using split EOI/Deactivate mode
+[    0.000000] GICv3: 416 SPIs implemented
+[    0.000000] GICv3: 0 Extended SPIs implemented
+[    0.000000] GICv3: Distributor has no Range Selector support
+[    0.000000] GICv3: 16 PPIs implemented
+[    0.000000] GICv3: no VLPI support, no direct LPI support
+[    0.000000] GICv3: CPU0: found redistributor 0 region 0:0x000000000c080000
+[    0.000000] arch_timer: cp15 timer(s) running at 13.00MHz (phys).
+[    0.000000] clocksource: arch_sys_counter: mask: 0xffffffffffffff max_cycles: 0x2ff89eacb, max_idle_ns: 440795202429 ns
+[    0.000003] sched_clock: 56 bits at 13MHz, resolution 76ns, wraps every 4398046511101ns
+[    0.008265] Calibrating delay loop (skipped), value calculated using timer frequency.. 26.00 BogoMIPS (lpj=52000)
+[    0.018659] pid_max: default: 32768 minimum: 301
+[    0.023396] Mount-cache hash table entries: 16384 (order: 5, 131072 bytes, linear)
+[    0.031076] Mountpoint-cache hash table entries: 16384 (order: 5, 131072 bytes, linear)
+[    0.039778] ASID allocator initialised with 65536 entries
+[    0.045285] rcu: Hierarchical SRCU implementation.
+[    0.050384] smp: Bringing up secondary CPUs ...
+[    0.055177] Detected VIPT I-cache on CPU1
+[    0.055196] GICv3: CPU1: found redistributor 1 region 0:0x000000000c0a0000
+[    0.055210] CPU1: Booted secondary processor 0x0000000001 [0x411fd090]
+[    0.055425] Detected VIPT I-cache on CPU2
+[    0.055433] GICv3: CPU2: found redistributor 2 region 0:0x000000000c0c0000
+[    0.055441] CPU2: Booted secondary processor 0x0000000002 [0x411fd090]
+[    0.055642] Detected VIPT I-cache on CPU3
+[    0.055650] GICv3: CPU3: found redistributor 3 region 0:0x000000000c0e0000
+[    0.055657] CPU3: Booted secondary processor 0x0000000003 [0x411fd090]
+[    0.055686] smp: Brought up 1 node, 4 CPUs
+[    0.112710] SMP: Total of 4 processors activated.
+[    0.117472] CPU features: detected: 32-bit EL0 Support
+[    0.122674] CPU features: detected: CRC32 instructions
+[    0.127957] CPU: All CPU(s) started at EL2
+[    0.132106] alternatives: patching kernel code
+[    0.139023] clocksource: jiffies: mask: 0xffffffff max_cycles: 0xffffffff, max_idle_ns: 7645041785100000 ns
+[    0.148905] futex hash table entries: 1024 (order: 4, 65536 bytes, linear)
+[    0.155925] pinctrl core: initialized pinctrl subsystem
+[    0.161635] NET: Registered protocol family 16
+[    0.166326] DMA: preallocated 256 KiB pool for atomic allocations
+[    0.173206] printk: console [pstore-1] enabled
+[    0.177741] pstore: Registered ramoops as persistent store backend
+[    0.184002] ramoops: using 0x10000@0x42ff0000, ecc: 0
+[    0.191825] GPIO line 432 (asm_sel) hogged as output/high
+[    0.197333] GPIO line 433 (pca9545_rst) hogged as output/high
+[    0.208356] cryptd: max_cpu_qlen set to 1000
+[    0.213938] SCSI subsystem initialized
+[    0.217810] libata version 3.00 loaded.
+[    0.221795] usbcore: registered new interface driver usbfs
+[    0.227416] usbcore: registered new interface driver hub
+[    0.232808] usbcore: registered new device driver usb
+[    0.238485] Bluetooth: Core ver 2.22
+[    0.242128] NET: Registered protocol family 31
+[    0.246623] Bluetooth: HCI device and connection manager initialized
+[    0.253058] Bluetooth: HCI socket layer initialized
+[    0.257992] Bluetooth: L2CAP socket layer initialized
+[    0.263109] Bluetooth: SCO socket layer initialized
+[    0.268245] rbus 18000000.wbsys: PCI host bridge to bus 0004:00
+[    0.274242] pci_bus 0004:00: root bus resource [mem 0x18000000-0x18ffffff]
+[    0.281206] pci_bus 0004:00: root bus resource [bus 00-ff]
+[    0.286762] pci_bus 0004:00: scanning bus
+[    0.290826] pci 0004:00:00.0: [14c3:7981] type 00 class 0x000280
+[    0.296915] pci 0004:00:00.0: reg 0x10: [mem 0x18000000-0x1800000f 64bit]
+[    0.303789] pci 0004:00:00.0: reg 0x18: [mem 0x00000000-0x0000000f]
+[    0.310133] pci 0004:00:00.0: reg 0x1c: [mem 0x00000000-0x0000000f]
+[    0.316476] pci 0004:00:00.0: reg 0x20: [mem 0x00000000-0x0000000f]
+[    0.322821] pci 0004:00:00.0: reg 0x24: [mem 0x00000000-0x0000000f]
+[    0.330084] pci_bus 0004:00: fixups for bus
+[    0.334317] pci_bus 0004:00: bus scan returning with max=00
+[    0.340131] clocksource: Switched to clocksource arch_sys_counter
+[    0.346633] thermal_sys: Registered thermal governor 'fair_share'
+[    0.346635] thermal_sys: Registered thermal governor 'bang_bang'
+[    0.352809] thermal_sys: Registered thermal governor 'step_wise'
+[    0.358892] thermal_sys: Registered thermal governor 'user_space'
+[    0.364972] thermal_sys: Registered thermal governor 'power_allocator'
+[    0.371487] NET: Registered protocol family 2
+[    0.382704] IP idents hash table entries: 131072 (order: 8, 1048576 bytes, linear)
+[    0.392329] tcp_listen_portaddr_hash hash table entries: 4096 (order: 4, 65536 bytes, linear)
+[    0.401020] TCP established hash table entries: 65536 (order: 7, 524288 bytes, linear)
+[    0.409242] TCP bind hash table entries: 65536 (order: 8, 1048576 bytes, linear)
+[    0.417140] TCP: Hash tables configured (established 65536 bind 65536)
+[    0.423835] UDP hash table entries: 4096 (order: 5, 131072 bytes, linear)
+[    0.430802] UDP-Lite hash table entries: 4096 (order: 5, 131072 bytes, linear)
+[    0.438302] NET: Registered protocol family 1
+[    0.442742] PCI: CLS 0 bytes, default 64
+[    0.447305] workingset: timestamp_bits=46 max_order=21 bucket_order=0
+[    0.455614] squashfs: version 4.0 (2009/01/31) Phillip Lougher
+[    0.461596] ntfs: driver 2.1.32 [Flags: R/W].
+[    0.466060] jffs2: version 2.2 (NAND) (SUMMARY) (LZMA) (RTIME) (CMODE_PRIORITY) (c) 2001-2006 Red Hat, Inc.
+[    0.494865] Debug interface error
+[    0.498273] io scheduler mq-deadline registered
+[    0.502865] io scheduler kyber registered
+[    0.506974] io scheduler bfq registered
+[    0.511408] phy phy-usb-phy@11e10000.3: type_sw - reg 0x218, index 0
+[    0.518248] mtk-pcie 11300000.pcie: host bridge /pcie@11300000 ranges:
+[    0.524872] mtk-pcie 11300000.pcie: Parsing ranges property...
+[    0.530783] mtk-pcie 11300000.pcie:    IO 0x30000000..0x301fffff -> 0x30000000
+[    0.538104] mtk-pcie 11300000.pcie:   MEM 0x30200000..0x37ffffff -> 0x30200000
+[    0.545445] mtk-pcie 11300000.pcie: failed to get max link width
+[    0.756159] mtk-pcie 11300000.pcie: PCIe link down, ltssm reg val: 0x1
+[    0.762803] mtk-pcie: probe of 11300000.pcie failed with error -110
+[    0.769217] mtk-pcie 11310000.pcie: host bridge /pcie@11310000 ranges:
+[    0.775832] mtk-pcie 11310000.pcie: Parsing ranges property...
+[    0.781746] mtk-pcie 11310000.pcie:    IO 0x38000000..0x381fffff -> 0x38000000
+[    0.789066] mtk-pcie 11310000.pcie:   MEM 0x38200000..0x3fffffff -> 0x38200000
+[    0.796394] mtk-pcie 11310000.pcie: failed to get max link width
+[    1.008174] mtk-pcie 11310000.pcie: PCIe link down, ltssm reg val: 0x1
+[    1.014804] mtk-pcie: probe of 11310000.pcie failed with error -110
+[    1.021209] mtk-pcie 11280000.pcie: host bridge /pcie@11280000 ranges:
+[    1.027821] mtk-pcie 11280000.pcie: Parsing ranges property...
+[    1.033733] mtk-pcie 11280000.pcie:    IO 0x20000000..0x201fffff -> 0x20000000
+[    1.041046] mtk-pcie 11280000.pcie:   MEM 0x20200000..0x27ffffff -> 0x20200000
+[    1.048377] mtk-xsphy usb-phy@11e10000: incompatible phy type
+[    1.054209] mtk-pcie 11280000.pcie: failed to get max link width
+[    1.268149] mtk-pcie 11280000.pcie: PCIe link down, ltssm reg val: 0x1
+[    1.274784] mtk-pcie: probe of 11280000.pcie failed with error -110
+[    1.281181] mtk-pcie 11290000.pcie: host bridge /pcie@11290000 ranges:
+[    1.287791] mtk-pcie 11290000.pcie: Parsing ranges property...
+[    1.293703] mtk-pcie 11290000.pcie:    IO 0x28000000..0x281fffff -> 0x28000000
+[    1.301018] mtk-pcie 11290000.pcie:   MEM 0x28200000..0x2fffffff -> 0x28200000
+[    1.308351] mtk-pcie 11290000.pcie: failed to get max link width
+[    1.520153] mtk-pcie 11290000.pcie: PCIe link down, ltssm reg val: 0x1
+[    1.526781] mtk-pcie: probe of 11290000.pcie failed with error -110
+[    1.533714] mtk-power-controller 11d10000.topmisc: /topmisc@11d10000/eth2p5@2: A default off power domain has been ON
+[    1.544624] Serial: 8250/16550 driver, 3 ports, IRQ sharing disabled
+[    1.551406] printk: console [ttyS0] disabled
+[    1.575845] 11000000.serial: ttyS0 at MMIO 0x11000000 (irq = 17, base_baud = 2500000) is a ST16650V2
+[    1.585115] printk: console [ttyS0] enabled
+[    1.585115] printk: console [ttyS0] enabled
+[    1.593475] printk: bootconsole [uart8250] disabled
+[    1.593475] printk: bootconsole [uart8250] disabled
+[    1.603645] mtk_rng trng@1020f000: registered RNG driver
+[    1.603683] random: crng init done
+[    1.613580] loop: module loaded
+[    1.618694] spi-nand spi0.0: calibration result: 0x2
+[    1.623750] spi-nand spi0.0: Winbond SPI NAND was found.
+[    1.629055] spi-nand spi0.0: 256 MiB, block size: 128 KiB, page size: 2048, OOB size: 128
+[    1.638683] mt7988-pinctrl 1001f000.pinctrl: invalid function mdio in map table
+[    1.646560] [mtk_hw_init] reset_lock:0, force:1
+[    1.651237] [mtk_hw_init] execute fe cold reset
+[    1.666767] mtk_soc_eth 15100000.ethernet: MDC is running on 8333333 Hz
+[    1.694017] mtk_soc_eth 15100000.ethernet: generated random MAC address 6a:18:88:75:f8:f9
+[    1.702637] mtk_soc_eth 15100000.ethernet eth0: mediatek frame engine at 0xffffffc012100000, irq 14
+[    1.711706] mtk_soc_eth 15100000.ethernet: generated random MAC address 6a:b4:a2:bc:2c:4f
+[    1.720218] mtk_soc_eth 15100000.ethernet eth1: mediatek frame engine at 0xffffffc012100000, irq 14
+[    1.729275] mtk_soc_eth 15100000.ethernet: generated random MAC address 32:7b:6d:53:29:8a
+[    1.737777] mtk_soc_eth 15100000.ethernet eth2: mediatek frame engine at 0xffffffc012100000, irq 14
+[    1.746814] (unnamed net_device) (dummy): netif_napi_add() called with weight 256
+[    1.754437] PPP generic driver version 2.4.2
+[    1.758756] PPP BSD Compression module registered
+[    1.763452] PPP Deflate Compression module registered
+[    1.768494] NET: Registered protocol family 24
+[    1.772966] usbcore: registered new interface driver r8152
+[    1.778450] usbcore: registered new interface driver ax88179_178a
+[    1.784541] usbcore: registered new interface driver cdc_ether
+[    1.790371] usbcore: registered new interface driver rndis_host
+[    1.796295] usbcore: registered new interface driver cdc_ncm
+[    1.801956] usbcore: registered new interface driver qmi_wwan_q
+[    1.807874] usbcore: registered new interface driver qmi_wwan
+[    1.813618] usbcore: registered new interface driver cdc_mbim
+[    1.819517] xhci-mtk 11200000.xhci: 11200000.xhci supply vbus not found, using dummy regulator
+[    1.828146] xhci-mtk 11200000.xhci: 11200000.xhci supply vusb33 not found, using dummy regulator
+[    1.837025] phy phy-usb-phy@11c50000.0: try to get sw efuse
+[    1.842595] phy phy-usb-phy@11c50000.1: try to get sw efuse
+[    1.848310] xhci-mtk 11200000.xhci: xHCI Host Controller
+[    1.853687] xhci-mtk 11200000.xhci: new USB bus registered, assigned bus number 1
+[    1.864207] xhci-mtk 11200000.xhci: hcc params 0x01403f99 hci version 0x110 quirks 0x0000000000210010
+[    1.873439] xhci-mtk 11200000.xhci: irq 122, io mem 0x11200000
+[    1.879323] xhci-mtk 11200000.xhci: xHCI Host Controller
+[    1.884627] xhci-mtk 11200000.xhci: new USB bus registered, assigned bus number 2
+[    1.892100] xhci-mtk 11200000.xhci: Host supports USB 3.2 Enhanced SuperSpeed
+[    1.899468] hub 1-0:1.0: USB hub found
+[    1.903283] hub 1-0:1.0: 1 port detected
+[    1.907355] usb usb2: We don't know the algorithms for LPM for this host, disabling LPM.
+[    1.915593] hub 2-0:1.0: USB hub found
+[    1.919347] hub 2-0:1.0: 1 port detected
+[    1.923459] usbcore: registered new interface driver cdc_wdm
+[    1.929180] usbcore: registered new interface driver uas
+[    1.934514] usbcore: registered new interface driver usb-storage
+[    1.940552] usbcore: registered new interface driver usbserial_generic
+[    1.947076] usbserial: USB Serial support registered for generic
+[    1.953083] usbcore: registered new interface driver option
+[    1.958650] usbserial: USB Serial support registered for GSM modem (1-port)
+[    1.965649] usbcore: registered new interface driver pl2303
+[    1.971216] usbserial: USB Serial support registered for pl2303
+[    1.977137] usbcore: registered new interface driver qcaux
+[    1.982618] usbserial: USB Serial support registered for qcaux
+[    1.988452] usbcore: registered new interface driver qcserial
+[    1.994195] usbserial: USB Serial support registered for Qualcomm USB modem
+[    2.001277] i2c /dev entries driver
+[    2.012479] vcore: supplied by rt5190a-buck1
+[    2.019443] proc: supplied by rt5190a-buck1
+[    2.025887] rt5190a-buck4: supplied by rt5190a-buck1
+[    2.031787] rt5190a-ldo: supplied by regulator-dummy
+[    2.038957] at24 3-0057: 256 byte 24c02 EEPROM, writable, 1 bytes/write
+[    2.051031] rtc-pcf8563 3-0051: registered as rtc0
+[    2.056698] i2c i2c-2: Added multiplexed i2c bus 3
+[    2.061538] i2c i2c-2: Added multiplexed i2c bus 4
+[    2.066370] i2c i2c-2: Added multiplexed i2c bus 5
+[    2.126369] i2c i2c-2: Added multiplexed i2c bus 6
+[    2.131158] pca954x 2-0070: registered 4 multiplexed busses for I2C switch pca9545
+[    2.139070] mtk-soc-temp-lvts 1100a000.lvts: [lvts_cal] golden_temp = 60
+[    2.145767] mtk-soc-temp-lvts 1100a000.lvts: [lvts_cal] num:g_count:g_count_rc 0:19580:5269 1:19602:0 2:19616:0 3:19618:0 4:19505:5266 5:19524:0 6:19531:0 7:19564:0
+[    2.162346] mtk-soc-temp-lvts 1100a000.lvts: [COUNT_RC_NOW] 0:5276 1:5286 2:5275 3:5289 4:5274 5:5275 6:5274 7:5275
+[    2.172878] mtk-soc-temp-lvts 1100a000.lvts: set_polling_speed 0, LVTSMONCTL1_0= 0x10000c,LVTSMONCTL2_0= 0x10001
+[    2.183041] mtk-soc-temp-lvts 1100a000.lvts: set_hw_filter 0, LVTSMSRCTL0_0= 0xb6d
+[    2.190599] mtk-soc-temp-lvts 1100a000.lvts: lvts0: read all 4 sensors in 10080 us, one in 2404 us
+[    2.199577] mtk-soc-temp-lvts 1100a000.lvts: set_polling_speed 1, LVTSMONCTL1_0= 0x10000c,LVTSMONCTL2_0= 0x10001
+[    2.209745] mtk-soc-temp-lvts 1100a000.lvts: set_hw_filter 1, LVTSMSRCTL0_0= 0xb6d
+[    2.217302] mtk-soc-temp-lvts 1100a000.lvts: lvts1: read all 4 sensors in 10080 us, one in 2404 us
+[    2.226247] mtk-soc-temp-lvts 1100a000.lvts: set_tc_hw_reboot_threshold: LVTS0, the dominator sensing point= 0
+[    2.236234] mtk-soc-temp-lvts 1100a000.lvts: set_tc_hw_reboot_threshold: LVTS1, the dominator sensing point= 0
+[    2.246517] device-mapper: ioctl: 4.41.0-ioctl (2019-09-16) initialised: dm-devel@redhat.com
+[    2.254996] Bluetooth: HCI UART driver ver 2.3
+[    2.259433] Bluetooth: HCI UART protocol H4 registered
+[    2.264560] Bluetooth: HCI UART protocol BCSP registered
+[    2.269899] Bluetooth: HCI UART protocol Broadcom registered
+[    2.275556] Bluetooth: HCI UART protocol QCA registered
+[    2.304952] exFAT: Version 1.3.0
+[    2.308709] Initializing XFRM netlink socket
+[    2.313136] NET: Registered protocol family 10
+[    2.317976] Segment Routing with IPv6
+[    2.321676] NET: Registered protocol family 17
+[    2.326134] Bridge firewalling registered
+[    2.328138] usb 1-1: new high-speed USB device number 2 using xhci-mtk
+[    2.330175] 8021q: 802.1Q VLAN Support v1.8
+[    2.348673] nmbm nmbm_spim_nand: Signature found at block 2047 [0x0ffe0000]
+[    2.356619] nmbm nmbm_spim_nand: First info table with writecount 0 found in block 1920
+[    2.367403] nmbm nmbm_spim_nand: Second info table with writecount 0 found in block 1923
+[    2.375496] nmbm nmbm_spim_nand: NMBM has been successfully attached
+[    2.381952] 5 fixed-partitions partitions found on MTD device nmbm_spim_nand
+[    2.388995] Creating 5 MTD partitions on "nmbm_spim_nand":
+[    2.394490] 0x000000000000-0x000000100000 : "BL2"
+[    2.399579] 0x000000100000-0x000000180000 : "u-boot-env"
+[    2.405131] 0x000000180000-0x000000580000 : "Factory"
+[    2.410413] 0x000000580000-0x000000780000 : "FIP"
+[    2.415356] 0x000000780000-0x000007800000 : "ubi"
+[    2.420622] sfp sfp@0: Host maximum power 3.0W
+[    2.425087] sfp sfp@0: tx disable 1 -> 1
+[    2.429174] sfp sfp@0: SM: enter empty:detached:down event dev_attach
+[    2.435616] sfp sfp@0: SM: exit empty:down:down
+[    2.440281] sfp sfp@1: Host maximum power 3.0W
+[    2.444734] sfp sfp@1: tx disable 1 -> 1
+[    2.448790] sfp sfp@1: SM: enter empty:detached:down event dev_attach
+[    2.455227] sfp sfp@1: SM: exit empty:down:down
+[    2.463398] mtk-msdc 11230000.mmc: phase: [map:fffffff] [maxlen:28] [final:9]
+[    2.470953] mmc0: new HS400 MMC card at address 0001
+[    2.476377] mmcblk0: mmc0:0001 8GTF4R 7.28 GiB
+[    2.481282] mmcblk0boot0: mmc0:0001 8GTF4R partition 1 4.00 MiB
+[    2.487576] mmcblk0boot1: mmc0:0001 8GTF4R partition 2 4.00 MiB
+[    2.490707] hub 1-1:1.0: USB hub found
+[    2.493526] mmcblk0rpmb: mmc0:0001 8GTF4R partition 3 512 KiB, chardev (247:0)
+[    2.497333] hub 1-1:1.0: 5 ports detected
+[    2.630179] usb 2-1: new SuperSpeed Gen 1x2 USB device number 2 using xhci-mtk
+[    2.658591] hub 2-1:1.0: USB hub found
+[    2.662518] hub 2-1:1.0: 4 ports detected
+[    3.196133] usb 1-1.5: new high-speed USB device number 3 using xhci-mtk
+[    3.410559] MediaTek MT7988 PHY dsa-0.0:00: TX-VCM SW cal result: 0x3
+[    3.435972] MediaTek MT7988 PHY dsa-0.0:01: TX-VCM SW cal result: 0x2
+[    3.462228] MediaTek MT7988 PHY dsa-0.0:02: TX-VCM SW cal result: 0x2
+[    3.487244] MediaTek MT7988 PHY dsa-0.0:03: TX-VCM SW cal result: 0x2
+[    3.506013] mt7530 mdio-bus:1f lan0 (uninitialized): PHY [dsa-0.0:00] driver [MediaTek MT7988 PHY]
+[    3.526186] mt7530 mdio-bus:1f lan1 (uninitialized): PHY [dsa-0.0:01] driver [MediaTek MT7988 PHY]
+[    3.546260] mt7530 mdio-bus:1f lan2 (uninitialized): PHY [dsa-0.0:02] driver [MediaTek MT7988 PHY]
+[    3.566297] mt7530 mdio-bus:1f lan3 (uninitialized): PHY [dsa-0.0:03] driver [MediaTek MT7988 PHY]
+[    3.575449] mt7530 mdio-bus:1f: configuring for fixed/10gbase-kr link mode
+[    3.582328] DSA: tree 0 setup
+[    3.582332] mt7530 mdio-bus:1f: Link is Up - 10Gbps/Full - flow control rx/tx
+[    3.585287] mt7530-nl: genl_register_family_with_ops
+[    3.585640] UBI: auto-attach mtd5
+[    3.600767] ubi0: attaching mtd5
+[    3.874856] ubi0: scanning is finished
+[    3.882215] ubi0: attached mtd5 (name "ubi", size 112 MiB)
+[    3.887695] ubi0: PEB size: 131072 bytes (128 KiB), LEB size: 126976 bytes
+[    3.894558] ubi0: min./max. I/O unit sizes: 2048/2048, sub-page size 2048
+[    3.901334] ubi0: VID header offset: 2048 (aligned 2048), data offset: 4096
+[    3.908282] ubi0: good PEBs: 900, bad PEBs: 0, corrupted PEBs: 0
+[    3.914277] ubi0: user volume: 3, internal volumes: 1, max. volumes count: 128
+[    3.921486] ubi0: max/mean erase counter: 2/0, WL threshold: 4096, image sequence number: 1717567889
+[    3.930603] ubi0: available PEBs: 0, total reserved PEBs: 900, PEBs reserved for bad PEB handling: 38
+[    3.939812] ubi0: background thread "ubi_bgt0d" started, PID 1022
+[    3.946392] block ubiblock0_1: created from ubi0:1(rootfs)
+[    3.951871] ubiblock: device ubiblock0_1 (rootfs) set to be root filesystem
+[    3.960267] rtc-pcf8563 3-0051: low voltage detected, date/time is not reliable.
+[    3.967653] rtc-pcf8563 3-0051: hctosys: unable to read the hardware clock
+[    3.978221] VFS: Mounted root (squashfs filesystem) readonly on device 253:0.
+[    3.985458] Freeing unused kernel memory: 512K
+[    4.012197] Run /sbin/init as init process
+[    4.157383] init: Console is alive
+[    4.703499] kmodloader: loading kernel modules from /etc/modules-boot.d/*
+[    4.746382] ehci_hcd: USB 2.0 'Enhanced' Host Controller (EHCI) Driver
+[    4.753195] fsl-ehci: Freescale EHCI Host controller driver
+[    4.759077] ehci-platform: EHCI generic platform driver
+[    4.764999] ohci_hcd: USB 1.1 'Open' Host Controller (OHCI) Driver
+[    4.771398] ohci-platform: OHCI generic platform driver
+[    4.778753] mediatek_soc_hnat 15100000.hnat: wan = eth2
+[    4.784001] mediatek_soc_hnat 15100000.hnat: lan = lan
+[    4.789141] mediatek_soc_hnat 15100000.hnat: lan2 = eth1
+[    4.794444] mediatek_soc_hnat 15100000.hnat: ppd = eth0
+[    4.799659] mediatek_soc_hnat 15100000.hnat: gmac num = 3
+[    4.805047] mediatek_soc_hnat 15100000.hnat: ppe num = 1
+[    4.810784] mediatek_soc_hnat 15100000.hnat: PPE0 entry number = 8192
+[    4.827466] mediatek_soc_hnat 15100000.hnat: PPE0 hwnat start
+[    4.833258] hnat roaming work enable
+[    4.838789] warp_module_init(): module init and register callback for warp
+[    4.845693] create warp_ctrl ok!!!
+[    4.849135] wed_get_slot_map(): assign slot_id:0 for entry: 0!
+[    4.854970] wed_get_slot_map(): assign slot_id:1 for entry: 1!
+[    4.860802] wed_get_slot_map(): assign slot_id:2 for entry: 2!
+[    4.866967] kmodloader: done loading kernel modules from /etc/modules-boot.d/*
+[    4.875371] init: - preinit -
+[    5.188992] mtk_soc_eth 15100000.ethernet eth0: configuring for fixed/10gbase-kr link mode
+[    5.197267] mtk_soc_eth 15100000.ethernet: mtk_gmac_usxgmii_path_setup path gmac1_usxgmii in
+[    5.205728] mtk_soc_eth 15100000.ethernet eth0: Link is Up - 10Gbps/Full - flow control rx/tx
+[    5.215234] mt7530 mdio-bus:1f lan1: configuring for phy/gmii link mode
+[    5.221946] 8021q: adding VLAN 0 to HW filter on device lan1
+Press the [f] key and hit [enter] to enter failsafe mode
+Press the [1], [2], [3] or [4] key and hit [enter] to select the debug level
+[    9.273603] mount_root: loading kmods from internal overlay
+[    9.285017] kmodloader: loading kernel modules from //etc/modules-boot.d/*
+[    9.292905] kmodloader: done loading kernel modules from //etc/modules-boot.d/*
+[    9.870204] UBIFS (ubi0:2): Mounting in unauthenticated mode
+[    9.875925] UBIFS (ubi0:2): background thread "ubifs_bgt0_2" started, PID 1122
+[    9.893651] UBIFS (ubi0:2): recovery needed
+[    9.961106] UBIFS (ubi0:2): recovery completed
+[    9.965584] UBIFS (ubi0:2): UBIFS: mounted UBI device 0, volume 2, name "rootfs_data"
+[    9.973404] UBIFS (ubi0:2): LEB size: 126976 bytes (124 KiB), min./max. I/O unit sizes: 2048 bytes/2048 bytes
+[    9.983305] UBIFS (ubi0:2): FS size: 40886272 bytes (38 MiB, 322 LEBs), journal size 2031616 bytes (1 MiB, 16 LEBs)
+[    9.993724] UBIFS (ubi0:2): reserved for root: 1931159 bytes (1885 KiB)
+[   10.000328] UBIFS (ubi0:2): media format: w5/r0 (latest is w5/r0), UUID 50529498-1275-490B-9B85-4279CA4ED81F, small LPT model
+[   10.012020] block: attempting to load /tmp/ubifs_cfg/upper/etc/config/fstab
+[   10.021402] block: extroot: not configured
+[   10.027890] UBIFS (ubi0:2): un-mount UBI device 0
+[   10.032594] UBIFS (ubi0:2): background thread "ubifs_bgt0_2" stops
+[   10.040787] UBIFS (ubi0:2): Mounting in unauthenticated mode
+[   10.046488] UBIFS (ubi0:2): background thread "ubifs_bgt0_2" started, PID 1125
+[   10.087598] UBIFS (ubi0:2): UBIFS: mounted UBI device 0, volume 2, name "rootfs_data"
+[   10.095422] UBIFS (ubi0:2): LEB size: 126976 bytes (124 KiB), min./max. I/O unit sizes: 2048 bytes/2048 bytes
+[   10.105323] UBIFS (ubi0:2): FS size: 40886272 bytes (38 MiB, 322 LEBs), journal size 2031616 bytes (1 MiB, 16 LEBs)
+[   10.115743] UBIFS (ubi0:2): reserved for root: 1931159 bytes (1885 KiB)
+[   10.122346] UBIFS (ubi0:2): media format: w5/r0 (latest is w5/r0), UUID 50529498-1275-490B-9B85-4279CA4ED81F, small LPT model
+[   10.135314] mount_root: loading kmods from internal overlay
+[   10.146007] kmodloader: loading kernel modules from /tmp/overlay/upper/etc/modules-boot.d/*
+[   10.155247] kmodloader: done loading kernel modules from /tmp/overlay/upper/etc/modules-boot.d/*
+[   10.678751] block: attempting to load /tmp/ubifs_cfg/upper/etc/config/fstab
+[   10.687622] block: extroot: not configured
+[   10.692862] mount_root: switching to ubifs overlay
+[   10.702667] urandom-seed: Seeding with /etc/urandom.seed
+[   10.745830] procd: - early -
+[   11.279406] procd: - ubus -
+[   11.333484] procd: - init -
+[   11.459534] rtc-pcf8563 3-0051: low voltage detected, date/time is not reliable.
+[   11.743019] urngd: v1.0.2 started.
+[   11.779208] kmodloader: loading kernel modules from /etc/modules.d/*
+[   11.789139] MACsec IEEE 802.1AE
+[   11.797282] RPC: Registered named UNIX socket transport module.
+[   11.803209] RPC: Registered udp transport module.
+[   11.807917] RPC: Registered tcp transport module.
+[   11.812614] RPC: Registered tcp NFSv4.1 backchannel transport module.
+[   11.820649] NET: Registered protocol family 15
+[   11.830013] l2tp_core: L2TP core driver, V2.0
+[   11.834943] l2tp_netlink: L2TP netlink interface
+[   11.840114] gre: GRE over IPv4 demultiplexor driver
+[   11.845743] ip_gre: GRE over IPv4 tunneling driver
+[   11.852708] ip6_gre: GRE over IPv6 tunneling driver
+[   11.882334] Installing knfsd (copyright (C) 1996 okir@monad.swb.de).
+[   11.897317] Loading modules backported from Linux version v5.15.81-0-ge4a7232c917c
+[   11.904889] Backport generated by backports.git v5.15.81-1-0-ge1867d55
+[   11.942081] mt_wifi_cmn: loaded
+[   11.943731] hidraw: raw HID events driver (C) Jiri Kosina
+[   12.739540] mt_wifi: module license 'Proprietary' taints kernel.
+[   12.745566] Disabling lock debugging due to kernel taint
+[   12.775234] WiFi@ERROR.CFG,get_dbg_setting_by_profile() 921: debug level setting=INDEX0_debug_level not found!!
+[   12.785345] WiFi@ERROR.CFG,get_dbg_setting_by_profile() 948: debug option setting=INDEX0_debug_option not found!!
+[   12.795606] physical_device_init!
+[   12.798921] WiFi@ERROR.MLO,bss_mngr_con_init() 3334: inited = 0
+[   12.804841] WiFi@ERROR.MLO,bss_idx_bitmap_init() 89: map_size=12
+[   12.810840] WiFi@ERROR.MLO,mld_grp_bitmap_init() 210: : map_size=12
+[   12.817162] WiFi@ERROR.MLO,bss_mngr_ext_entry_init() 3315: bss(64), grp(65)
+[   12.824119] ser_mngr_init()
+[   12.824206] WiFi@ERROR.MLO,init_sta_mld_link_mgr() 3179: --->
+[   12.832778] WiFi@NOTICE.CFG80211,csi_genl_register() 4027: register CSI genl family(0)!!!
+[   12.844700] mtk_hwifi: module uses symbols from proprietary module mt_wifi, inheriting taint.
+[   12.854625] connac_if: module uses symbols from proprietary module mt_wifi, inheriting taint.
+[   12.863554] mtk_pci: module uses symbols from proprietary module mtk_hwifi, inheriting taint.
+[   12.873011] mtk_wed: module uses symbols from proprietary module mtk_hwifi, inheriting taint.
+[   13.258679] mt7990: module uses symbols from proprietary module mtk_hwifi, inheriting taint.
+[   13.271058] mt7991: module uses symbols from proprietary module mtk_hwifi, inheriting taint.
+[   13.280867] Bluetooth: BNEP (Ethernet Emulation) ver 1.3
+[   13.286182] Bluetooth: BNEP filters: protocol multicast
+[   13.291403] Bluetooth: BNEP socket layer initialized
+[   13.297308] usbcore: registered new interface driver btusb
+[   13.303219] Bluetooth: HIDP (Human Interface Emulation) ver 1.2
+[   13.309137] Bluetooth: HIDP socket layer initialized
+[   13.315962] l2tp_ppp: PPPoL2TP kernel driver, V2.0
+[   13.321481] Current mapfilter version v3.0.1.2
+[   13.326435] --&gt;mtfwd_init(ver:2.0)
+[   13.326457] &lt;--
+[   13.330341] --&gt;mtqos_init(), mtqos ver:1.0
+[   13.332113] &lt;--
+[   13.350489] PPP MPPE Compression module registered
+[   13.355763] PPTP driver version 0.8.5
+[   13.360092] Bluetooth: RFCOMM TTY layer initialized
+[   13.364980] Bluetooth: RFCOMM socket layer initialized
+[   13.370120] Bluetooth: RFCOMM ver 1.11
+[   13.374952] usbcore: registered new interface driver usblp
+[   13.385504] xt_time: kernel timezone is -0000
+[   13.390440] kmodloader: done loading kernel modules from /etc/modules.d/*
+BusyBox v1.33.2 (2024-06-05 06:11:29 UTC) built-in shell (ash)
+</pre>
+</details>
+
+Im Anschluss nutzte ich die folgenden Befehle, um das Bootstrap-Image von [NixOS-SBC](https://github.com/nakato/nixos-sbc) auf die SD-Karte (/dev/sdb) zu schreiben:
+```
+nix buid "github:nakato/nixos-sbc#sdImages.x86_64-linux.sdImage-bananapi-bpir4"
+zstd -d --stdout result/sd-image/nixos-sd-BananaPi-BPiR4-v0.3.raw.zst | sudo dd of=/dev/sdb bs=4M status=progress
+```
+Nach dem Umstellen der DIP-Schalter auf Position 11 startete das Gerät NixOS erfolgreich von der SD-Karte.
+
+<details>
+<summary>Bootlog von NixOS-SBC Bootstrap Image</summary>
+<pre>
+F0: 102B 0000
+FA: 1042 0000
+FA: 1042 0000 [0200]
+F9: 1041 0000
+F3: 1001 0000 [0200]
+F3: 1001 0000
+F6: 380E 5800
+F5: 0000 0000
+V0: 0000 0000 [0001]
+00: 0000 0000
+BP: 0600 0041 [0000]
+G0: 1190 0000
+EC: 0000 0000 [3000]
+MK: 0000 0000 [0000]
+T0: 0000 01E8 [0101]
+Jump to BL
+
+NOTICE:  BL2: v2.12.0(release):
+NOTICE:  BL2: Built : 00:00:00, Jan  1 1980
+NOTICE:  WDT: Cold boot
+NOTICE:  WDT: disabled
+NOTICE:  CPU: MT7988
+NOTICE:  EMI: Using DDR unknown settings
+NOTICE:  EMI: Detected DRAM size: 4096 MB
+NOTICE:  EMI: complex R/W mem test passed
+NOTICE:  LVTS: Enable thermal HW reset
+NOTICE:  BL2: Booting BL31
+NOTICE:  BL31: v2.12.0(release):
+NOTICE:  BL31: Built : 00:00:00, Jan  1 1980
+
+
+U-Boot 2025.01-jrbbvwin03n5g8kb856y2f0ds17r1rl1 (Jan 07 2025 - 00:54:44 +0000)
+
+CPU:   MediaTek MT7988
+Model: mt7988-rfb
+DRAM:  4 GiB
+Core:  44 devices, 17 uclasses, devicetree: separate
+MMC:   mmc@11230000: 0
+Loading Environment from nowhere... OK
+In:    serial@11000000
+Out:   serial@11000000
+Err:   serial@11000000
+Net:   eth0: ethernet@15100000
+Hit any key to stop autoboot:  0
+Scanning for bootflows in all bootdevs
+Seq  Method       State   Uclass    Part  Name                      Filename
+---  -----------  ------  --------  ----  ------------------------  ----------------
+Scanning bootdev 'mmc@11230000.bootdev':
+  0  extlinux     ready   mmc          5  mmc@11230000.bootdev.part /@boot/extlinux/extlinux.conf
+** Booting bootflow 'mmc@11230000.bootdev.part_5' with extlinux
+------------------------------------------------------------
+1:	NixOS - Default
+Enter choice: 1:	NixOS - Default
+Retrieving file: /@boot/extlinux/../nixos/iimd6h6a7xn7mbbhy0j4qm5xgvv2mnyr-linux-aarch64-unknown-linux-gnu-6.12.23-bpi-r4-Image
+Retrieving file: /@boot/extlinux/../nixos/zad07l26xyz6dzhrylhzm87dxj6ac33y-initrd-linux-aarch64-unknown-linux-gnu-6.12.23-bpi-r4-initrd
+append: init=/nix/store/fx8jydxx0cs34p3v3bmqdsgj65w30s8q-nixos-system-bananapi-bpir4-25.11.20250523.063f43f/init console=ttyS0,115200 clk_ignore_unused=1 loglevel=4
+Retrieving file: /@boot/extlinux/../nixos/r2byjy4lyp4klmcilww5mqg00h530vib-device-tree-overlays/mediatek/mt7988a-bananapi-bpi-r4.dtb
+## Flattened Device Tree blob at 87800000
+   Booting using the fdt blob at 0x87800000
+Working FDT set to 87800000
+   Loading Ramdisk to fdd1d000, end fe7fd022 ... OK
+   Loading Device Tree to 00000000fdd10000, end 00000000fdd1c0a1 ... OK
+Working FDT set to fdd10000
+
+Starting kernel ...
+
+[    0.310092] mtk-xsphy soc:xphy@11e10000: failed to get ref_clk(id-1)
+[    0.319351] mtk-socinfo mtk-socinfo.0.auto: error -ENOENT: Failed to get socinfo data
+[    0.319366] mtk-socinfo mtk-socinfo.0.auto: probe with driver mtk-socinfo failed with error -2
+[    0.470879] OF: Bad cell count for /soc/spi@11007000/spi_nand@0/partitions
+[    0.477777] OF: Bad cell count for /soc/spi@11007000/spi_nand@0/partitions
+[    1.832483] mtk-pcie-gen3 11280000.pcie: PCIe link down, current LTSSM state: detect.quiet (0x1)
+[    1.841298] mtk-pcie-gen3 11280000.pcie: probe with driver mtk-pcie-gen3 failed with error -110
+[    2.052476] mtk-pcie-gen3 11290000.pcie: PCIe link down, current LTSSM state: detect.quiet (0x1)
+[    2.061258] mtk-pcie-gen3 11290000.pcie: probe with driver mtk-pcie-gen3 failed with error -110
+[    2.272451] mtk-pcie-gen3 11300000.pcie: PCIe link down, current LTSSM state: detect.quiet (0x1)
+[    2.281231] mtk-pcie-gen3 11300000.pcie: probe with driver mtk-pcie-gen3 failed with error -110
+[    2.492475] mtk-pcie-gen3 11310000.pcie: PCIe link down, current LTSSM state: detect.quiet (0x1)
+[    2.501255] mtk-pcie-gen3 11310000.pcie: probe with driver mtk-pcie-gen3 failed with error -110
+
+<<< NixOS Stage 1 >>>
+
+loading module rfkill...
+loading module cfg80211...
+loading module mii...
+loading module btrfs...
+running udev...
+Starting systemd-udevd version 257.5
+kbd_mode: KDSKBMODE: Inappropriate ioctl for device
+starting device mapper and LVM...
+  /dev/mapper/control: open failed: No such device
+  Failure to communicate with kernel device-mapper driver.
+  Check that device-mapper is available in the kernel.
+  Incompatible libdevmapper 1.02.205 (2025-02-27) and kernel driver (unknown version).
+Scanning for Btrfs filesystems
+registered: /dev/mmcblk0p5
+mounting /dev/disk/by-uuid/18db6211-ac36-42c1-a22f-5e15e1486e0d on /...
+mounting /dev/disk/by-uuid/18db6211-ac36-42c1-a22f-5e15e1486e0d on /nix...
+
+<<< NixOS Stage 2 >>>
+
+running activation script...
+setting up /etc...
+++ /nix/store/l6if8nannz1hdh3g27iy0y8f8lqskggf-util-linux-aarch64-unknown-linux-gnu-2.41-bin/bin/findmnt -n -o SOURCE /
++ rootPart='/dev/disk/by-uuid/18db6211-ac36-42c1-a22f-5e15e1486e0d[/@]'
++ rootPath=/
++ '[' '/dev/disk/by-uuid/18db6211-ac36-42c1-a22f-5e15e1486e0d[/@]' = none ']'
++ rootPart=/dev/disk/by-uuid/18db6211-ac36-42c1-a22f-5e15e1486e0d
+++ lsblk -npo PKNAME /dev/disk/by-uuid/18db6211-ac36-42c1-a22f-5e15e1486e0d
++ rootDevice=/dev/mmcblk0
+++ lsblk -npo PARTN /dev/disk/by-uuid/18db6211-ac36-42c1-a22f-5e15e1486e0d
++ partNum=' 5'
++ echo ,+,
++ sfdisk -N 5 --no-reread /dev/mmcblk0
+GPT PMBR size mismatch (4353122 != 62333951) will be corrected by write.
+The backup GPT table is corrupt, but the primary appears OK, so that will be used.
+The backup GPT table is not on the end of the device. This problem will be corrected by write.
+Disk /dev/mmcblk0: 29.72 GiB, 31914983424 bytes, 62333952 sectors
+Units: sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disklabel type: gpt
+Disk identifier: EB0991EC-9265-4CEF-B7CD-49609EDD18B0
+
+Old situation:
+
+Device         Start     End Sectors  Size Type
+/dev/mmcblk0p1    34    8191    8158    4M Linux filesystem
+/dev/mmcblk0p2  8192    9215    1024  512K Linux filesystem
+/dev/mmcblk0p3  9216   13311    4096    2M Linux filesystem
+/dev/mmcblk0p4 13312   17407    4096    2M Linux filesystem
+/dev/mmcblk0p5 17408 4353023 4335616  2.1G Linux filesystem
+
+/dev/mmcblk0p5:
+New situation:
+Disklabel type: gpt
+Disk identifier: EB0991EC-9265-4CEF-B7CD-49609EDD18B0
+
+Device         Start      End  Sectors  Size Type
+/dev/mmcblk0p1    34     8191     8158    4M Linux filesystem
+/dev/mmcblk0p2  8192     9215     1024  512K Linux filesystem
+/dev/mmcblk0p3  9216    13311     4096    2M Linux filesystem
+/dev/mmcblk0p4 13312    17407     4096    2M Linux filesystem
+/dev/mmcblk0p5 17408 62333918 62316511 29.7G Linux filesystem
+
+The partition table has been altered.
+Calling ioctl() to re-read partition table.
+Re-reading the partition table failed.: Device or resource busy
+The kernel still uses the old table. The new table will be used at the next reboot or after you run partprobe(8) or partx(8).
+Syncing disks.
++ /nix/store/i2nab8py22j0ipa6s5v0jl9ixcprpglp-parted-aarch64-unknown-linux-gnu-3.6/bin/partprobe
++ /nix/store/z84jhi3kaqhwpsdjd31s8gbn29pnd0s3-btrfs-progs-aarch64-unknown-linux-gnu-6.14/bin/btrfs filesystem resize max /
+Resize device id 1 (/dev/disk/by-uuid/18db6211-ac36-42c1-a22f-5e15e1486e0d) from 2.07GiB to max
++ /nix/store/a5v31r6cnz3ykwk0bq8gj1j0zj1rajmw-nix-aarch64-unknown-linux-gnu-2.28.3/bin/nix-store --load-db
++ touch /etc/NIXOS
++ /nix/store/a5v31r6cnz3ykwk0bq8gj1j0zj1rajmw-nix-aarch64-unknown-linux-gnu-2.28.3/bin/nix-env -p /nix/var/nix/profiles/system --set /run/current-system
++ rm -f /nix/nix-path-registration
+starting systemd...
+
+Welcome to NixOS 25.11 (Xantusia)!
+
+[  OK  ] Created slice Slice /system/getty.
+[  OK  ] Created slice Slice /system/modprobe.
+[  OK  ] Created slice Slice /system/serial-getty.
+[  OK  ] Created slice Slice /system/systemd-zram-setup.
+[  OK  ] Created slice User and Session Slice.
+[  OK  ] Started Dispatch Password Requests to Console Directory Watch.
+[  OK  ] Started Forward Password Requests to Wall Directory Watch.
+         Expecting device /dev/disk/by-uuid…6211-ac36-42c1-a22f-5e15e1486e0d...
+         Expecting device /dev/ttyS0...
+         Expecting device /dev/zram0...
+[  OK  ] Reached target Local Encrypted Volumes.
+[  OK  ] Reached target Containers.
+[  OK  ] Reached target Path Units.
+[  OK  ] Reached target Remote File Systems.
+[  OK  ] Reached target Slice Units.
+[  OK  ] Listening on Process Core Dump Socket.
+[  OK  ] Listening on Credential Encryption/Decryption.
+[  OK  ] Listening on Journal Socket (/dev/log).
+[  OK  ] Listening on Journal Sockets.
+[  OK  ] Listening on Userspace Out-Of-Memory (OOM) Killer Socket.
+[  OK  ] Listening on udev Control Socket.
+[  OK  ] Listening on udev Kernel Socket.
+         Mounting POSIX Message Queue File System...
+         Mounting Kernel Debug File System...
+         Mounting Kernel Trace File System...
+         Starting Create List of Static Device Nodes...
+         Starting Load Kernel Module configfs...
+         Starting Load Kernel Module drm...
+         Starting Load Kernel Module efi_pstore...
+         Starting Load Kernel Module fuse...
+         Starting mount-pstore.service...
+         Starting Journal Service...
+         Starting Load Kernel Modules...
+         Starting Userspace Out-Of-Memory (OOM) Killer...
+         Starting Remount Root and Kernel File Systems...
+         Starting Coldplug All udev Devices...
+[  OK  ] Mounted POSIX Message Queue File System.
+[  OK  ] Mounted Kernel Debug File System.
+[  OK  ] Started Journal Service.
+[  OK  ] Started Userspace Out-Of-Memory (OOM) Killer.
+[  OK  ] Mounted Kernel Trace File System.
+[  OK  ] Finished Create List of Static Device Nodes.
+[  OK  ] Finished Load Kernel Module configfs.
+[  OK  ] Finished Load Kernel Module drm.
+[  OK  ] Finished Load Kernel Module efi_pstore.
+[  OK  ] Finished Load Kernel Module fuse.
+[  OK  ] Finished Load Kernel Modules.
+         Mounting FUSE Control File System...
+         Mounting Kernel Configuration File System...
+         Starting Firewall...
+         Starting Apply Kernel Variables...
+         Starting Create Static Device Nodes in /dev gracefully...
+[  OK  ] Finished Remount Root and Kernel File Systems.
+[  OK  ] Mounted FUSE Control File System.
+[  OK  ] Mounted Kernel Configuration File System.
+[  OK  ] Finished Apply Kernel Variables.
+[  OK  ] Finished Create Static Device Nodes in /dev gracefully.
+         Starting Flush Journal to Persistent Storage...
+         Starting Load/Save OS Random Seed...
+         Starting Network Time Synchronization...
+         Starting Create Static Device Nodes in /dev...
+[  OK  ] Finished Coldplug All udev Devices.
+[  OK  ] Finished Load/Save OS Random Seed.
+[  OK  ] Finished Create Static Device Nodes in /dev.
+[  OK  ] Reached target First Boot Complete.
+[  OK  ] Reached target Preparation for Local File Systems.
+         Starting Rule-based Manager for Device Events and Files...
+[  OK  ] Finished Flush Journal to Persistent Storage.
+[  OK  ] Started Rule-based Manager for Device Events and Files.
+[  OK  ] Found device /dev/zram0.
+         Starting Create swap on /dev/zram0...
+[  OK  ] Found device /dev/ttyS0.
+[  OK  ] Started Network Time Synchronization.
+[  OK  ] Finished Create swap on /dev/zram0.
+[  OK  ] Finished Firewall.
+[  OK  ] Finished mount-pstore.service.
+[  OK  ] Listening on Load/Save RF Kill Switch Status /dev/rfkill Watch.
+         Activating swap Compressed Swap on /dev/zram0...
+         Mounting /boot...
+         Starting Virtual Console Setup...
+[  OK  ] Activated swap Compressed Swap on /dev/zram0.
+[  OK  ] Mounted /boot.
+[  OK  ] Reached target Swaps.
+         Mounting /run/wrappers...
+[  OK  ] Mounted /run/wrappers.
+[  OK  ] Reached target Local File Systems.
+[  OK  ] Listening on Boot Entries Service Socket.
+         Starting Create SUID/SGID Wrappers...
+         Starting Save Transient machine-id to Disk...
+         Starting Create System Files and Directories...
+[  OK  ] Finished Create System Files and Directories.
+         Starting Rebuild Journal Catalog...
+         Starting Record System Boot/Shutdown in UTMP...
+[  OK  ] Finished Record System Boot/Shutdown in UTMP.
+[  OK  ] Finished Virtual Console Setup.
+[  OK  ] Finished Rebuild Journal Catalog.
+         Starting Update is Completed...
+[  OK  ] Finished Update is Completed.
+[  OK  ] Finished Create SUID/SGID Wrappers.
+[  OK  ] Reached target System Initialization.
+[  OK  ] Started Discard unused filesystem blocks once a week.
+[  OK  ] Started logrotate.timer.
+[  OK  ] Started Daily Cleanup of Temporary Directories.
+[  OK  ] Reached target Timer Units.
+[  OK  ] Listening on D-Bus System Message Bus Socket.
+[  OK  ] Listening on Nix Daemon Socket.
+[  OK  ] Listening on OpenSSH Server Socket…temd-ssh-generator, AF_UNIX Local).
+[  OK  ] Listening on Hostname Service Socket.
+[  OK  ] Reached target Socket Units.
+[  OK  ] Reached target Basic System.
+         Starting Logrotate configuration check...
+         Starting Name Service Cache Daemon (nsncd)...
+[  OK  ] Started Reset console on configuration changes.
+         Starting resolvconf update...
+         Starting SSH Host Keys Generation...
+[  OK  ] Finished Save Transient machine-id to Disk.
+[  OK  ] Started Name Service Cache Daemon (nsncd).
+[  OK  ] Finished Logrotate configuration check.
+[  OK  ] Reached target Host and Network Name Lookups.
+[  OK  ] Reached target User and Group Name Lookups.
+         Starting D-Bus System Message Bus...
+         Starting User Login Management...
+[  OK  ] Stopped target Host and Network Name Lookups.
+         Stopping Host and Network Name Lookups...
+[  OK  ] Stopped target User and Group Name Lookups.
+         Stopping User and Group Name Lookups...
+         Stopping Name Service Cache Daemon (nsncd)...
+[  OK  ] Stopped Name Service Cache Daemon (nsncd).
+[  OK  ] Started User Login Management.
+[  OK  ] Started D-Bus System Message Bus.
+         Starting Name Service Cache Daemon (nsncd)...
+[  OK  ] Finished resolvconf update.
+[  OK  ] Started Name Service Cache Daemon (nsncd).
+[  OK  ] Reached target Preparation for Network.
+[  OK  ] Reached target Host and Network Name Lookups.
+[  OK  ] Reached target User and Group Name Lookups.
+         Starting DHCP Client...
+         Starting Networking Setup...
+[  OK  ] Finished Networking Setup.
+[  OK  ] Reached target Network.
+         Starting Permit User Sessions...
+[  OK  ] Finished Permit User Sessions.
+[  OK  ] Started Getty on tty1.
+[  OK  ] Started Serial Getty on ttyS0.
+[  OK  ] Reached target Login Prompts.
+
+
+<<< Welcome to NixOS 25.11.20250523.063f43f (aarch64) - ttyS0 >>>
+</pre>
+</details>
+
+Danach meldete ich mich mit den Initial-Zugangsdaten (Benutzername: `root`, Passwort: `SBCDefaultBootstrapPassword`, siehe [nixos-sbc: modules/sbc/bootstrap/initial.nix](https://github.com/nakato/nixos-sbc/blob/3d2d136a3b1ed47769ba5180b4d9ebe4ea7ab0fd/modules/sbc/bootstrap/initial.nix#L29C21-L29C48)) an und überprüfte das System.
+
+Dabei fiel auf, dass lediglich 4 GB Arbeitsspeicher erkannt wurden.
+
+Fortsetzung folgt ...
