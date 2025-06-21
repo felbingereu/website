@@ -27,6 +27,10 @@
 
 * **[KeePassDX](https://www.keepassdx.com/)** is an open source password manager for android that supports databases in the kdbx format. ([Google Play](https://play.google.com/store/apps/details?id=com.kunzisoft.keepass.free), [F-Droid](https://www.f-droid.org/packages/com.kunzisoft.keepass.libre/))
 
+* **[NFC Tools](https://getapp.nfctools.wakdev.com/)** (closed source)
+
+* **[nRF Connect](https://github.com/NordicSemiconductor/Android-nRF-Connect)** (closed source) for bluetooth stuff
+
 ## IT-Security
 ### Reverse Engineering
 * Free IDA (hexrays)
