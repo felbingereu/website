@@ -1,0 +1,309 @@
+F0: 102B 0000
+FA: 1042 0000
+FA: 1042 0000 [0200]
+F9: 1041 0000
+F3: 1001 0000 [0200]
+F3: 1001 0000
+F6: 380E 5800
+F5: 0000 0000
+V0: 0000 0000 [0001]
+00: 0000 0000
+BP: 0600 0041 [0000]
+G0: 1190 0000
+EC: 0000 0000 [3000]
+MK: 0000 0000 [0000]
+T0: 0000 01E8 [0101]
+Jump to BL
+
+NOTICE:  BL2: v2.12.0(release):
+NOTICE:  BL2: Built : 00:00:00, Jan  1 1980
+NOTICE:  WDT: Cold boot
+NOTICE:  WDT: disabled
+NOTICE:  CPU: MT7988
+NOTICE:  EMI: Using DDR unknown settings
+NOTICE:  EMI: Detected DRAM size: 4096 MB
+NOTICE:  EMI: complex R/W mem test passed
+NOTICE:  LVTS: Enable thermal HW reset
+NOTICE:  BL2: Booting BL31
+NOTICE:  BL31: v2.12.0(release):
+NOTICE:  BL31: Built : 00:00:00, Jan  1 1980
+
+
+U-Boot 2025.01-jrbbvwin03n5g8kb856y2f0ds17r1rl1 (Jan 07 2025 - 00:54:44 +0000)
+
+CPU:   MediaTek MT7988
+Model: mt7988-rfb
+DRAM:  4 GiB
+Core:  44 devices, 17 uclasses, devicetree: separate
+MMC:   mmc@11230000: 0
+Loading Environment from nowhere... OK
+In:    serial@11000000
+Out:   serial@11000000
+Err:   serial@11000000
+Net:   eth0: ethernet@15100000
+Hit any key to stop autoboot:  0
+Scanning for bootflows in all bootdevs
+Seq  Method       State   Uclass    Part  Name                      Filename
+---  -----------  ------  --------  ----  ------------------------  ----------------
+Scanning bootdev 'mmc@11230000.bootdev':
+  0  extlinux     ready   mmc          5  mmc@11230000.bootdev.part /@boot/extlinux/extlinux.conf
+** Booting bootflow 'mmc@11230000.bootdev.part_5' with extlinux
+------------------------------------------------------------
+1:	NixOS - Default
+Enter choice: 1:	NixOS - Default
+Retrieving file: /@boot/extlinux/../nixos/iimd6h6a7xn7mbbhy0j4qm5xgvv2mnyr-linux-aarch64-unknown-linux-gnu-6.12.23-bpi-r4-Image
+Retrieving file: /@boot/extlinux/../nixos/zad07l26xyz6dzhrylhzm87dxj6ac33y-initrd-linux-aarch64-unknown-linux-gnu-6.12.23-bpi-r4-initrd
+append: init=/nix/store/fx8jydxx0cs34p3v3bmqdsgj65w30s8q-nixos-system-bananapi-bpir4-25.11.20250523.063f43f/init console=ttyS0,115200 clk_ignore_unused=1 loglevel=4
+Retrieving file: /@boot/extlinux/../nixos/r2byjy4lyp4klmcilww5mqg00h530vib-device-tree-overlays/mediatek/mt7988a-bananapi-bpi-r4.dtb
+## Flattened Device Tree blob at 87800000
+   Booting using the fdt blob at 0x87800000
+Working FDT set to 87800000
+   Loading Ramdisk to fdd1d000, end fe7fd022 ... OK
+   Loading Device Tree to 00000000fdd10000, end 00000000fdd1c0a1 ... OK
+Working FDT set to fdd10000
+
+Starting kernel ...
+
+[    0.310092] mtk-xsphy soc:xphy@11e10000: failed to get ref_clk(id-1)
+[    0.319351] mtk-socinfo mtk-socinfo.0.auto: error -ENOENT: Failed to get socinfo data
+[    0.319366] mtk-socinfo mtk-socinfo.0.auto: probe with driver mtk-socinfo failed with error -2
+[    0.470879] OF: Bad cell count for /soc/spi@11007000/spi_nand@0/partitions
+[    0.477777] OF: Bad cell count for /soc/spi@11007000/spi_nand@0/partitions
+[    1.832483] mtk-pcie-gen3 11280000.pcie: PCIe link down, current LTSSM state: detect.quiet (0x1)
+[    1.841298] mtk-pcie-gen3 11280000.pcie: probe with driver mtk-pcie-gen3 failed with error -110
+[    2.052476] mtk-pcie-gen3 11290000.pcie: PCIe link down, current LTSSM state: detect.quiet (0x1)
+[    2.061258] mtk-pcie-gen3 11290000.pcie: probe with driver mtk-pcie-gen3 failed with error -110
+[    2.272451] mtk-pcie-gen3 11300000.pcie: PCIe link down, current LTSSM state: detect.quiet (0x1)
+[    2.281231] mtk-pcie-gen3 11300000.pcie: probe with driver mtk-pcie-gen3 failed with error -110
+[    2.492475] mtk-pcie-gen3 11310000.pcie: PCIe link down, current LTSSM state: detect.quiet (0x1)
+[    2.501255] mtk-pcie-gen3 11310000.pcie: probe with driver mtk-pcie-gen3 failed with error -110
+
+<<< NixOS Stage 1 >>>
+
+loading module rfkill...
+loading module cfg80211...
+loading module mii...
+loading module btrfs...
+running udev...
+Starting systemd-udevd version 257.5
+kbd_mode: KDSKBMODE: Inappropriate ioctl for device
+starting device mapper and LVM...
+  /dev/mapper/control: open failed: No such device
+  Failure to communicate with kernel device-mapper driver.
+  Check that device-mapper is available in the kernel.
+  Incompatible libdevmapper 1.02.205 (2025-02-27) and kernel driver (unknown version).
+Scanning for Btrfs filesystems
+registered: /dev/mmcblk0p5
+mounting /dev/disk/by-uuid/18db6211-ac36-42c1-a22f-5e15e1486e0d on /...
+mounting /dev/disk/by-uuid/18db6211-ac36-42c1-a22f-5e15e1486e0d on /nix...
+
+<<< NixOS Stage 2 >>>
+
+running activation script...
+setting up /etc...
+++ /nix/store/l6if8nannz1hdh3g27iy0y8f8lqskggf-util-linux-aarch64-unknown-linux-gnu-2.41-bin/bin/findmnt -n -o SOURCE /
++ rootPart='/dev/disk/by-uuid/18db6211-ac36-42c1-a22f-5e15e1486e0d[/@]'
++ rootPath=/
++ '[' '/dev/disk/by-uuid/18db6211-ac36-42c1-a22f-5e15e1486e0d[/@]' = none ']'
++ rootPart=/dev/disk/by-uuid/18db6211-ac36-42c1-a22f-5e15e1486e0d
+++ lsblk -npo PKNAME /dev/disk/by-uuid/18db6211-ac36-42c1-a22f-5e15e1486e0d
++ rootDevice=/dev/mmcblk0
+++ lsblk -npo PARTN /dev/disk/by-uuid/18db6211-ac36-42c1-a22f-5e15e1486e0d
++ partNum=' 5'
++ echo ,+,
++ sfdisk -N 5 --no-reread /dev/mmcblk0
+GPT PMBR size mismatch (4353122 != 62333951) will be corrected by write.
+The backup GPT table is corrupt, but the primary appears OK, so that will be used.
+The backup GPT table is not on the end of the device. This problem will be corrected by write.
+Disk /dev/mmcblk0: 29.72 GiB, 31914983424 bytes, 62333952 sectors
+Units: sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disklabel type: gpt
+Disk identifier: EB0991EC-9265-4CEF-B7CD-49609EDD18B0
+
+Old situation:
+
+Device         Start     End Sectors  Size Type
+/dev/mmcblk0p1    34    8191    8158    4M Linux filesystem
+/dev/mmcblk0p2  8192    9215    1024  512K Linux filesystem
+/dev/mmcblk0p3  9216   13311    4096    2M Linux filesystem
+/dev/mmcblk0p4 13312   17407    4096    2M Linux filesystem
+/dev/mmcblk0p5 17408 4353023 4335616  2.1G Linux filesystem
+
+/dev/mmcblk0p5:
+New situation:
+Disklabel type: gpt
+Disk identifier: EB0991EC-9265-4CEF-B7CD-49609EDD18B0
+
+Device         Start      End  Sectors  Size Type
+/dev/mmcblk0p1    34     8191     8158    4M Linux filesystem
+/dev/mmcblk0p2  8192     9215     1024  512K Linux filesystem
+/dev/mmcblk0p3  9216    13311     4096    2M Linux filesystem
+/dev/mmcblk0p4 13312    17407     4096    2M Linux filesystem
+/dev/mmcblk0p5 17408 62333918 62316511 29.7G Linux filesystem
+
+The partition table has been altered.
+Calling ioctl() to re-read partition table.
+Re-reading the partition table failed.: Device or resource busy
+The kernel still uses the old table. The new table will be used at the next reboot or after you run partprobe(8) or partx(8).
+Syncing disks.
++ /nix/store/i2nab8py22j0ipa6s5v0jl9ixcprpglp-parted-aarch64-unknown-linux-gnu-3.6/bin/partprobe
++ /nix/store/z84jhi3kaqhwpsdjd31s8gbn29pnd0s3-btrfs-progs-aarch64-unknown-linux-gnu-6.14/bin/btrfs filesystem resize max /
+Resize device id 1 (/dev/disk/by-uuid/18db6211-ac36-42c1-a22f-5e15e1486e0d) from 2.07GiB to max
++ /nix/store/a5v31r6cnz3ykwk0bq8gj1j0zj1rajmw-nix-aarch64-unknown-linux-gnu-2.28.3/bin/nix-store --load-db
++ touch /etc/NIXOS
++ /nix/store/a5v31r6cnz3ykwk0bq8gj1j0zj1rajmw-nix-aarch64-unknown-linux-gnu-2.28.3/bin/nix-env -p /nix/var/nix/profiles/system --set /run/current-system
++ rm -f /nix/nix-path-registration
+starting systemd...
+
+Welcome to NixOS 25.11 (Xantusia)!
+
+[  OK  ] Created slice Slice /system/getty.
+[  OK  ] Created slice Slice /system/modprobe.
+[  OK  ] Created slice Slice /system/serial-getty.
+[  OK  ] Created slice Slice /system/systemd-zram-setup.
+[  OK  ] Created slice User and Session Slice.
+[  OK  ] Started Dispatch Password Requests to Console Directory Watch.
+[  OK  ] Started Forward Password Requests to Wall Directory Watch.
+         Expecting device /dev/disk/by-uuid…6211-ac36-42c1-a22f-5e15e1486e0d...
+         Expecting device /dev/ttyS0...
+         Expecting device /dev/zram0...
+[  OK  ] Reached target Local Encrypted Volumes.
+[  OK  ] Reached target Containers.
+[  OK  ] Reached target Path Units.
+[  OK  ] Reached target Remote File Systems.
+[  OK  ] Reached target Slice Units.
+[  OK  ] Listening on Process Core Dump Socket.
+[  OK  ] Listening on Credential Encryption/Decryption.
+[  OK  ] Listening on Journal Socket (/dev/log).
+[  OK  ] Listening on Journal Sockets.
+[  OK  ] Listening on Userspace Out-Of-Memory (OOM) Killer Socket.
+[  OK  ] Listening on udev Control Socket.
+[  OK  ] Listening on udev Kernel Socket.
+         Mounting POSIX Message Queue File System...
+         Mounting Kernel Debug File System...
+         Mounting Kernel Trace File System...
+         Starting Create List of Static Device Nodes...
+         Starting Load Kernel Module configfs...
+         Starting Load Kernel Module drm...
+         Starting Load Kernel Module efi_pstore...
+         Starting Load Kernel Module fuse...
+         Starting mount-pstore.service...
+         Starting Journal Service...
+         Starting Load Kernel Modules...
+         Starting Userspace Out-Of-Memory (OOM) Killer...
+         Starting Remount Root and Kernel File Systems...
+         Starting Coldplug All udev Devices...
+[  OK  ] Mounted POSIX Message Queue File System.
+[  OK  ] Mounted Kernel Debug File System.
+[  OK  ] Started Journal Service.
+[  OK  ] Started Userspace Out-Of-Memory (OOM) Killer.
+[  OK  ] Mounted Kernel Trace File System.
+[  OK  ] Finished Create List of Static Device Nodes.
+[  OK  ] Finished Load Kernel Module configfs.
+[  OK  ] Finished Load Kernel Module drm.
+[  OK  ] Finished Load Kernel Module efi_pstore.
+[  OK  ] Finished Load Kernel Module fuse.
+[  OK  ] Finished Load Kernel Modules.
+         Mounting FUSE Control File System...
+         Mounting Kernel Configuration File System...
+         Starting Firewall...
+         Starting Apply Kernel Variables...
+         Starting Create Static Device Nodes in /dev gracefully...
+[  OK  ] Finished Remount Root and Kernel File Systems.
+[  OK  ] Mounted FUSE Control File System.
+[  OK  ] Mounted Kernel Configuration File System.
+[  OK  ] Finished Apply Kernel Variables.
+[  OK  ] Finished Create Static Device Nodes in /dev gracefully.
+         Starting Flush Journal to Persistent Storage...
+         Starting Load/Save OS Random Seed...
+         Starting Network Time Synchronization...
+         Starting Create Static Device Nodes in /dev...
+[  OK  ] Finished Coldplug All udev Devices.
+[  OK  ] Finished Load/Save OS Random Seed.
+[  OK  ] Finished Create Static Device Nodes in /dev.
+[  OK  ] Reached target First Boot Complete.
+[  OK  ] Reached target Preparation for Local File Systems.
+         Starting Rule-based Manager for Device Events and Files...
+[  OK  ] Finished Flush Journal to Persistent Storage.
+[  OK  ] Started Rule-based Manager for Device Events and Files.
+[  OK  ] Found device /dev/zram0.
+         Starting Create swap on /dev/zram0...
+[  OK  ] Found device /dev/ttyS0.
+[  OK  ] Started Network Time Synchronization.
+[  OK  ] Finished Create swap on /dev/zram0.
+[  OK  ] Finished Firewall.
+[  OK  ] Finished mount-pstore.service.
+[  OK  ] Listening on Load/Save RF Kill Switch Status /dev/rfkill Watch.
+         Activating swap Compressed Swap on /dev/zram0...
+         Mounting /boot...
+         Starting Virtual Console Setup...
+[  OK  ] Activated swap Compressed Swap on /dev/zram0.
+[  OK  ] Mounted /boot.
+[  OK  ] Reached target Swaps.
+         Mounting /run/wrappers...
+[  OK  ] Mounted /run/wrappers.
+[  OK  ] Reached target Local File Systems.
+[  OK  ] Listening on Boot Entries Service Socket.
+         Starting Create SUID/SGID Wrappers...
+         Starting Save Transient machine-id to Disk...
+         Starting Create System Files and Directories...
+[  OK  ] Finished Create System Files and Directories.
+         Starting Rebuild Journal Catalog...
+         Starting Record System Boot/Shutdown in UTMP...
+[  OK  ] Finished Record System Boot/Shutdown in UTMP.
+[  OK  ] Finished Virtual Console Setup.
+[  OK  ] Finished Rebuild Journal Catalog.
+         Starting Update is Completed...
+[  OK  ] Finished Update is Completed.
+[  OK  ] Finished Create SUID/SGID Wrappers.
+[  OK  ] Reached target System Initialization.
+[  OK  ] Started Discard unused filesystem blocks once a week.
+[  OK  ] Started logrotate.timer.
+[  OK  ] Started Daily Cleanup of Temporary Directories.
+[  OK  ] Reached target Timer Units.
+[  OK  ] Listening on D-Bus System Message Bus Socket.
+[  OK  ] Listening on Nix Daemon Socket.
+[  OK  ] Listening on OpenSSH Server Socket…temd-ssh-generator, AF_UNIX Local).
+[  OK  ] Listening on Hostname Service Socket.
+[  OK  ] Reached target Socket Units.
+[  OK  ] Reached target Basic System.
+         Starting Logrotate configuration check...
+         Starting Name Service Cache Daemon (nsncd)...
+[  OK  ] Started Reset console on configuration changes.
+         Starting resolvconf update...
+         Starting SSH Host Keys Generation...
+[  OK  ] Finished Save Transient machine-id to Disk.
+[  OK  ] Started Name Service Cache Daemon (nsncd).
+[  OK  ] Finished Logrotate configuration check.
+[  OK  ] Reached target Host and Network Name Lookups.
+[  OK  ] Reached target User and Group Name Lookups.
+         Starting D-Bus System Message Bus...
+         Starting User Login Management...
+[  OK  ] Stopped target Host and Network Name Lookups.
+         Stopping Host and Network Name Lookups...
+[  OK  ] Stopped target User and Group Name Lookups.
+         Stopping User and Group Name Lookups...
+         Stopping Name Service Cache Daemon (nsncd)...
+[  OK  ] Stopped Name Service Cache Daemon (nsncd).
+[  OK  ] Started User Login Management.
+[  OK  ] Started D-Bus System Message Bus.
+         Starting Name Service Cache Daemon (nsncd)...
+[  OK  ] Finished resolvconf update.
+[  OK  ] Started Name Service Cache Daemon (nsncd).
+[  OK  ] Reached target Preparation for Network.
+[  OK  ] Reached target Host and Network Name Lookups.
+[  OK  ] Reached target User and Group Name Lookups.
+         Starting DHCP Client...
+         Starting Networking Setup...
+[  OK  ] Finished Networking Setup.
+[  OK  ] Reached target Network.
+         Starting Permit User Sessions...
+[  OK  ] Finished Permit User Sessions.
+[  OK  ] Started Getty on tty1.
+[  OK  ] Started Serial Getty on ttyS0.
+[  OK  ] Reached target Login Prompts.
+
+
+<<< Welcome to NixOS 25.11.20250523.063f43f (aarch64) - ttyS0 >>>
