@@ -209,7 +209,7 @@ Dazu wurde die unten stehende C-Funktion in der Datei `~dayzserver/serverfiles/m
     knife = boots.GetInventory().CreateInInventory("CombatKnife");
     player.SetQuickBarEntityShortcut(knife, 3); // Add to quick bar
 
-    // Tactial Helmet with NVG and Flashlight
+    // Tactial helmet with nvg and flashlight
     //EntityAI helmet, helmetAttachment;
     //helmet = player.GetInventory().CreateInInventory("Mich2001Helmet");
     //helmetAttachment = helmet.GetInventory().CreateAttachment("UniversalLight");
@@ -217,7 +217,7 @@ Dazu wurde die unten stehende C-Funktion in der Datei `~dayzserver/serverfiles/m
     //helmetAttachment = helmet.GetInventory().CreateAttachment("NVGoggles");
     //helmetAttachment.GetInventory().CreateAttachment("Battery9V");
 
-    // Belt with Knife and fully equiped Pistol
+    // Belt with knife and fully equipped pistol
     EntityAI belt, beltHolster, beltPistol, beltPistolAttachment;
     belt = player.GetInventory().CreateInInventory("MilitaryBelt");
     belt.GetInventory().CreateInInventory("Canteen");
@@ -235,7 +235,7 @@ Dazu wurde die unten stehende C-Funktion in der Datei `~dayzserver/serverfiles/m
     player.GetInventory().CreateInInventory("Mag_Glock_15Rnd");
     player.GetInventory().CreateInInventory("Ammo_9x19");
 
-    // Plate Carrier
+    // Plate carrier
     //EntityAI vest, pouches, vestHolster, vestPistol;
     //vest = player.GetInventory().CreateInInventory("PlateCarrierVest");
     //vestHolster = vest.GetInventory().CreateAttachment("PlateCarrierHolster");
