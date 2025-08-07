@@ -75,6 +75,84 @@ ist der Aufruf der tmux-Session mit der Serverkonsole über den Befehl
 Abschließend wurde Versucht dem DayZ Server über den DayZ Launcher
 (Servers -> Direct Connection) beizutreten, was erfolgreich war.
 
+## Spawn-Loadout
+Die erste Anpassung wurde in `~dayzserver/serverfiles/mpmission/dayzOffline.chernarusplus/init.c`
+durchgeführt und betraf das Loadout von neuen Spielern, die Classnames können im Internet gefunden
+werden (z.B. [hier](https://github.com/CypherMediaGIT/DayZClassNames2020/blob/master/classname2020)):
+```c
+	override void StartingEquipSetup(PlayerBase player, bool clothesChosen)
+	{
+    player.RemoveAllItems();
+
+    // Military Uniform and Boots
+		EntityAI boots, knife;
+		player.GetInventory().CreateInInventory("TTsKOJacket_Camo");
+		player.GetInventory().CreateInInventory("TTSKOPants");
+		player.GetInventory().CreateInInventory("TacticalGloves_Green");
+		boots = player.GetInventory().CreateInInventory("MilitaryBoots_Brown");
+    knife = boots.GetInventory().CreateInInventory("CombatKnife");
+		player.SetQuickBarEntityShortcut(knife, 3); // Add to quick bar
+
+    // Tactial Helmet with NVG and Flashlight
+		//EntityAI helmet, helmetAttachment;
+		//helmet = player.GetInventory().CreateInInventory("Mich2001Helmet");
+		//helmetAttachment = helmet.GetInventory().CreateAttachment("UniversalLight");
+    //helmetAttachment.GetInventory().CreateAttachment("Battery9V");
+		//helmetAttachment = helmet.GetInventory().CreateAttachment("NVGoggles");
+    //helmetAttachment.GetInventory().CreateAttachment("Battery9V");
+
+		// Belt with Knife and fully equiped Pistol
+		EntityAI belt, beltHolster, beltPistol, beltPistolAttachment;
+    belt = player.GetInventory().CreateInInventory("MilitaryBelt");
+		belt.GetInventory().CreateInInventory("Canteen");
+		//beltHolster = belt.GetInventory().CreateInInventory("NylonKnifeSheath");
+		//beltHolster.GetInventory().CreateInInventory("CombatKnife");
+		beltHolster = belt.GetInventory().CreateInInventory("PlateCarrierHolster");
+		beltPistol = beltHolster.GetInventory().CreateInInventory("Glock19");
+		player.SetQuickBarEntityShortcut(beltPistol, 1); // Add to quick bar
+    beltPistol.GetInventory().CreateAttachment("Mag_Glock_15Rnd");
+    //beltPistol.GetInventory().CreateAttachment("PistolSuppressor");
+    //beltPistolAttachment = beltPistolAttachment.GetInventory().CreateAttachment("FNP45_MRDSOptic");
+    //beltPistolAttachment.GetInventory().CreateAttachment("Battery9V");
+    //beltPistolAttachment = beltPistolAttachment.GetInventory().CreateAttachment("TLRLight");
+    //beltPistolAttachment.GetInventory().CreateAttachment("Battery9V");
+    player.GetInventory().CreateInInventory("Mag_Glock_15Rnd");
+    player.GetInventory().CreateInInventory("Ammo_9x19");
+
+    // Plate Carrier
+    //EntityAI vest, pouches, vestHolster, vestPistol;
+		//vest = player.GetInventory().CreateInInventory("PlateCarrierVest");
+		//vestHolster = vest.GetInventory().CreateAttachment("PlateCarrierHolster");
+    //vestPistol = vestHolster.GetInventory().CreateInInventory("Magnum");
+		//player.SetQuickBarEntityShortcut(vestPistol, 2); // Add to quick bar
+		//pouches = vest.GetInventory().CreateAttachment("PlateCarrierPouches");
+		//pouches.GetInventory().CreateInInventory("Ammo_357");
+
+		player.GetInventory().CreateInInventory("BandageDressing");
+		player.GetInventory().CreateInInventory("BandageDressing");
+
+		EntityAI itemEnt;
+		string chemlightArray[] = {
+      "Chemlight_White",
+      "Chemlight_Yellow",
+      "Chemlight_Green",
+      "Chemlight_Red"
+    };
+		int rndIndex = Math.RandomInt( 0, 4 );
+		itemEnt = player.GetInventory().CreateInInventory( chemlightArray[rndIndex] );
+		SetRandomHealth( itemEnt );
+
+		float rand = Math.RandomFloatInclusive( 0.0, 1.0 );
+		if ( rand < 0.35 )
+			itemEnt = player.GetInventory().CreateInInventory( "Apple" );
+		else if ( rand > 0.65 )
+			itemEnt = player.GetInventory().CreateInInventory( "Pear" );
+		else
+			itemEnt = player.GetInventory().CreateInInventory( "Plum" );
+		SetRandomHealth( itemEnt );
+	}
+```
+
 ## Mods
 ### CF & VPPAdminTools
 Im nächsten Schritt mussten die benötigten Mods auf dem Server installiert werden.
@@ -137,6 +215,3 @@ allerdings nicht im Server Profil generiert.
 
 ### DeerIsle
 <!-- TODO: DeerIsle hinzufügen -->
-
-## Anpassung des Spawn-Loadouts
-<!-- TODO: mpmisions initialconfiguration anpassen (classnames) -->
