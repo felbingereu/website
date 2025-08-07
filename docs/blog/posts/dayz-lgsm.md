@@ -123,8 +123,8 @@ drwxr-xr-x 1 dayzserver dayzserver       50 Aug  6 19:32 @VPPAdminTools    # <--
 Anschließend mussten die Signaturdateien (BIKeys) der verwendeten Mods in das Serververzeichnis kopiert werden.
 Nur so erkennt der Server die Mods als gültig und erlaubt es den Clients, sich mit aktivierten Mods zu verbinden.
 ```sh
-# cp ~dayzserver/serverfiles/@CF/keys/Jacob_Mango_V3.bikey ~dayzserver/serverfiles/keys/
-# cp ~dayzserver/serverfiles/@VPPAdminTools/keys/VPP.bikey ~dayzserver/serverfiles/keys/
+cp ~dayzserver/serverfiles/@CF/keys/Jacob_Mango_V3.bikey ~dayzserver/serverfiles/keys/
+cp ~dayzserver/serverfiles/@VPPAdminTools/keys/VPP.bikey ~dayzserver/serverfiles/keys/
 ```
 
 Zuletzt wurden die Mods dauerhaft in die Serverkonfiguration eingebunden. Dafür ergänzte ich zunächst die
