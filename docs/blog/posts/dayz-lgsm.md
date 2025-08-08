@@ -14,7 +14,7 @@ TODO:
 
 Ein Bekannter bat mich kürzlich, einen DayZ-Server mit dem VPP-Admin-Tool und DeerIsle aufzusetzen.
 Für das Hosting entschied ich mich für einen vServer mit Debian 12 als Basis. Die Installation und
-Verwaltung des Servers erledigte ich bequem mit dem Tool [Linux Game Server Managers (LGSM)]([Linux Game Server Managers (LGSM)](https://linuxgsm.com/)),
+Verwaltung des Servers erledigte ich bequem mit dem Tool [Linux Game Server Managers (LGSM)](https://linuxgsm.com/),
 das speziell für dedizierte Game-Server unter Linux entwickelt wurde.
 
 <!-- more -->
@@ -31,6 +31,7 @@ die offiziellen Missionen. Dieses Verhalten wurde bereits in [Issue #4601](https
 bei LGSM dokumentiert.
 
 Zur Lösung dieses Problems gibt es zwei Ansätze:
+
 1. Die fehlenden Missionen manuell über das offizielle
    [GitHub-Repository von Bohemia Interactive](https://github.com/BohemiaInteractive/DayZ-Central-Economy) nachladen.
 2. Einen Steam-Account verwenden, der DayZ besitzt – wie es ein
@@ -155,6 +156,7 @@ sed -i '/mods.*/d' ~dayzserver/lgsm/config-lgsm/dayzserver/dayzserver.cfg
 Nachdem ich mit `mkdir ~dayzserver/serverfiles/profiles` das Verzeichnis erstellt hatte und den Server neu
 startete, wurden die Konfigurationsdateien für das VPP-Admin-Tool wie erwartet generiert. Um einen Spieler
 als Administrator einzutragen, wird dessen SteamID64 benötigt. Diese lässt sich auf zwei Wegen ermitteln:
+
 1. Während der Spieler dem Server beitritt, erscheint seine Steam-ID im Server-Log.
 2. Alternativ kann die ID über [steamidfinder.com](https://www.steamidfinder.com/) aus dem Steam-Benutzernamen
    oder der Profil-URL ermittelt werden. Die benötigte ID steht im Feld steamID64.
