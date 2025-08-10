@@ -1,13 +1,13 @@
 ---
 date:
   created: 2025-05-31
-  updated: 2025-08-03
+  updated: 2025-08-10
 authors:
 - nicof2000
 categories:
 - NixOS
 - Networking
-readtime: 8
+readtime: 10
 ---
 
 # NixOS Router: Banana PI R4
@@ -34,6 +34,8 @@ oder 5G-Module sowie vielseitigen GPIO-Pins ist der BPI-R4 äußerst flexibel un
 - Monitoring: SNMPd/LLDP/Prometheus Exporter
 - Telefonanlage: Asterisk
 - Zigbee2MQTT Gateway
+- Radius für 802.1X (LAN) ?
+- hostapd für Wireless AP ?
 -->
 
 Der Banana Pi R4 soll in meinem Heimnetz nicht nur die klassische Rolle eines Routers
@@ -175,9 +177,52 @@ Somit ist ein Update dieses Repositories in NixOS SBC nötig. Zusammengefasst li
 ```
 
 
+<!--
 #### Linux Kernel: 6.12 -> 6.16
 tbd
-<!-- k900 nutzt 6.16 mit weiteren modifikationen und eigenem u-boot -->
+<!-- k900 nutzt 6.16 mit weiteren modifikationen und eigenem u-boot - ->
+Vielleicht will man das aber auch gar nicht, weil LTS kernel?
+-->
+
+#### Wireguard
+Erst während des Einrichtungsprozesses stellte sich heraus, dass keine Wireguard-Interfaces erzeugt
+werden konnten, da das entsprechende Kernel-Modul nicht gefunden wurde. Dieses Problem lässt sich
+jedoch beheben, indem man die `structuredExtraConfig` anpasst und Wireguard als Kernelmodul hinzufügt:
+```diff
+--- a/pkgs/bananaPiR4/default.nix
++++ b/pkgs/bananaPiR4/default.nix
+@@ -253,6 +253,30 @@
+
+       XFRM_USER = module;
+       NFT_XFRM = module;
++
++      ## WireGuard support ##
++      WIREGUARD = module;
++      WIREGUARD_DEBUG = no;
++
++      # Network dependencies
++      NET = yes;
++      INET = yes;
++      NET_UDP_TUNNEL = module;
++      NET_FOU = module;
++
++      # Crypto dependencies
++      CRYPTO = yes;
++      CRYPTO_BLKCIPHER = yes;
++      CRYPTO_BLAKE2S = module;
++      CRYPTO_CHACHA20 = module;
++      CRYPTO_CHACHA20_NEON = module;
++      CRYPTO_CURVE25519 = module;
++      CRYPTO_CURVE25519_NEON = module;
++      CRYPTO_CHACHA20POLY1305 = module;
++      CRYPTO_LIB_CHACHA20 = module;
++      CRYPTO_LIB_POLY1305 = module;
++      CRYPTO_LIB_CURVE25519 = module;
++      CRYPTO_LIB_CHACHA20POLY1305 = module;
+     };
+ 
+     argsOverride = {
+```
 
 #### WiFi Modul
 tbd
@@ -188,34 +233,100 @@ Nachdem die vorerst notwendigen Modifikationen am System durchgeführt werden,
 kann dieses genutzt werden. Dafür werden die oben beschrieben Komponenten in
 NixOS deklarativ konfiguriert.
 
-#### Planung
-Für einen ersten testweisen Einsatz des Systems wird ein einfaches Client Netzwerk
-ohne komplexe Anforderungen angenommen.
+#### Initial Testphase
+**Planung**:  
+Für den ersten Testeinsatz des Systems wird ein einfaches Client-Netzwerk ohne
+komplexe Anforderungen angenommen. Dies ermöglicht eine grundlegende Überprüfung
+der Funktionalität und Leistungsfähigkeit des Systems.
 
+**Netzwerkdiagramm**:  
 ![Network Diagram](./../../media/posts/bpir4-diagram.png)
 
-#### Konfiguration
-
+**Konfiguration**:  
 Im ersten Schritt wird lediglich eine Basiskonfiguration bestehend aus der
 ifstate-Schnittstellenkonfiguration, dem Knot Resolver als Recursive DNS Server,
-einem Kea DHCPv4 Server für das Client-Segment und einer einfachen Firewall durchgeführt.
+einem Kea DHCPv4 Server für das Client-Segment und einer einfachen Firewall mit
+NAT Funktionalitätdurchgeführt.
+
+<details>
+<summary>Konfiguration des Switching Chips in ifstate 2.0.0</summary>
+
+```nix
+{
+  networking.ifstate.settings.interfaces = {
+    "br-lan" = {
+      addresses = [ "192.168.178.1/24" ];
+      link = {
+        kind = "bridge";
+        state = "up";
+      };
+    };
+    lan1 = {
+      link = {
+        state = "up";
+        kind = "dsa";
+        link = "end0";
+        master = "br-lan";
+      };
+    };
+    lan2 = {
+      link = {
+        state = "up";
+        kind = "dsa";
+        link = "end0";
+        master = "br-lan";
+      };
+    };
+    lan3 = {
+      link = {
+        state = "up";
+        kind = "dsa";
+        link = "end0";
+        master = "br-lan";
+      };
+    };
+  };
+}
+```
+</details>
+
+**Testen**:  
+Neben der IPv4 Adressvergabe mittels DHCP, dem DNS Recursor und der NAT wurde primär die Distributed
+Switch Architecture (DSA), also die korrekte Funktionalität des eingebauten Switching Chips getestet
+wurde. Hierfür kam das Tool iperf zum Einsatz, bei dem 10 GBit Netzwerktraffic zwischen Notebook und
+Computer mit einer Geschwindigkeit von 1 Gbit/s ohne wesentliche Belastung der CPU des Routers
+übertragen wurden. Das Ergebnis zeigte, dass der Switching-Chip wie erwartet funktioniert.
+
+#### Monitoring, Wireguard und Dynamisches Routing
+tbd
+
 
 <!--
 II:
-- Monitoring: SNMPd/LLDP/Prometheus Exporter
-- FRR für dynamisches Routing
-- L7-Firewall (?) + IDS/IPS (Suricata)
+- Monitoring: SNMPd/LLDP/Prometheus Exporter (node geht schonmal nicht)
+  - Wollen wir SNMP?
+  - LLDP testen
+  - node exporter hat irgendnen systemd issue
+- Wireguard to partner networks
+- FRR für dynamisches Routing - ggf. auch direkt mit VRF's ?
 
 III:
-- NAT64 Gateway
+- hostapd
 
 IV:
-- Telefonanlage: Asterisk
-- Zigbee2MQTT Gateway
+- L7-Firewall (?) + IDS/IPS (Suricata)
+- Radius für 802.1X (EAP Wifi + LAN security)
+- NAT64 Gateway
 
 V:
+- Telefonanlage: Asterisk
+- Zigbee2MQTT Gateway ?
+
+VI:
 - Full Disk Encryption mit LUKS
 - Entfernen von nicht benötigten Debugging Tools
 -->
+
+---
 
 Fortsetzung folgt...
