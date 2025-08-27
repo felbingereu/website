@@ -21,9 +21,6 @@ es gibt nur eine eSIM, keine klassische Plastikkarte.
 
 <!-- more -->
 
-An dieser Stelle sei erwähnt, dass sich die eSIM nur im Hauptprofil (Device Owner)
-installieren lässt und nicht im Work Profile, also im Multi-User-Betrieb.
-
 Um den FreePhone Tarif zu testen, habe ich mir einen Account bei GMX angelegt. Zur
 Verifizierung der eigenen Identität ist eine Telefonnummer erforderlich. Nach dem Login
 in der GMX Mail App kann der FreePhone Vertrag abgeschlossen werden. Kurze Zeit später
@@ -48,3 +45,11 @@ Der volle Funktionsumfang des Tarifs kann nach der Zustellung des Aktivierungsco
 Eingabe in der App genutzt werden.
 
 ![Eingabe Aktivierungscode](../../media/posts/gos-esim-verify.png)
+
+**Schlussbemerkungen:**  
+Meine Absicht war es zu testen, ob eSIMs prinzipiell unter GrapheneOS funktionieren.
+Meines Kenntnisstandes nach ist die Aktivierung von eSIMs unter GrapheneOS inzwischen
+auch ohne Google Play Services im Hauptprofil möglich. Für die Nutzung des GMX-FreePhone-Tarifs
+ist jedoch die oben genannte App erforderlich. Da ich diese lediglich über den Google
+Play Store beziehen konnte, war ihre Installation notwendig.
+Die Aktivierung der eSIM mit der GMX-App unter einem anderen Nutzer war nicht möglich.
