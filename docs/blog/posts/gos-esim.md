@@ -5,7 +5,7 @@ authors:
 - nicof2000
 categories:
 - GrapheneOS
-readtime: 10
+readtime: 3
 ---
 # GrapheneOS: GMX FreePhone eSIM einrichten
 
