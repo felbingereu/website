@@ -1,6 +1,7 @@
 ---
 date:
   created: 2025-08-07
+  updated: 2025-08-27
 authors:
 - nicof2000
 readtime: 3
@@ -47,20 +48,24 @@ Missionen – vollständig heruntergeladen.
 apt-get install -y curl jq nano git
 
 # siehe https://linuxgsm.com/servers/dayzserver/
-adduser dayzserver # TODO PASSWORD
+adduser --disabled-password --gecos "" dayzserver
 su - dayzserver # run cmds seprate
 curl -Lo linuxgsm.sh https://linuxgsm.sh && chmod +x linuxgsm.sh && bash linuxgsm.sh dayzserver
+mkdir -p ~dayzserver/lgsm/config-lgsm/dayzserver/
 cat <<_EOF >> ~dayzserver/lgsm/config-lgsm/dayzserver/secrets-dayzserver.cfg
 steamuser=
 steampass=
 _EOF
+./dayzserver install
 ```
-Zunächst wird das install-Kommando einmalig als root ausgeführt, um fehlende Abhängigkeiten zu installieren.
-Danach erfolgt die eigentliche Serverinstallation als der zuvor angelegte, nicht-privilegierte Benutzer:
+Nachdem die erste Ausführung des Install-Befehls, die Verzeichnisstruktur angelegt hat, ist feststellbar,
+dass diverse Abhängigkeiten nicht installiert sind. Der Einfachste weg diese zu installieren ist es
+diesen Befehl erneut als root-Nutzer auszuführen. Danach erfolgt die eigentliche Serverinstallation als
+der zuvor angelegte, nicht-privilegierte Benutzer:
 ```sh
 # wieder zurück von su shell in root shell
 exit
-./dayzserver install
+~dayzserver/dayzserver install
 
 # anschließend als dayzserver nutzer
 su - dayzserver
