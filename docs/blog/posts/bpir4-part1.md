@@ -220,7 +220,7 @@ jedoch beheben, indem man die `structuredExtraConfig` anpasst und Wireguard als 
 +      CRYPTO_LIB_CURVE25519 = module;
 +      CRYPTO_LIB_CHACHA20POLY1305 = module;
      };
- 
+
      argsOverride = {
 ```
 
@@ -234,15 +234,15 @@ kann dieses genutzt werden. Dafür werden die oben beschrieben Komponenten in
 NixOS deklarativ konfiguriert.
 
 #### Initial Testphase
-**Planung**:  
+**Planung**:
 Für den ersten Testeinsatz des Systems wird ein einfaches Client-Netzwerk ohne
 komplexe Anforderungen angenommen. Dies ermöglicht eine grundlegende Überprüfung
 der Funktionalität und Leistungsfähigkeit des Systems.
 
-**Netzwerkdiagramm**:  
+**Netzwerkdiagramm**:
 ![Network Diagram](./../../media/posts/bpir4-diagram.png)
 
-**Konfiguration**:  
+**Konfiguration**:
 Im ersten Schritt wird lediglich eine Basiskonfiguration bestehend aus der
 ifstate-Schnittstellenkonfiguration, dem Knot Resolver als Recursive DNS Server,
 einem Kea DHCPv4 Server für das Client-Segment und einer einfachen Firewall mit
@@ -290,42 +290,12 @@ NAT Funktionalitätdurchgeführt.
 ```
 </details>
 
-**Testen**:  
+**Testen**:
 Neben der IPv4 Adressvergabe mittels DHCP, dem DNS Recursor und der NAT wurde primär die Distributed
 Switch Architecture (DSA), also die korrekte Funktionalität des eingebauten Switching Chips getestet
 wurde. Hierfür kam das Tool iperf zum Einsatz, bei dem 10 GBit Netzwerktraffic zwischen Notebook und
 Computer mit einer Geschwindigkeit von 1 Gbit/s ohne wesentliche Belastung der CPU des Routers
 übertragen wurden. Das Ergebnis zeigte, dass der Switching-Chip wie erwartet funktioniert.
-
-#### Monitoring, Wireguard und Dynamisches Routing
-tbd
-
-
-<!--
-II:
-- Monitoring: SNMPd/LLDP/Prometheus Exporter (node geht schonmal nicht)
-  - Wollen wir SNMP?
-  - LLDP testen
-  - node exporter hat irgendnen systemd issue
-- Wireguard to partner networks
-- FRR für dynamisches Routing - ggf. auch direkt mit VRF's ?
-
-III:
-- hostapd
-
-IV:
-- L7-Firewall (?) + IDS/IPS (Suricata)
-- Radius für 802.1X (EAP Wifi + LAN security)
-- NAT64 Gateway
-
-V:
-- Telefonanlage: Asterisk
-- Zigbee2MQTT Gateway ?
-
-VI:
-- Full Disk Encryption mit LUKS
-- Entfernen von nicht benötigten Debugging Tools
--->
 
 ---
 
