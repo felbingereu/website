@@ -1,33 +1,105 @@
 # OpenSSL
 ## Create certificate authority (ca)
 1. Create private key
-   ```shell
-   # can be created without password without -aes256 and -passout pass:<password>
-   openssl genrsa -aes256 -passout pass:<password> -out ca.key 8192
-   ```
+
+    === "RSA"
+
+        ```shell
+        # with passphrase
+        openssl genrsa -aes256 -passout pass:{password} -out ca.key 8192
+
+        # without passphrase
+        openssl genrsa -out ca.key 8192
+        ```
+
+    === "ED25519"
+
+        ```shell
+        # with passphrase
+        openssl genpkey -algorithm ED25519 -aes256 -pass pass:{password} -out ca.key
+
+        # without passphrase
+        openssl genpkey -algorithm ED25519 -out ca.key
+        ```
+
 2. Create certificate
-   ```shell
-   openssl req -x509 -new -nodes -extensions v3_ca -key ca.key -days 1 -out ca.pem -sha512
-   ```
+
+    ```shell
+    openssl req -x509 -sha512 -subj /CN=ca -new -days 1 -noenc -extensions v3_ca -key ca.key -out ca.pem
+    ```
 
 ## Create tls server certificate
 1. Create private key
-   ```shell
-   # can be created without password without -aes256 and -passout pass:<password>
-   openssl genrsa -aes256 -passout pass:<password> -out server.key 8192
-   ```
-2. Create certificate signing request
-   ```shell
-   openssl req -subj /CN=server -key server.key -new -out server.csr -sha512
-   ```
-3. Sign certificate
-   ```shell
-   # self signed (by private key)
-   openssl x509 -sha512 -req -in server.csr -days 3650 -signkey server.key -out server.crt
 
-   # signed by a ca
-   openssl x509 -sha512 -req -in server.csr -days 3650 -CA ca.pem -CAkey ca.key -out server.pem
-   ```
+    === "RSA"
+
+        ```shell
+        # with passphrase
+        openssl genrsa -aes256 -passout pass:{password} -out server.key 8192
+
+        # without passphrase
+        openssl genrsa -out server.key 8192
+        ```
+
+    === "ED25519"
+
+        ```shell
+        # with passphrase
+        openssl genpkey -algorithm ED25519 -aes256 -pass pass:{password} -out server.key
+
+        # without passphrase
+        openssl genpkey -algorithm ED25519 -out server.key
+        ```
+
+2. Create certificate
+
+    ```shell
+    # selfsigned
+    openssl req -x509 -sha512 -subj /CN=server -new -days 1 -key server.key -out server.pem
+
+    # ca signed
+    openssl req -sha512 -subj /CN=server -new -key server.key -out server.csr
+    openssl x509 -sha512 -req -in server.csr -days 1 -CA ca.pem -CAkey ca.key -out server.crt
+    ```
+
+!!! note "Verification of certificate chain"
+    If you signed your certificate with a CA, you can verify the chain using:
+    ```shell
+    openssl verify -CAfile ca.pem server.pem
+    ```
+
+<!--
+2. Create certificate signing request
+
+    === "RSA"
+
+        ```shell
+        openssl req -subj /CN=server -key server.key -new -out server.csr -sha512
+        ```
+
+3. Sign certificate
+
+
+    === "RSA"
+
+        ```shell
+        # self signed (by private key)
+        openssl x509 -sha512 -req -in server.csr -days 1 -signkey server.key -out server.crt
+
+        # signed by a ca
+        openssl x509 -sha512 -req -in server.csr -days 1 -CA ca.pem -CAkey ca.key -out server.pem
+        ```
+
+=== "ED25519"
+
+       ```shell
+       openssl req -key server.key -new -out server.csr
+       ```
+
+       ```shell
+       openssl x509 -req -in server.csr -days 1 -signkey server.key -out server.crt
+       ```
+-->
 
 ## Converting keys
 ### `.pem` to `.crt`
