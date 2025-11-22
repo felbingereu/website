@@ -12,6 +12,12 @@
         openssl genrsa -out ca.key 8192
         ```
 
+    === "ECDSA"
+
+        ```shell
+        openssl ecparam -name prime256v1 -genkey -noout -out ca.key
+        ```
+
     === "ED25519"
 
         ```shell
@@ -41,6 +47,12 @@
         openssl genrsa -out server.key 8192
         ```
 
+    === "ECDSA"
+
+        ```shell
+        openssl ecparam -name prime256v1 -genkey -noout -out server.key
+        ```
+
     === "ED25519"
 
         ```shell
@@ -60,6 +72,12 @@
     # ca signed
     openssl req -sha512 -subj /CN=server -new -key server.key -out server.csr
     openssl x509 -sha512 -req -in server.csr -days 1 -CA ca.pem -CAkey ca.key -out server.crt
+    ```
+
+    You can also add subjectAltNames:
+    ```shell
+    openssl x509 -sha512 -req -in server.csr -days 1 -CA ca.pem -CAkey ca.key -out server.crt \
+      -extfile <(echo 'subjectAltName = DNS:example.com')
     ```
 
 !!! note "Verification of certificate chain"
