@@ -1,0 +1,1237 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://felbinger.eu/blog/2025/05/10/nixos-asbr-mit-vrf-zur-separierung-von-egp-und-igp.html">
+      
+      
+        <link rel="prev" href="../../03/10/aufsetzen-eines-knot-resolvers.html">
+      
+      
+        <link rel="next" href="../31/nixos-router-banana-pi-r4.html">
+      
+      
+      <link rel="icon" href="../../../../media/favicon.ico">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.49">
+    
+    
+      
+        <title>NixOS: ASBR mit VRF zur Separierung von EGP und IGP - felbinger.eu</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.6f8fc17f.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+        <script src="../../../../assets/external/unpkg.com/iframe-worker/shim.js"></script>
+      
+    
+    
+      
+        
+        
+        
+        <link rel="stylesheet" href="../../../../assets/external/fonts.googleapis.com/css.49ea35f2.css">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="green" data-md-color-accent="lime">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#nixos-asbr-mit-vrf-zur-separierung-von-egp-und-igp" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../../.." title="felbinger.eu" class="md-header__button md-logo" aria-label="felbinger.eu" data-md-component="logo">
+      
+  <img src="../../../../media/favicon-32x32.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            felbinger.eu
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              NixOS: ASBR mit VRF zur Separierung von EGP und IGP
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="green" data-md-color-accent="lime"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 6H7c-3.31 0-6 2.69-6 6s2.69 6 6 6h10c3.31 0 6-2.69 6-6s-2.69-6-6-6m0 10H7c-2.21 0-4-1.79-4-4s1.79-4 4-4h10c2.21 0 4 1.79 4 4s-1.79 4-4 4M7 9c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="green" data-md-color-accent="lime"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h10a5 5 0 0 0 5-5 5 5 0 0 0-5-5m0 8a3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3 3 3 0 0 1-3 3"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" hidden>
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="felbinger.eu" class="md-nav__button md-logo" aria-label="felbinger.eu" data-md-component="logo">
+      
+  <img src="../../../../media/favicon-32x32.png" alt="logo">
+
+    </a>
+    felbinger.eu
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_1" id="__nav_1_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Blog
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_1_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_1">
+            <span class="md-nav__icon md-icon"></span>
+            Blog
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      <a href="../../../index.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Index
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_1_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_1_2" id="__nav_1_2_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Categories
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_2">
+            <span class="md-nav__icon md-icon"></span>
+            Categories
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../category/grapheneos.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    GrapheneOS
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../category/networking.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Networking
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../category/nixos.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    NixOS
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Knowledgebase
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            Knowledgebase
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../knowledgebase/android.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Android
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../knowledgebase/applications.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Applications
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../knowledgebase/ben-eater-8bit-computer.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Ben Eater: 8bit Computer
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../knowledgebase/cryptsetup.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Cryptsetup
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../knowledgebase/django.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Django
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../knowledgebase/hosting.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Hosting
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../knowledgebase/mysql.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    MariaDB
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../knowledgebase/nftables.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    nftables
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../knowledgebase/openssl.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    OpenSSL
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../knowledgebase/rpi.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Raspberry PI
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../knowledgebase/ssh.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    SSH
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../knowledgebase/udev.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    udev
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../knowledgebase/windows.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Windows
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+  <div class="md-content md-content--post" data-md-component="content">
+    <div class="md-sidebar md-sidebar--post" data-md-component="sidebar" data-md-type="navigation">
+      <div class="md-sidebar__scrollwrap">
+        <div class="md-sidebar__inner md-post">
+          <nav class="md-nav md-nav--primary">
+            <div class="md-post__back">
+              <div class="md-nav__title md-nav__container">
+                <a href="../../../index.html" class="md-nav__link">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+                  <span class="md-ellipsis">
+                    Back to index
+                  </span>
+                </a>
+              </div>
+            </div>
+            
+              <div class="md-post__authors md-typeset">
+                
+                  <div class="md-profile md-post__profile">
+                    <span class="md-author md-author--long">
+                      <img src="../../../../assets/external/github.com/felbinger.png.jpg" alt="Nico Felbinger">
+                    </span>
+                    <span class="md-profile__description">
+                      <strong>
+                        
+                          Nico Felbinger
+                        
+                      </strong>
+                      <br>
+                      computer science student
+                    </span>
+                  </div>
+                
+                  <div class="md-profile md-post__profile">
+                    <span class="md-author md-author--long">
+                      <img src="../../../../assets/external/github.com/TheCataliasTNT2k.png" alt="tnt2k">
+                    </span>
+                    <span class="md-profile__description">
+                      <strong>
+                        
+                          tnt2k
+                        
+                      </strong>
+                      <br>
+                      
+                    </span>
+                  </div>
+                
+              </div>
+            
+            <ul class="md-post__meta md-nav__list">
+              <li class="md-nav__item md-nav__item--section">
+                <div class="md-post__title">
+                  <span class="md-ellipsis">
+                    Metadata
+                  </span>
+                </div>
+                <nav class="md-nav">
+                  <ul class="md-nav__list">
+                    <li class="md-nav__item">
+                      <div class="md-nav__link">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 19H5V8h14m-3-7v2H8V1H6v2H5c-1.11 0-2 .89-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2h-1V1m-1 11h-5v5h5z"/></svg>
+                        <time datetime="2025-05-10 00:00:00+00:00" class="md-ellipsis">May 10, 2025</time>
+                      </div>
+                    </li>
+                    
+                    
+                      <li class="md-nav__item">
+                        <div class="md-nav__link">
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9 3v15h3V3zm3 2 4 13 3-1-4-13zM5 5v13h3V5zM3 19v2h18v-2z"/></svg>
+                          <span class="md-ellipsis">
+                            in
+                            
+                              <a href="../../../category/nixos.html">NixOS</a>, 
+                              <a href="../../../category/networking.html">Networking</a></span>
+                        </div>
+                      </li>
+                    
+                    
+                      
+                      <li class="md-nav__item">
+                        <div class="md-nav__link">
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 20a8 8 0 0 0 8-8 8 8 0 0 0-8-8 8 8 0 0 0-8 8 8 8 0 0 0 8 8m0-18a10 10 0 0 1 10 10 10 10 0 0 1-10 10C6.47 22 2 17.5 2 12A10 10 0 0 1 12 2m.5 5v5.25l4.5 2.67-.75 1.23L11 13V7z"/></svg>
+                          <span class="md-ellipsis">
+                            
+                              9 min read
+                            
+                          </span>
+                        </div>
+                      </li>
+                    
+                  </ul>
+                </nav>
+              </li>
+            </ul>
+          </nav>
+          
+        </div>
+      </div>
+    </div>
+    <article class="md-content__inner md-typeset">
+      
+        
+
+
+<h1 id="nixos-asbr-mit-vrf-zur-separierung-von-egp-und-igp">NixOS: ASBR mit VRF zur Separierung von EGP und IGP<a class="headerlink" href="#nixos-asbr-mit-vrf-zur-separierung-von-egp-und-igp" title="Permanent link">&para;</a></h1>
+<p>In unserem Netzwerk betreiben wir einen ASBR (Autonomous System Boundary Router) auf Basis
+von NixOS, <a href="https://ifstate.net/">ifstate</a> und <a href="https://frrouting.org/">FRRouting</a>. Ziel war
+es, das EGP (Exterior Gateway Protocol) und das IGP (Interior Gateway Protocol) mittels
+einer VRF (Virtual Routing and Forwarding) voneinander zu trennen.</p>
+<!-- more -->
+
+<p>Der grundsätzliche Aufbau wird durch das folgende Schaubild beschrieben:</p>
+<p><img alt="Netzwerkdiagramm" src="../../../../media/posts/asbr-igp-egp-separation-using-vrf.png" /></p>
+<p>Zum Testen der Konfiguration wurde ein Client direkt an den ASBR angebunden. Dieser Client
+ist Teil des internen Netzwerks, gehört somit zum IGP und ist über die Schnittstelle eth0
+verbunden, welche der Global Routing Table (GRT bzw. rttable main) zugewiesen ist. In dieser
+Tabelle wurde eine Default-Route konfiguriert, die den Traffic über die VRF public leitet.</p>
+<p>An die VRF public wiederum sind drei Upstream-Provider angebunden: A, B und C. Während die
+Provider A und B jeweils eine vollständige IPv6-Routingtabelle (auch als Default-Free Zone
+(DFZ) bekannt) bereitstellen, delegiert Upstream Provider C zusätzlich einige IPv4 Adressen
+in Form eines PA (Provider Aggregatable) Assignment. Anders als die beiden anderen Upstream
+Provider liefert C jedoch keine vollständige Routingtabelle, sondern lediglich eine
+Default-Route per BGP (default-originate).</p>
+<p>In diesem Blog-Artikel dient die öffentliche IPv4 12.34.56.78 als Beispieladresse aus dem
+delegierten Netzwerk.</p>
+<p>Nachdem die Implementierung durchgeführt wurde, wurde getestet, ob diese wie erwartet
+funktioniert. Zunächst wurde getestet, ob das ASBR selbst mit dem Internet kommunizieren
+kann:</p>
+<p><div class="highlight"><pre><span></span><code>[root@asbr:~]# ping -c 1 1.1.1.1
+PING 1.1.1.1 (1.1.1.1) 56(84) bytes of data.
+64 bytes from 1.1.1.1: icmp_seq=1 ttl=57 time=28.6 ms
+
+--- 1.1.1.1 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 28.909/28.909/28.909/0.000 ms
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>[root@asbr:~]# tcpdump -n -i any icmp
+00:00:00.031238 public Out IP 12.34.56.78 &gt; 1.1.1.1: ICMP echo request, id 3, seq 1, length 64
+00:00:00.031252 eth3  Out IP 12.34.56.78 &gt; 1.1.1.1: ICMP echo request, id 3, seq 1, length 64
+00:00:00.059831 eth3  In  IP 1.1.1.1 &gt; 12.34.56.78: ICMP echo reply, id 3, seq 1, length 64
+</code></pre></div></p>
+<p>Nachdem dies erfolgreich war, wurde geprüft, ob der Client ebenfalls eine Verbindung aufbauen
+kann:</p>
+<p><div class="highlight"><pre><span></span><code>[root@client:~]# ping -c 4 1.1.1.1
+PING 1.1.1.1 (1.1.1.1) 56(84) bytes of data.
+
+--- 1.1.1.1 ping statistics ---
+4 packets transmitted, 0 received, 100% packet loss, time 3072ms
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>[root@asbr:~]# tcpdump -n -i any icmp
+00:00:00.004049 eth0  In  IP 10.0.0.2 &gt; 1.1.1.1: ICMP echo request, id 53, seq 1, length 64
+00:00:00.004049 eth0  In  IP 10.0.0.2 &gt; 1.1.1.1: ICMP echo request, id 53, seq 2, length 64
+00:00:00.004049 eth0  In  IP 10.0.0.2 &gt; 1.1.1.1: ICMP echo request, id 53, seq 3, length 64
+00:00:00.004049 eth0  In  IP 10.0.0.2 &gt; 1.1.1.1: ICMP echo request, id 53, seq 4, length 64
+</code></pre></div></p>
+<p>Wie aus den tcpdump-Ausgaben ersichtlich ist, werden nur die eingehenden ICMP Echo-Requests
+vom Client protokolliert. Es findet jedoch keine Weiterleitung in der VRF public oder auf
+dem Interface eth3 (zum Upstream-Provider C) statt.</p>
+<p>Um das Problem besser untersuchen zu können, entschied ich mich einen NixOS Integration Test
+für das Szenario anzulegen. Im ersten Schritt implementierte ich lediglich IPv6 mit den
+Upstream Providern A und B, welche uns beide eine Full Table zur Verfügung stellen. Nachdem
+dies funktionierte, fügte ich IPv4 und den Upstream Provider C hinzu. Dabei war feststellbar,
+dass neben IPv4 auch IPv6 nicht mehr funktionierte. Ich versuchte verschiedene Konfigurationen
+zu implementieren. Irgendwann deaktivierte ich die von Upstream Provider C announcte Default-Route,
+was dazu führte, dass IPv6 wieder wie gewünscht funktionierte.</p>
+<p>Basierend auf den gewonnenen Erkenntnissen beschlossen wir, die von Upstream-Provider C per BGP
+announcierte Default-Route herauszufiltern. Dazu modifizierten wir in FRR die Prefix-List, die
+beim Import der Routen von Provider C greift um das entsprechende Präfix zu blockieren.</p>
+<details>
+<summary>Für IPv4 relevante Ausschnitte der FRR Konfiguration und Überprüfung ob Konfiguration zum gewünschten Ergebnis führt</summary>
+
+Die erste Zeile sorgt, dafür dass die Default Route abgelehnt wird:
+<div class="highlight"><pre><span></span><code>ip prefix-list import seq 1 deny 0.0.0.0/0
+ip prefix-list import seq 2 permit 0.0.0.0/0 le 32
+ip prefix-list export seq 1 permit 12.34.56.78/32
+ip prefix-list export seq 2 deny 0.0.0.0/0 le 32
+!
+ip route 12.34.56.78/32 Null0
+!
+vrf public
+  ip protocol bgp route-map set-src
+exit-vrf
+!
+router bgp OWN_ASN vrf public
+  bgp router-id 12.34.56.78
+  no bgp default ipv4-unicast
+  no bgp network import-check
+  neighbor 172.20.20.1 remote-as ASN_UPSTREAM_C
+  !
+  address-family ipv4 unicast
+    network 12.34.56.78/32
+    neighbor 172.20.20.1 activate
+    neighbor 172.20.20.1 remove-private-AS
+    neighbor 172.20.20.1 soft-reconfiguration inbound
+    neighbor 172.20.20.1 prefix-list import in
+    neighbor 172.20.20.1 prefix-list export out
+  exit-address-family
+exit
+!
+route-map set-src permit 1
+  set src 12.34.56.78
+exit
+</code></pre></div>
+
+Nachdem die Konfiguration angewandt wurde, kann wie folgt überprüft werden,
+ob die Route wie gewünscht abgelehnt wird.
+
+Von Upstream Provider C empfangene Routen anzeigen:
+<div class="highlight"><pre><span></span><code>[root@asbr:~]# vtysh -c &#39;show ip bgp vrf public neighbors 172.20.20.1 received-routes&#39;
+BGP table version is 2, local router ID is 12.34.56.78, vrf id 7
+Default local pref 100, local AS OWN_ASN
+Status codes:  s suppressed, d damped, h history, u unsorted, * valid, &gt; best, = multipath,
+              i internal, r RIB-failure, S Stale, R Removed
+Nexthop codes: @NNN nexthop&#39;s vrf id, &lt; announce-nh-self
+Origin codes:  i - IGP, e - EGP, ? - incomplete
+RPKI validation codes: V valid, I invalid, N Not found
+
+    Network          Next Hop            Metric LocPrf Weight Path
+*&gt; 0.0.0.0/0        172.20.20.1                             0 ASN_UPSTREAM_C i
+
+Total number of prefixes 1 (1 filtered)
+</code></pre></div>
+
+Die Default-Route wird gefiltert und erscheint daher nicht in den akzeptierten Routen,
+die in die RIB übernommen werden:
+<div class="highlight"><pre><span></span><code>[root@asbr:~]# vtysh -c &#39;show ip bgp vrf public neighbors 172.20.20.1 routes&#39;
+</code></pre></div>
+</details>
+
+<p>Anschließend überprüften wir die Konnektivität erneut, indem wir vom Client aus gezielt die
+IPv4-Adresse des Transit-Netzes von Provider C anpingten.</p>
+<details>
+<summary>Warum sollte das funktionieren?</summary>
+
+Das Interface eth3 ist in der VRF public mit einer IPv4-Konfiguration versehen. Da es sich dabei
+um ein /30er-Netz handelt, wird automatisch eine "connected" bzw. Kernel-Route für dieses Subnetz
+erzeugt. Diese Route ist auch ohne weitere BGP-Routen innerhalb der VRF verfügbar und ermöglicht
+daher gezielt die Erreichbarkeit der Transit-Adresse des Upstream-Providers.
+<br><br>
+Routen in FIB für VRF public anzeigen:
+<div class="highlight"><pre><span></span><code>[root@asbr:~]# ip route show vrf public
+172.20.20.0/30 dev eth3 proto kernel scope link src 172.20.20.2
+</code></pre></div>
+<br>
+Routen in RIB für VRF public anzeigen:
+<div class="highlight"><pre><span></span><code>[root@asbr:~]# vtysh -c &#39;show ip route vrf public&#39;
+Codes: K - kernel route, C - connected, L - local, S - static,
+    R - RIP, O - OSPF, I - IS-IS, B - BGP, E - EIGRP, N - NHRP,
+    T - Table, v - VNC, V - VNC-Direct, A - Babel, D - SHARP,
+    F - PBR, f - OpenFabric, t - Table-Direct,
+    &gt; - selected route, * - FIB route, q - queued, r - rejected, b - backup
+    t - trapped, o - offload failure
+
+VRF public:
+L * 12.34.56.78/32 is directly connected, public, 00:00:00
+C&gt;* 12.34.56.78/32 is directly connected, public, 00:00:00
+C&gt;* 172.20.20.0/30 is directly connected, eth3, 00:00:00
+L&gt;* 172.20.20.2/32 is directly connected, eth3, 00:00:00
+</code></pre></div>
+
+</details>
+
+<p><div class="highlight"><pre><span></span><code>[root@client:~]# ping -c 1 172.20.20.2
+PING 172.20.20.2 (172.20.20.2) 56(84) bytes of data.
+64 bytes from 172.20.20.2: icmp_seq=1 ttl=63 time=33.3 ms
+
+--- 172.20.20.2 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 33.285/33.285/33.285/0.000 ms
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>[root@asbr:~]# tcpdump -n -i any icmp
+00:00:00.730500 eth0  In  IP 10.0.0.2 &gt; 172.20.20.2: ICMP echo request, id 24, seq 19, length 64
+00:00:00.730540 public Out IP 10.0.0.2 &gt; 172.20.20.2: ICMP echo request, id 24, seq 19, length 64
+00:00:00.730567 eth3  Out IP 12.34.56.78 &gt; 172.20.20.2: ICMP echo request, id 24, seq 19, length 64
+00:00:00.746948 eth3  In  IP 172.20.20.2 &gt; 12.34.56.78: ICMP echo reply, id 24, seq 19, length 64
+00:00:00.746991 eth0  Out IP 172.20.20.2 &gt; 10.0.0.2: ICMP echo reply, id 24, seq 19, length 64
+</code></pre></div></p>
+<p>Es darf also keine Default Route innerhalb der VRF verwendet werden, da sonst das Forwarding beeinträchtigt wird.</p>
+<p>Ohne Default-Route wird ein Paket vom Client wie folgt durch den ASBR geleitet.</p>
+<div class="highlight"><pre><span></span><code>[root@asbr:~]# ip rule
+0:      from all lookup local
+1000:   from all lookup [l3mdev-table]
+32766:  from all lookup main
+32767:  from all lookup default
+</code></pre></div>
+<p>Zunächst greift die <code>lookup local</code>-Policy - diese wird aber übersprungen, da das Ziel keine lokale
+Adresse ist. Auch die Regel <code>lookup [l3mdev-table]</code> wird anfangs übersprungen, weil das Paket aus
+der GRT (IGP) stammt und somit keinen VRF-Kontext hat. Schließlich gelangt das Paket zur Regel
+<code>lookup main</code>. Die FIB der GRT beinhaltet eine Default-Route, die das Paket in die VRF public
+routet. Innerhalb dieser gibt es eine Connected/Kernel Route, die das Paket über eth3 an Upstream
+Provider C weiterleitet. Dabei wird das Paket ebenfalls auf die öffentliche IPv4 Adresse genattet.</p>
+<p>Eine Default-Route in der FIB der VRF Public sorgt für zwei Probleme:</p>
+<ol>
+<li>
+<p>Aus unbekannten Gründen erfolgt kein Forwarding von Paketen aus der GRT. Auch mittels tcpdump
+   war nicht nachvollziehbar, ob das Forwarding von der GRT in die VRF public oder von VRF public
+   zu Upstream Provider C fehlschlägt und dies falsch in tcpdump dargestellt wird.</p>
+</li>
+<li>
+<p>Wird ein Paket aus eth3 (Upstream Provider C) empfangen, hat dieses einen VRF Kontext, wodurch
+   nach der <code>lookup local</code>-Policy die Regel <code>lookup [l3mdev-table]</code> zutrifft. Dadurch wird in der
+   FIB der VRF public nach einer passenden Route zum Ziel gesucht. Diese wird in Form der
+   Default-Route gefunden, wodurch das Paket sofort zurück zum Upstream Provider C geschickt wird.
+   Es findet also kein <code>lookup main</code> statt.</p>
+</li>
+</ol>
+<p>Da wir von den delegierten Adressen des Upstream Providers C abhängig sind, musste eine Lösung
+für dieses Problem gefunden werden. Da sich diese Abhängigkeit ausschließlich auf IPv4 bezieht,
+wurde zunächst die IPv6-BGP-Sitzung deaktiviert. Im Anschluss wurden die notwendigen IPv4-Routen
+(0.0.0.0/0 ohne Bogon-Präfixe) generiert und statisch in der FIB der VRF public definiert:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">netaddr</span><span class="w"> </span><span class="kn">import</span> <span class="n">IPSet</span>
+
+<span class="n">result</span> <span class="o">=</span> <span class="n">IPSet</span><span class="p">([</span><span class="s2">&quot;0.0.0.0/0&quot;</span><span class="p">])</span> <span class="o">-</span> <span class="n">IPSet</span><span class="p">([</span>
+  <span class="s2">&quot;0.0.0.0/8&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;10.0.0.0/8&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;100.64.0.0/10&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;127.0.0.0/8&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;169.254.0.0/16&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;172.16.0.0/12&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;192.0.0.0/24&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;192.0.2.0/24&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;192.168.0.0/16&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;198.18.0.0/15&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;198.51.100.0/24&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;203.0.113.0/24&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;224.0.0.0/4&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;240.0.0.0/4&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;255.255.255.255/32&quot;</span><span class="p">,</span>
+<span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">cidr</span><span class="p">)</span> <span class="k">for</span> <span class="n">cidr</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">iter_cidrs</span><span class="p">()]))</span>
+</code></pre></div>
+<p>Anschließend funktionierte auch die Kommunikation zwischen Client und Internet:</p>
+<p><div class="highlight"><pre><span></span><code>[root@client:~]# ping -c 1 1.1.1.1
+PING 1.1.1.1 (1.1.1.1) 56(84) bytes of data.
+64 bytes from 1.1.1.1: icmp_seq=1 ttl=63 time=35.2 ms
+
+--- 1.1.1.1 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 33.285/33.285/33.285/0.000 ms
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>[root@asbr:~]# tcpdump -n -i any icmp
+00:00:00.730500 eth0  In  IP 10.0.0.2 &gt; 1.1.1.1: ICMP echo request, id 24, seq 19, length 64
+00:00:00.730540 public Out IP 10.0.0.2 &gt; 1.1.1.1: ICMP echo request, id 24, seq 19, length 64
+00:00:00.730567 eth3  Out IP 12.34.56.78 &gt; 1.1.1.1: ICMP echo request, id 24, seq 19, length 64
+00:00:00.746948 eth3  In  IP 1.1.1.1 &gt; 12.34.56.78: ICMP echo reply, id 24, seq 19, length 64
+00:00:00.746991 eth0  Out IP 1.1.1.1 &gt; 10.0.0.2: ICMP echo reply, id 24, seq 19, length 64
+</code></pre></div></p>
+<p>Unsere weitere Absicht ist es, bei Upstream Provider C nach einer Full Table zu fragen. Aus meiner
+Sicht ist die Verwendung von default-originate für ein öffentliches Peering grundsätzlich unzweckmäßig.
+Der Grund dafür ist, dass nur Pakete über diese Route geleitet werden, die nicht in den
+Routing-Tabellen der anderen Provider enthalten sind. Kürzere Routen, die über Provider C verfügbar
+wären, können nicht erkannt werden und werden deshalb weiterhin über den längeren Pfad geroutet.</p>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+  
+
+
+
+      
+    </article>
+  </div>
+
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2020 - 2025 Nico Felbinger &nbsp; – &nbsp; <a href="/imprint.html">Imprint</a> &nbsp; – &nbsp; <a href="#__consent">Change cookie settings</a>
+    </div>
+  
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+      <div class="md-consent" data-md-component="consent" id="__consent" hidden>
+        <div class="md-consent__overlay"></div>
+        <aside class="md-consent__inner">
+          <form class="md-consent__form md-grid md-typeset" name="consent">
+            
+
+
+
+
+
+<h4>Cookie consent</h4>
+<p>We use cookies to recognize your repeated visits and preferences, as well as to measure the effectiveness of our documentation and whether users find what they're searching for. With your consent, you're helping us to make my documentation better.</p>
+<input class="md-toggle" type="checkbox" id="__settings" >
+<div class="md-consent__settings">
+  <ul class="task-list">
+    
+      
+      
+        
+        
+      
+      <li class="task-list-item">
+        <label class="task-list-control">
+          <input type="checkbox" name="analytics" >
+          <span class="task-list-indicator"></span>
+          Google Analytics
+        </label>
+      </li>
+    
+  </ul>
+</div>
+<div class="md-consent__controls">
+  
+    
+      <button class="md-button md-button--primary">Accept</button>
+    
+    
+    
+  
+    
+    
+    
+      <label class="md-button" for="__settings">Manage settings</label>
+    
+  
+    
+    
+      <button type="reset" class="md-button md-button--primary">Reject</button>
+    
+    
+  
+</div>
+          </form>
+        </aside>
+      </div>
+      <script>var consent=__md_get("__consent");if(consent)for(var input of document.forms.consent.elements)input.name&&(input.checked=consent[input.name]||!1);else"file:"!==location.protocol&&setTimeout((function(){document.querySelector("[data-md-component=consent]").hidden=!1}),250);var form=document.forms.consent;for(var action of["submit","reset"])form.addEventListener(action,(function(e){if(e.preventDefault(),"reset"===e.type)for(var n of document.forms.consent.elements)n.name&&(n.checked=!1);__md_set("__consent",Object.fromEntries(Array.from(new FormData(form).keys()).map((function(e){return[e,!0]})))),location.hash="",location.reload()}))</script>
+    
+    <script id="__config" type="application/json">{"base": "../../../..", "features": ["search.suggest", "search.highlight", "navigation.expand", "navigation.instant", "navigation.sections"], "search": "../../../../assets/javascripts/workers/search.6ce7567c.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../../../../assets/javascripts/bundle.88dd0f4e.min.js"></script>
+      
+    
+  </body>
+</html>

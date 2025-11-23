@@ -1,0 +1,1966 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://felbinger.eu/blog/2025/02/15/warum-ich-nixos-nutze.html">
+      
+      
+        <link rel="prev" href="../../01/30/nixos-erstellen-eines-neuen-pakets.html">
+      
+      
+        <link rel="next" href="nixos-cherry-picken-von-commits.html">
+      
+      
+      <link rel="icon" href="../../../../media/favicon.ico">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.49">
+    
+    
+      
+        <title>Warum ich NixOS nutze - felbinger.eu</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.6f8fc17f.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+        <script src="../../../../assets/external/unpkg.com/iframe-worker/shim.js"></script>
+      
+    
+    
+      
+        
+        
+        
+        <link rel="stylesheet" href="../../../../assets/external/fonts.googleapis.com/css.49ea35f2.css">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="green" data-md-color-accent="lime">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#warum-ich-nixos-nutze" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../../.." title="felbinger.eu" class="md-header__button md-logo" aria-label="felbinger.eu" data-md-component="logo">
+      
+  <img src="../../../../media/favicon-32x32.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            felbinger.eu
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Warum ich NixOS nutze
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="green" data-md-color-accent="lime"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 6H7c-3.31 0-6 2.69-6 6s2.69 6 6 6h10c3.31 0 6-2.69 6-6s-2.69-6-6-6m0 10H7c-2.21 0-4-1.79-4-4s1.79-4 4-4h10c2.21 0 4 1.79 4 4s-1.79 4-4 4M7 9c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="green" data-md-color-accent="lime"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h10a5 5 0 0 0 5-5 5 5 0 0 0-5-5m0 8a3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3 3 3 0 0 1-3 3"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" hidden>
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="felbinger.eu" class="md-nav__button md-logo" aria-label="felbinger.eu" data-md-component="logo">
+      
+  <img src="../../../../media/favicon-32x32.png" alt="logo">
+
+    </a>
+    felbinger.eu
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_1" id="__nav_1_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Blog
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_1_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_1">
+            <span class="md-nav__icon md-icon"></span>
+            Blog
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      <a href="../../../index.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Index
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_1_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_1_2" id="__nav_1_2_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Categories
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_2">
+            <span class="md-nav__icon md-icon"></span>
+            Categories
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../category/grapheneos.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    GrapheneOS
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../category/networking.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Networking
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../category/nixos.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    NixOS
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Knowledgebase
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            Knowledgebase
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../knowledgebase/android.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Android
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../knowledgebase/applications.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Applications
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../knowledgebase/ben-eater-8bit-computer.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Ben Eater: 8bit Computer
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../knowledgebase/cryptsetup.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Cryptsetup
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../knowledgebase/django.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Django
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../knowledgebase/hosting.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Hosting
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../knowledgebase/mysql.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    MariaDB
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../knowledgebase/nftables.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    nftables
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../knowledgebase/openssl.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    OpenSSL
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../knowledgebase/rpi.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Raspberry PI
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../knowledgebase/ssh.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    SSH
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../knowledgebase/udev.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    udev
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../knowledgebase/windows.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Windows
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+  <div class="md-content md-content--post" data-md-component="content">
+    <div class="md-sidebar md-sidebar--post" data-md-component="sidebar" data-md-type="navigation">
+      <div class="md-sidebar__scrollwrap">
+        <div class="md-sidebar__inner md-post">
+          <nav class="md-nav md-nav--primary">
+            <div class="md-post__back">
+              <div class="md-nav__title md-nav__container">
+                <a href="../../../index.html" class="md-nav__link">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+                  <span class="md-ellipsis">
+                    Back to index
+                  </span>
+                </a>
+              </div>
+            </div>
+            
+              <div class="md-post__authors md-typeset">
+                
+                  <div class="md-profile md-post__profile">
+                    <span class="md-author md-author--long">
+                      <img src="../../../../assets/external/github.com/felbinger.png.jpg" alt="Nico Felbinger">
+                    </span>
+                    <span class="md-profile__description">
+                      <strong>
+                        
+                          Nico Felbinger
+                        
+                      </strong>
+                      <br>
+                      computer science student
+                    </span>
+                  </div>
+                
+              </div>
+            
+            <ul class="md-post__meta md-nav__list">
+              <li class="md-nav__item md-nav__item--section">
+                <div class="md-post__title">
+                  <span class="md-ellipsis">
+                    Metadata
+                  </span>
+                </div>
+                <nav class="md-nav">
+                  <ul class="md-nav__list">
+                    <li class="md-nav__item">
+                      <div class="md-nav__link">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 19H5V8h14m-3-7v2H8V1H6v2H5c-1.11 0-2 .89-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2h-1V1m-1 11h-5v5h5z"/></svg>
+                        <time datetime="2025-02-15 00:00:00+00:00" class="md-ellipsis">February 15, 2025</time>
+                      </div>
+                    </li>
+                    
+                    
+                      <li class="md-nav__item">
+                        <div class="md-nav__link">
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9 3v15h3V3zm3 2 4 13 3-1-4-13zM5 5v13h3V5zM3 19v2h18v-2z"/></svg>
+                          <span class="md-ellipsis">
+                            in
+                            
+                              <a href="../../../category/nixos.html">NixOS</a></span>
+                        </div>
+                      </li>
+                    
+                    
+                      
+                      <li class="md-nav__item">
+                        <div class="md-nav__link">
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 20a8 8 0 0 0 8-8 8 8 0 0 0-8-8 8 8 0 0 0-8 8 8 8 0 0 0 8 8m0-18a10 10 0 0 1 10 10 10 10 0 0 1-10 10C6.47 22 2 17.5 2 12A10 10 0 0 1 12 2m.5 5v5.25l4.5 2.67-.75 1.23L11 13V7z"/></svg>
+                          <span class="md-ellipsis">
+                            
+                              5 min read
+                            
+                          </span>
+                        </div>
+                      </li>
+                    
+                  </ul>
+                </nav>
+              </li>
+            </ul>
+          </nav>
+          
+        </div>
+      </div>
+    </div>
+    <article class="md-content__inner md-typeset">
+      
+        
+
+
+<h1 id="warum-ich-nixos-nutze">Warum ich NixOS nutze<a class="headerlink" href="#warum-ich-nixos-nutze" title="Permanent link">&para;</a></h1>
+<p>Mein Weg zu NixOS war keine spontane Entscheidung, sondern das Ergebnis jahrelanger Erfahrungen
+mit verschiedenen Linux-Distributionen. Ich habe früh angefangen, alternative Betriebssysteme
+auszuprobieren, und hatte immer den Anspruch, mein System möglichst effizient, stabil und
+flexibel zu gestalten. Doch erst mit NixOS habe ich eine Lösung gefunden, die meine Anforderungen
+wirklich erfüllt.</p>
+<!-- more -->
+
+<p>Wie viele andere bin ich mit klassischen Linux-Distributionen gestartet. Zunächst nutzte ich Linux
+Mint, weil es eine benutzerfreundliche Umgebung bot und einen einfachen Einstieg in die Linux-Welt
+ermöglichte. Später wechselte ich zu Fedora, um Erfahrung im Bereich von RHEL-ähnlichen Systemen zu
+erlangen. Beide Systeme haben gut funktioniert, aber mit der Zeit wurde mir bewusst, dass traditionelle
+Paketmanager und Konfigurationsansätze einige Schwächen haben - insbesondere in Bezug auf
+Reproduzierbarkeit und Wartbarkeit.</p>
+<p>Um meine Systeme dennoch effizient einrichten zu können, schrieb ich in dieser Zeit Post-Install-Skripte.
+Diese ermöglichten es mir, nach einer frischen Installation schnell alle benötigten Programme, Konfigurationen
+und Anpassungen vorzunehmen. Dies sparte mir viel Zeit, war aber dennoch nicht ideal, da es immer wieder
+Anpassungen und manuelle Eingriffe erforderte.</p>
+<details>
+  <summary>Post-Install Skript für Fedora</summary>
+  <div class="highlight"><pre><span></span><code><span class="ch">#!/bin/bash</span>
+
+<span class="c1">###############################</span>
+<span class="c1">##                           ##</span>
+<span class="c1">##   Configuration Section   ##</span>
+<span class="c1">##                           ##</span>
+<span class="c1">###############################</span>
+<span class="nv">DNF_PACKAGES</span><span class="o">=(</span>
+<span class="w">  </span><span class="c1">## required packages for this post install script ##</span>
+<span class="w">  </span>dnf-plugins-core
+<span class="w">  </span>distribution-gpg-keys
+<span class="w">  </span>ImageMagick
+<span class="w">  </span>terminator<span class="w">                                           </span><span class="c1"># splitable terminal</span>
+<span class="w">  </span>timeshift
+<span class="w">  </span><span class="c1">## end of required packages ##</span>
+
+<span class="w">  </span>keepassxc<span class="w">                                            </span><span class="c1"># kdbx compatible password manager</span>
+<span class="w">  </span>syncthing
+<span class="w">  </span>sqlitebrowser<span class="w">                                        </span><span class="c1"># simple browser for sqlite databases</span>
+<span class="w">  </span>remmina<span class="w"> </span>remmina-plugins-<span class="o">{</span>vnc,rdp,www,spice,secret<span class="o">}</span><span class="w">   </span><span class="c1"># remote access</span>
+<span class="w">  </span>squashfs-tools
+<span class="w">  </span>VirtualBox
+<span class="w">  </span>audacity
+<span class="w">  </span>vlc<span class="w">                                                  </span><span class="c1"># videolan: vlc media player</span>
+<span class="w">  </span>totem<span class="w">                                                </span><span class="c1"># gnome video player</span>
+<span class="w">  </span>gimp
+<span class="w">  </span>flameshot<span class="w">                                            </span><span class="c1"># tool to create and modify screenshots</span>
+<span class="w">  </span>binwalk<span class="w">                                              </span><span class="c1"># tool to analyse binary files for embeded files and executable code</span>
+<span class="w">  </span>nmap
+<span class="w">  </span>gobuster<span class="w">                                             </span><span class="c1"># directory and vhost enumeration</span>
+<span class="w">  </span>wireshark
+<span class="w">  </span>texlive-scheme-full
+<span class="w">  </span>texstudio
+<span class="w">  </span>kubernetes-client
+<span class="w">  </span>ansible
+
+<span class="w">  </span><span class="c1"># yubikey utilities</span>
+<span class="w">  </span>yubikey-personalization-gui
+<span class="w">  </span>yubikey-manager-qt
+<span class="w">  </span>yubico-piv-tool
+
+<span class="w">  </span>code<span class="w">                                                 </span><span class="c1"># visual studio code using microsoft repo</span>
+<span class="w">  </span>anydesk<span class="w">                                              </span><span class="c1"># using anydesk (rhel) repo</span>
+<span class="w">  </span>teamviewer<span class="w">                                           </span><span class="c1"># using teamviewer repo</span>
+<span class="w">  </span>brave-browser<span class="w">                                        </span><span class="c1"># using brave repo</span>
+<span class="w">  </span>signal-desktop<span class="w">                                       </span><span class="c1"># from dnf copr</span>
+<span class="w">  </span>android-tools
+
+<span class="w">  </span>gnome-tweaks
+<span class="w">  </span>gnome-extensions-app
+<span class="w">  </span>file-roller<span class="w"> </span>nemo-fileroller
+<span class="w">  </span>nemo<span class="w">                                                 </span><span class="c1"># install nemo, so we have an alternative to nautilus</span>
+<span class="w">  </span>nemo-seahorse<span class="w">                                        </span><span class="c1"># nemo seahorse integration (sign / encrypt)</span>
+<span class="w">  </span>xed
+<span class="o">)</span>
+<span class="nv">FLATPAK_PACKAGES</span><span class="o">=(</span>
+<span class="w">  </span>im.riot.Riot<span class="w">                                         </span><span class="c1"># Element Client</span>
+<span class="w">  </span>com.spotify.Client
+<span class="w">  </span>org.ferdium.Ferdium
+<span class="w">  </span>org.gtk.Gtk3theme.Adwaita-dark
+<span class="o">)</span>
+
+<span class="c1">###################################</span>
+<span class="c1">##                               ##</span>
+<span class="c1">##   Create Repo Files Section   ##</span>
+<span class="c1">##                               ##</span>
+<span class="c1">###################################</span>
+mkdir<span class="w"> </span>-p<span class="w"> </span>/tmp/repos.d
+cat<span class="w"> </span><span class="s">&lt;&lt;_EOF &gt;&gt; /tmp/repos.d/anydesk.repo</span>
+<span class="s">[anydesk]</span>
+<span class="s">name=AnyDesk RHEL - stable</span>
+<span class="s">baseurl=http://rpm.anydesk.com/rhel/x86_64/</span>
+<span class="s">gpgcheck=1</span>
+<span class="s">repo_gpgcheck=1</span>
+<span class="s">gpgkey=https://keys.anydesk.com/repos/RPM-GPG-KEY</span>
+<span class="s">_EOF</span>
+cat<span class="w"> </span><span class="s">&lt;&lt;_EOF &gt;&gt; /tmp/repos.d/teamviewer.repo</span>
+<span class="s">[teamviewer]</span>
+<span class="s">name=TeamViewer - \$basearch</span>
+<span class="s">baseurl=https://linux.teamviewer.com/yum/stable/main/binary-\$basearch/</span>
+<span class="s">gpgkey=https://linux.teamviewer.com/pubkey/currentkey.asc</span>
+<span class="s">gpgcheck=1</span>
+<span class="s">repo_gpgcheck=1</span>
+<span class="s">enabled=1</span>
+<span class="s">type=rpm-md</span>
+<span class="s">_EOF</span>
+cat<span class="w"> </span><span class="s">&lt;&lt;_EOF &gt;&gt; /tmp/repos.d/vscode.repo</span>
+<span class="s">[code]</span>
+<span class="s">name=Visual Studio Code</span>
+<span class="s">baseurl=https://packages.microsoft.com/yumrepos/vscode</span>
+<span class="s">enabled=1</span>
+<span class="s">gpgcheck=1</span>
+<span class="s">gpgkey=https://packages.microsoft.com/keys/microsoft.asc</span>
+<span class="s">_EOF</span>
+
+<span class="c1">#################################</span>
+<span class="c1">##                             ##</span>
+<span class="c1">##   Install Package Section   ##</span>
+<span class="c1">##                             ##</span>
+<span class="c1">#################################</span>
+sudo<span class="w"> </span>dnf<span class="w"> </span>update<span class="w"> </span>-y<span class="w"> </span>--refresh
+
+<span class="c1"># add fusion repositories</span>
+sudo<span class="w"> </span>dnf<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-<span class="k">$(</span>rpm<span class="w"> </span>-E<span class="w"> </span>%fedora<span class="k">)</span>.noarch.rpm<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-<span class="k">$(</span>rpm<span class="w"> </span>-E<span class="w"> </span>%fedora<span class="k">)</span>.noarch.rpm
+
+<span class="c1">## check if packages in configuration, which require pre install commands ##</span>
+<span class="o">[[</span><span class="w"> </span><span class="si">${</span><span class="nv">DNF_PACKAGES</span><span class="p">[@]</span><span class="si">}</span><span class="w"> </span><span class="o">=</span>~<span class="w"> </span><span class="s2">&quot;code&quot;</span><span class="w"> </span><span class="o">]]</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="o">(</span>
+<span class="w">  </span>sudo<span class="w"> </span>mv<span class="w"> </span>/tmp/repos.d/vscode.repo<span class="w"> </span>/etc/yum.repos.d/vscode.repo
+<span class="w">  </span>sudo<span class="w"> </span>rpm<span class="w"> </span>--import<span class="w"> </span>https://packages.microsoft.com/keys/microsoft.asc
+<span class="o">)</span>
+
+<span class="o">[[</span><span class="w"> </span><span class="si">${</span><span class="nv">DNF_PACKAGES</span><span class="p">[@]</span><span class="si">}</span><span class="w"> </span><span class="o">=</span>~<span class="w"> </span><span class="s2">&quot;anydesk&quot;</span><span class="w"> </span><span class="o">]]</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="o">(</span>
+<span class="w">  </span>sudo<span class="w"> </span>mv<span class="w"> </span>/tmp/repos.d/anydesk.repo<span class="w"> </span>/etc/yum.repos.d/anydesk.repo
+<span class="w">  </span>sudo<span class="w"> </span>rpm<span class="w"> </span>--import<span class="w"> </span>https://keys.anydesk.com/repos/RPM-GPG-KEY
+<span class="o">)</span>
+
+<span class="o">[[</span><span class="w"> </span><span class="si">${</span><span class="nv">DNF_PACKAGES</span><span class="p">[@]</span><span class="si">}</span><span class="w"> </span><span class="o">=</span>~<span class="w"> </span><span class="s2">&quot;teamviewer&quot;</span><span class="w"> </span><span class="o">]]</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="o">(</span>
+<span class="w">  </span>sudo<span class="w"> </span>mv<span class="w"> </span>/tmp/repos.d/teamviewer.repo<span class="w"> </span>/etc/yum.repos.d/teamviewer.repo
+<span class="w">  </span>sudo<span class="w"> </span>rpm<span class="w"> </span>--import<span class="w"> </span>https://linux.teamviewer.com/pubkey/currentkey.asc
+<span class="o">)</span>
+
+<span class="o">[[</span><span class="w"> </span><span class="si">${</span><span class="nv">DNF_PACKAGES</span><span class="p">[@]</span><span class="si">}</span><span class="w"> </span><span class="o">=</span>~<span class="w"> </span><span class="s2">&quot;brave-browser&quot;</span><span class="w"> </span><span class="o">]]</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="o">(</span>
+<span class="w">  </span>sudo<span class="w"> </span>dnf<span class="w"> </span>config-manager<span class="w"> </span>--add-repo<span class="w"> </span>https://brave-browser-rpm-release.s3.brave.com/x86_64/
+<span class="w">  </span>sudo<span class="w"> </span>rpm<span class="w"> </span>--import<span class="w"> </span>https://brave-browser-rpm-release.s3.brave.com/brave-core.asc
+<span class="o">)</span>
+
+<span class="o">[[</span><span class="w"> </span><span class="si">${</span><span class="nv">DNF_PACKAGES</span><span class="p">[@]</span><span class="si">}</span><span class="w"> </span><span class="o">=</span>~<span class="w"> </span><span class="s2">&quot;signal-desktop&quot;</span><span class="w"> </span><span class="o">]]</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="o">(</span>
+<span class="w">  </span>sudo<span class="w"> </span>dnf<span class="w"> </span>config-manager<span class="w"> </span>--add-repo<span class="w"> </span>https://download.opensuse.org/repositories/network:im:signal/Fedora_37/network:im:signal.repo
+<span class="w">  </span>sudo<span class="w"> </span>rpm<span class="w"> </span>--import<span class="w"> </span>https://download.opensuse.org/repositories/network:/im:/signal/Fedora_37/repodata/repomd.xml.key
+<span class="o">)</span>
+
+<span class="c1">## install additional software ##</span>
+sudo<span class="w"> </span>dnf<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span><span class="si">${</span><span class="nv">DNF_PACKAGES</span><span class="p">[@]</span><span class="si">}</span>
+
+<span class="o">[[</span><span class="w"> </span><span class="si">${#</span><span class="nv">FLATPAK_PACKAGES</span><span class="p">[@]</span><span class="si">}</span><span class="w"> </span>-ne<span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="o">]]</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="o">(</span>
+<span class="w">  </span>sudo<span class="w"> </span>dnf<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>flatpak
+<span class="w">  </span>sudo<span class="w"> </span>flatpak<span class="w"> </span>remote-add<span class="w"> </span>--if-not-exists<span class="w"> </span>flathub<span class="w"> </span>https://flathub.org/repo/flathub.flatpakrepo
+<span class="w">  </span>sudo<span class="w"> </span>flatpak<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>flathub
+<span class="w">  </span>sudo<span class="w"> </span>flatpak<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span><span class="si">${</span><span class="nv">FLATPAK_PACKAGES</span><span class="p">[@]</span><span class="si">}</span>
+<span class="o">)</span>
+
+which<span class="w"> </span>ansible<span class="w"> </span><span class="p">&amp;</span>&gt;<span class="w"> </span>/dev/null<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>ansible-galaxy<span class="w"> </span>collection<span class="w"> </span>install<span class="w"> </span>community.general<span class="w"> </span>vyos.vyos
+
+<span class="c1"># install drawio (won&#39;t update automaticly!)</span>
+curl<span class="w"> </span>-s<span class="w"> </span>https://api.github.com/repos/jgraph/drawio-desktop/releases/latest<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>browser_download_url<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span><span class="s1">&#39;\.rpm&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>cut<span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;&quot;&#39;</span><span class="w"> </span>-f<span class="w"> </span><span class="m">4</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>wget<span class="w"> </span>-O<span class="w"> </span>/tmp/drawio.rpm<span class="w"> </span>-i<span class="w"> </span>-
+sudo<span class="w"> </span>yum<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>/tmp/drawio.rpm
+sudo<span class="w"> </span>rm<span class="w"> </span>/tmp/drawio.rpm
+
+<span class="c1"># add password generator script</span>
+sudo<span class="w"> </span>wget<span class="w"> </span>-q<span class="w"> </span>https://raw.githubusercontent.com/felbinger/scripts/master/genpw.sh<span class="w"> </span>-O<span class="w"> </span>/usr/local/bin/genpw
+sudo<span class="w"> </span>chmod<span class="w"> </span>+x<span class="w"> </span>/usr/local/bin/genpw
+
+<span class="c1"># start jetbrains-toolbox to install idea, pycharm and clion</span>
+curl<span class="w"> </span>-s<span class="w"> </span>-L<span class="w"> </span>-o-<span class="w"> </span><span class="k">$(</span>curl<span class="w"> </span>-s<span class="w"> </span><span class="s2">&quot;https://data.services.jetbrains.com/products?code=TBA&quot;</span><span class="w">  </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span>-r<span class="w"> </span><span class="s1">&#39;.[0].releases | .[0].downloads.linux.link&#39;</span><span class="k">)</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>tar<span class="w"> </span>xzC<span class="w"> </span>/tmp
+/tmp/jetbrains-toolbox*/jetbrains-toolbox
+
+<span class="c1"># change ps1</span>
+<span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;PS1=&#39;\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ &#39;&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>sudo<span class="w"> </span>tee<span class="w"> </span>-a<span class="w"> </span>/<span class="o">{</span>root,home/<span class="si">${</span><span class="nv">USER</span><span class="si">}</span><span class="o">}</span>/.bashrc<span class="w"> </span><span class="p">&amp;</span>&gt;<span class="w"> </span>/dev/null
+
+<span class="c1"># add your user to some groups for applications</span>
+<span class="o">[[</span><span class="w"> </span><span class="si">${</span><span class="nv">DNF_PACKAGES</span><span class="p">[@]</span><span class="si">}</span><span class="w"> </span><span class="o">=</span>~<span class="w"> </span><span class="s2">&quot;VirtualBox&quot;</span><span class="w"> </span><span class="o">]]</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>sudo<span class="w"> </span>usermod<span class="w"> </span>-aG<span class="w"> </span>vboxusers<span class="w"> </span><span class="si">${</span><span class="nv">USER</span><span class="si">}</span>
+sudo<span class="w"> </span>usermod<span class="w"> </span>-aG<span class="w"> </span>dialout<span class="w"> </span><span class="si">${</span><span class="nv">USER</span><span class="si">}</span>
+
+<span class="c1">###############################################</span>
+<span class="c1">##                                           ##</span>
+<span class="c1">##   Configure Desktop Environment Section   ##</span>
+<span class="c1">##                                           ##</span>
+<span class="c1">###############################################</span>
+
+<span class="c1"># use nemo as file manager (instead of gnomes default: nautilus)</span>
+xdg-mime<span class="w"> </span>default<span class="w"> </span>nemo.desktop<span class="w"> </span>inode/directory<span class="w"> </span>application/x-gnome-saved-search
+
+<span class="c1"># install gnome shell extensions</span>
+<span class="nv">extensions</span><span class="o">=(</span>
+<span class="w">  </span><span class="c1"># &quot;https://extensions.gnome.org/extension/2890/tray-icons-reloaded/&quot;</span>
+<span class="w">  </span><span class="s2">&quot;https://extensions.gnome.org/extension/3843/just-perfection/&quot;</span>
+<span class="w">  </span><span class="s2">&quot;https://extensions.gnome.org/extension/615/appindicator-support/&quot;</span>
+<span class="o">)</span>
+<span class="k">for</span><span class="w"> </span>extension<span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">extensions</span><span class="p">[@]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">;</span><span class="w"> </span><span class="k">do</span>
+<span class="w">  </span><span class="nv">extensionId</span><span class="o">=</span><span class="k">$(</span>curl<span class="w"> </span>-s<span class="w"> </span><span class="nv">$extension</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-oP<span class="w"> </span><span class="s1">&#39;data-uuid=&quot;\K[^&quot;]+&#39;</span><span class="k">)</span>
+<span class="w">  </span><span class="nv">versionTag</span><span class="o">=</span><span class="k">$(</span>curl<span class="w"> </span>-Lfs<span class="w"> </span><span class="s2">&quot;https://extensions.gnome.org/extension-query/?search=</span><span class="si">${</span><span class="nv">extensionId</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.extensions[0] | .shell_version_map | map(.pk) | max&#39;</span><span class="k">)</span>
+<span class="w">  </span>wget<span class="w"> </span>-qO<span class="w"> </span>/tmp/<span class="si">${</span><span class="nv">extensionId</span><span class="si">}</span>.zip<span class="w"> </span><span class="s2">&quot;https://extensions.gnome.org/download-extension/</span><span class="si">${</span><span class="nv">extensionId</span><span class="si">}</span><span class="s2">.shell-extension.zip?version_tag=</span><span class="si">${</span><span class="nv">versionTag</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="w">  </span>gnome-extensions<span class="w"> </span>install<span class="w"> </span>--force<span class="w"> </span>/tmp/<span class="si">${</span><span class="nv">extensionId</span><span class="si">}</span>.zip
+<span class="w">  </span><span class="c1"># warning: requires user interaction!</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span>!<span class="w"> </span>gnome-extensions<span class="w"> </span>list<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>--quiet<span class="w"> </span><span class="si">${</span><span class="nv">extensionId</span><span class="si">}</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
+<span class="w">      </span>busctl<span class="w"> </span>--user<span class="w"> </span>call<span class="w"> </span>org.gnome.Shell.Extensions<span class="w"> </span>/org/gnome/Shell/Extensions<span class="w"> </span>org.gnome.Shell.Extensions<span class="w"> </span>InstallRemoteExtension<span class="w"> </span>s<span class="w"> </span><span class="si">${</span><span class="nv">extensionId</span><span class="si">}</span>
+<span class="w">  </span><span class="k">fi</span>
+<span class="w">  </span>gnome-extensions<span class="w"> </span><span class="nb">enable</span><span class="w"> </span><span class="si">${</span><span class="nv">extensionId</span><span class="si">}</span>
+<span class="w">  </span>rm<span class="w"> </span>/tmp/<span class="si">${</span><span class="nv">extensionId</span><span class="si">}</span>.zip
+<span class="k">done</span>
+
+<span class="c1"># load schemas of installed extensions into gsettings schema database</span>
+find<span class="w"> </span>~/.local/share/gnome-shell/extensions/<span class="w"> </span>-type<span class="w"> </span>f<span class="w"> </span>-name<span class="w"> </span><span class="s1">&#39;*.gschema.xml&#39;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-exec<span class="w"> </span>sudo<span class="w"> </span>cp<span class="w"> </span><span class="o">{}</span><span class="w"> </span>/usr/share/glib-2.0/schemas/<span class="w"> </span><span class="se">\;</span>
+sudo<span class="w"> </span>glib-compile-schemas<span class="w"> </span>/usr/share/glib-2.0/schemas/
+
+<span class="c1"># gsettings set org.gnome.shell.extensions.trayIconsReloaded icon-padding-horizontal 0</span>
+<span class="c1"># gsettings set org.gnome.shell.extensions.trayIconsReloaded icon-margin-horizontal  0</span>
+<span class="c1"># gsettings set org.gnome.shell.extensions.trayIconsReloaded icons-limit 8</span>
+
+gsettings<span class="w"> </span><span class="nb">set</span><span class="w"> </span>org.gnome.shell.extensions.just-perfection<span class="w"> </span>activities-button<span class="w"> </span><span class="nb">false</span>
+gsettings<span class="w"> </span><span class="nb">set</span><span class="w"> </span>org.gnome.shell.extensions.just-perfection<span class="w"> </span>world-clock<span class="w"> </span><span class="nb">false</span>
+gsettings<span class="w"> </span><span class="nb">set</span><span class="w"> </span>org.gnome.shell.extensions.just-perfection<span class="w"> </span>weather<span class="w"> </span><span class="nb">false</span>
+gsettings<span class="w"> </span><span class="nb">set</span><span class="w"> </span>org.gnome.shell.extensions.just-perfection<span class="w"> </span>window-menu-take-screenshot-button<span class="w"> </span><span class="nb">false</span>
+gsettings<span class="w"> </span><span class="nb">set</span><span class="w"> </span>org.gnome.shell.extensions.just-perfection<span class="w"> </span>startup-status<span class="w"> </span><span class="m">0</span>
+
+gsettings<span class="w"> </span><span class="nb">set</span><span class="w"> </span>org.gnome.desktop.wm.preferences<span class="w"> </span>button-layout<span class="w"> </span><span class="s1">&#39;appmenu:minimize,maximize,close&#39;</span>
+gsettings<span class="w"> </span><span class="nb">set</span><span class="w"> </span>org.gnome.desktop.interface<span class="w"> </span>show-battery-percentage<span class="w"> </span><span class="nb">true</span>
+gsettings<span class="w"> </span><span class="nb">set</span><span class="w"> </span>org.gnome.desktop.interface<span class="w"> </span>enable-hot-corners<span class="w"> </span><span class="nb">false</span>
+gsettings<span class="w"> </span><span class="nb">set</span><span class="w"> </span>org.gnome.shell.app-switcher<span class="w"> </span>current-workspace-only<span class="w"> </span><span class="nb">true</span>
+
+<span class="c1"># set background images for screensaver and desktop to static color (#150936)</span>
+<span class="nv">path</span><span class="o">=</span>~/Pictures/background.png
+convert<span class="w"> </span>-size<span class="w"> </span>100x100<span class="w"> </span><span class="s1">&#39;xc:#150936&#39;</span><span class="w"> </span><span class="si">${</span><span class="nv">path</span><span class="si">}</span>
+gsettings<span class="w"> </span><span class="nb">set</span><span class="w"> </span>org.gnome.desktop.background<span class="w"> </span>picture-uri-dark<span class="w"> </span><span class="s2">&quot;file://</span><span class="si">${</span><span class="nv">path</span><span class="si">}</span><span class="s2">&quot;</span>
+gsettings<span class="w"> </span><span class="nb">set</span><span class="w"> </span>org.gnome.desktop.background<span class="w"> </span>picture-uri<span class="w"> </span><span class="s2">&quot;file://</span><span class="si">${</span><span class="nv">path</span><span class="si">}</span><span class="s2">&quot;</span>
+gsettings<span class="w"> </span><span class="nb">set</span><span class="w"> </span>org.gnome.desktop.screensaver<span class="w"> </span>picture-uri<span class="w"> </span><span class="s2">&quot;file://</span><span class="si">${</span><span class="nv">path</span><span class="si">}</span><span class="s2">&quot;</span>
+
+<span class="c1"># adjust terminator configuration</span>
+gsettings<span class="w"> </span><span class="nb">set</span><span class="w"> </span>org.gnome.desktop.default-applications.terminal<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>terminator
+gsettings<span class="w"> </span><span class="nb">set</span><span class="w"> </span>org.cinnamon.desktop.default-applications.terminal<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>terminator<span class="w">  </span><span class="c1"># required for nemo (right click -&gt; open terminal) to work properly</span>
+gsettings<span class="w"> </span><span class="nb">set</span><span class="w"> </span>org.gnome.desktop.default-applications.terminal<span class="w"> </span>exec-arg<span class="w"> </span><span class="s1">&#39;&#39;</span>
+mkdir<span class="w"> </span>-p<span class="w"> </span>~/.config/terminator
+cat<span class="w"> </span><span class="s">&lt;&lt;_EOF &gt;&gt; ~/.config/terminator/config</span>
+<span class="s">[global_config]</span>
+<span class="s">[keybindings]</span>
+<span class="s">[profiles]</span>
+<span class="s">  [[default]]</span>
+<span class="s">    background_color = &quot;#241f31&quot;</span>
+<span class="s">    background_darkness = 0.95</span>
+<span class="s">    cursor_color = &quot;#aaaaaa&quot;</span>
+<span class="s">    show_titlebar = False</span>
+<span class="s">    scrollbar_position = hidden</span>
+<span class="s">    scrollback_infinite = True</span>
+<span class="s">[layouts]</span>
+<span class="s">  [[default]]</span>
+<span class="s">    [[[window0]]]</span>
+<span class="s">      type = Window</span>
+<span class="s">      parent = &quot;&quot;</span>
+<span class="s">    [[[child1]]]</span>
+<span class="s">      type = Terminal</span>
+<span class="s">      parent = window0</span>
+<span class="s">[plugins]</span>
+<span class="s">_EOF</span>
+
+gsettings<span class="w"> </span><span class="nb">set</span><span class="w"> </span>org.gnome.desktop.interface<span class="w"> </span>gtk-theme<span class="w"> </span><span class="s1">&#39;Adwaita-dark&#39;</span>
+gsettings<span class="w"> </span><span class="nb">set</span><span class="w"> </span>org.gnome.desktop.interface<span class="w"> </span>color-scheme<span class="w"> </span><span class="s1">&#39;prefer-dark&#39;</span>
+
+gsettings<span class="w"> </span><span class="nb">set</span><span class="w"> </span>org.gnome.desktop.interface<span class="w"> </span>clock-show-weekday<span class="w"> </span><span class="nb">true</span>
+gsettings<span class="w"> </span><span class="nb">set</span><span class="w"> </span>org.gnome.desktop.interface<span class="w"> </span>clock-show-seconds<span class="w"> </span><span class="nb">true</span>
+gsettings<span class="w"> </span><span class="nb">set</span><span class="w"> </span>org.gnome.desktop.datetime<span class="w"> </span>automatic-timezone<span class="w"> </span><span class="nb">true</span>
+gsettings<span class="w"> </span><span class="nb">set</span><span class="w"> </span>org.gnome.desktop.calendar<span class="w"> </span>show-weekdate<span class="w"> </span><span class="nb">true</span>
+
+gsettings<span class="w"> </span><span class="nb">set</span><span class="w"> </span>org.gnome.desktop.peripherals.touchpad<span class="w"> </span>tap-to-click<span class="w"> </span><span class="nb">true</span>
+gsettings<span class="w"> </span><span class="nb">set</span><span class="w"> </span>org.gnome.desktop.peripherals.touchpad<span class="w"> </span>natural-scroll<span class="w"> </span><span class="nb">false</span>
+
+<span class="c1"># add keybinds, see https://askubuntu.com/questions/597395/how-to-set-custom-keyboard-shortcuts-from-terminal</span>
+gsettings<span class="w"> </span><span class="nb">set</span><span class="w"> </span>org.gnome.settings-daemon.plugins.media-keys<span class="w"> </span>custom-keybindings<span class="w"> </span><span class="s2">&quot;[&#39;/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/&#39;, &#39;/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1/&#39;]&quot;</span>
+
+<span class="c1"># disable help keybind</span>
+gsettings<span class="w"> </span><span class="nb">set</span><span class="w"> </span>org.gnome.settings-daemon.plugins.media-keys<span class="w"> </span><span class="nb">help</span><span class="w"> </span><span class="s2">&quot;[]&quot;</span>
+
+<span class="c1"># CTRL + ALT + T -&gt; CMD: terminator</span>
+gsettings<span class="w"> </span><span class="nb">set</span><span class="w"> </span>org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/<span class="w"> </span>name<span class="w"> </span><span class="s1">&#39;Terminal&#39;</span>
+gsettings<span class="w"> </span><span class="nb">set</span><span class="w"> </span>org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/<span class="w"> </span><span class="nb">command</span><span class="w"> </span><span class="s1">&#39;terminator&#39;</span>
+gsettings<span class="w"> </span><span class="nb">set</span><span class="w"> </span>org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/<span class="w"> </span>binding<span class="w"> </span><span class="s1">&#39;&lt;Control&gt;&lt;Alt&gt;t&#39;</span>
+
+<span class="c1"># CTRL + SHIFT + S -&gt; CMD: flameshot gui</span>
+gsettings<span class="w"> </span><span class="nb">set</span><span class="w"> </span>org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1/<span class="w"> </span>name<span class="w"> </span><span class="s1">&#39;Snapshot&#39;</span>
+gsettings<span class="w"> </span><span class="nb">set</span><span class="w"> </span>org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1/<span class="w"> </span><span class="nb">command</span><span class="w"> </span><span class="s1">&#39;flameshot gui&#39;</span>
+gsettings<span class="w"> </span><span class="nb">set</span><span class="w"> </span>org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1/<span class="w"> </span>binding<span class="w"> </span><span class="s1">&#39;&lt;Shift&gt;&lt;Control&gt;s&#39;</span>
+
+<span class="c1"># Super + E -&gt; Launchers/Home folder</span>
+gsettings<span class="w"> </span><span class="nb">set</span><span class="w"> </span>org.gnome.settings-daemon.plugins.media-keys<span class="w"> </span>home<span class="w"> </span><span class="s2">&quot;[&#39;&lt;Super&gt;e&#39;]&quot;</span>
+
+<span class="c1"># configure autostart</span>
+<span class="nv">paths</span><span class="o">=(</span>
+<span class="w">  </span><span class="s2">&quot;/usr/share/applications/syncthing-start.desktop&quot;</span>
+<span class="w">  </span><span class="s2">&quot;/usr/share/applications/signal-desktop.desktop&quot;</span>
+<span class="w">  </span><span class="s2">&quot;/var/lib/flatpak/app/org.ferdium.Ferdium/x86_64/stable/fbca90383214fa94cf7721471902e3ec7b8222dbe7e532b71a9b607c445af2ae/export/share/applications/org.ferdium.Ferdium.desktop&quot;</span>
+<span class="w">  </span><span class="s2">&quot;/var/lib/flatpak/app/im.riot.Riot/x86_64/stable/9bd0c958912a8187b019b3a11260da2e6c241b92a6e570fd0efc8b2f53186310/export/share/applications/im.riot.Riot.desktop&quot;</span>
+<span class="o">)</span>
+<span class="k">for</span><span class="w"> </span>path<span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="si">${</span><span class="nv">paths</span><span class="p">[@]</span><span class="si">}</span><span class="p">;</span><span class="w"> </span><span class="k">do</span>
+<span class="w">  </span>cp<span class="w"> </span><span class="si">${</span><span class="nv">path</span><span class="si">}</span><span class="w"> </span>~/.config/autostart/
+<span class="k">done</span>
+chmod<span class="w"> </span>+x<span class="w"> </span>~/.config/autostart/*.desktop
+
+<span class="c1"># download profile picture for the user</span>
+curl<span class="w"> </span>-s<span class="w"> </span>-L<span class="w"> </span>-o<span class="w"> </span>~/Pictures/profile.png<span class="w"> </span>https://avatars.githubusercontent.com/u/26925347
+
+<span class="c1"># start &quot;gnome on xorg&quot; instead of wayland</span>
+sudo<span class="w"> </span>sed<span class="w"> </span>-i<span class="w"> </span><span class="s1">&#39;s/Session=gnome/Session=gnome-xorg/&#39;</span><span class="w"> </span>/var/lib/AccountsService/users/<span class="si">${</span><span class="nv">USER</span><span class="si">}</span>
+
+<span class="c1">##############################</span>
+<span class="c1">##                          ##</span>
+<span class="c1">##   Remove Logos Section   ##</span>
+<span class="c1">##                          ##</span>
+<span class="c1">##############################</span>
+<span class="c1"># remove fedora logo from gdm</span>
+xhost<span class="w"> </span>+si:localuser:gdm
+sudo<span class="w"> </span>-u<span class="w"> </span>gdm<span class="w"> </span>gsettings<span class="w"> </span><span class="nb">set</span><span class="w"> </span>org.gnome.login-screen<span class="w"> </span>logo<span class="w"> </span><span class="s1">&#39;&#39;</span>
+
+<span class="c1"># remove fedora logo from plymouth and regenerate initramfs</span>
+sudo<span class="w"> </span>cp<span class="w"> </span>/usr/share/plymouth/themes/spinner/watermark.png<span class="o">{</span>,.bak<span class="o">}</span>
+sudo<span class="w"> </span>convert<span class="w"> </span>-size<span class="w"> </span>128x32<span class="w"> </span>xc:transparent<span class="w"> </span>/usr/share/plymouth/themes/spinner/watermark.png
+sudo<span class="w"> </span>cp<span class="w"> </span>/boot/initramfs-<span class="k">$(</span>uname<span class="w"> </span>-r<span class="k">)</span>.img<span class="o">{</span>,.bak<span class="o">}</span>
+sudo<span class="w"> </span>dracut<span class="w"> </span>-f<span class="w"> </span>/boot/initramfs-<span class="k">$(</span>uname<span class="w"> </span>-r<span class="k">)</span>.img
+
+
+<span class="c1">### CLEANUP</span>
+rm<span class="w"> </span>-r<span class="w"> </span>/tmp/repos.d
+rm<span class="w"> </span>-r<span class="w"> </span>/tmp/jetbrains-toolbox*
+rm<span class="w"> </span>-r<span class="w"> </span>~/Public
+rm<span class="w"> </span>-r<span class="w"> </span>~/Templates
+sudo<span class="w"> </span>dnf<span class="w"> </span>remove<span class="w"> </span>-y<span class="w"> </span>nautilus<span class="w"> </span>gnome-text-editor
+</code></pre></div>
+</details>
+
+<p>Auch auf meinen Servern war Automatisierung ein wichtiges Thema. Ich setzte lange auf Debian, da es
+Stabilität, lange Support-Zyklen und eine große Community bot. Doch auch hier gab es Herausforderungen:
+manuelle Konfigurationsänderungen, Paketkonflikte und Updates, die sich nicht immer problemlos durchführen
+ließen. Zudem wünschte ich mir eine einfachere Möglichkeit, meine Server-Setups zu dokumentieren und konsistent
+zu halten.</p>
+<p>Anfangs setzte ich auch hier Post-Install-Skripte ein, um meine Systemstruktur gemäß einem <a href="https://adminguide.pages.dev">Admin-Guide</a>,
+den ich mit Freunden erarbeitet hatte, einzurichten. Zur Verwaltung und Konfiguration meiner Server griff ich später auf Ansible zurück,
+um Änderungen zentral zu steuern und auszurollen. Allerdings brachte das eine wesentliche Herausforderung mit sich: Ansible berücksichtigt
+meist nur den aktuellen Zustand des Systems. Manuelle Änderungen durch Administratoren wurden entweder nicht erkannt oder von späteren
+Playbook-Läufen überschrieben, was oft zu unerwarteten Problemen führte. Das System wurde dadurch nicht aus einer fest definierten
+Ausgangslage heraus neu aufgebaut, sondern lediglich schrittweise modifiziert - ein grundlegender Unterschied zu NixOS.
+Um die Installation der Maschinen zu automatisieren diente eine <a href="https://wiki.debian.org/DebianInstaller/Preseed">Preseed-Konfiguration</a>.</p>
+<details>
+  <summary>Debian Post-Install Skript gemäß Admin-Guide Struktur</summary>
+  <div class="highlight"><pre><span></span><code><span class="ch">#!/bin/bash</span>
+
+<span class="c1">## CONFIGURATION ###</span>
+<span class="nv">ADM_NAME</span><span class="o">=</span><span class="s1">&#39;admin&#39;</span>
+<span class="nv">ADM_GID</span><span class="o">=</span><span class="m">997</span>
+<span class="nv">ADM_HOME</span><span class="o">=</span><span class="s1">&#39;/home/admin&#39;</span>
+<span class="nv">ADM_USERS</span><span class="o">=(</span><span class="s1">&#39;user&#39;</span><span class="o">)</span>
+
+<span class="nb">declare</span><span class="w"> </span>-A<span class="w"> </span><span class="nv">STACKS</span><span class="o">=(</span><span class="se">\</span>
+<span class="w">  </span><span class="o">[</span><span class="s2">&quot;main&quot;</span><span class="o">]=</span><span class="s2">&quot;172.30.100.0/24&quot;</span>
+<span class="w">  </span><span class="o">[</span><span class="s2">&quot;comms&quot;</span><span class="o">]=</span><span class="s2">&quot;172.30.101.0/24&quot;</span>
+<span class="w">  </span><span class="o">[</span><span class="s2">&quot;storage&quot;</span><span class="o">]=</span><span class="s2">&quot;172.30.102.0/24&quot;</span>
+<span class="o">)</span>
+
+<span class="nb">declare</span><span class="w"> </span>-A<span class="w"> </span><span class="nv">HELPER</span><span class="o">=(</span><span class="se">\</span>
+<span class="w">  </span><span class="o">[</span><span class="s2">&quot;proxy&quot;</span><span class="o">]=</span><span class="s2">&quot;172.30.0.0/24&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="o">[</span><span class="s2">&quot;database&quot;</span><span class="o">]=</span><span class="s2">&quot;172.30.1.0/24&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="o">[</span><span class="s2">&quot;monitoring&quot;</span><span class="o">]=</span><span class="s2">&quot;172.30.2.0/24&quot;</span>
+<span class="o">)</span>
+<span class="c1">### END of CONFIGURATION ###</span>
+
+<span class="k">function</span><span class="w"> </span>create_compose<span class="o">()</span><span class="w"> </span><span class="o">{</span>
+<span class="w">  </span>cp<span class="w"> </span>resources/docker-compose.template.yml<span class="w"> </span><span class="si">${</span><span class="nv">1</span><span class="si">}</span>
+<span class="w">  </span><span class="c1"># stack network</span>
+<span class="w">  </span><span class="nb">echo</span><span class="w"> </span>-e<span class="w"> </span><span class="s2">&quot;    external:&quot;</span><span class="w"> </span>&gt;&gt;<span class="si">${</span><span class="nv">compose</span><span class="si">}</span>
+<span class="w">  </span><span class="nb">echo</span><span class="w"> </span>-e<span class="w"> </span><span class="s2">&quot;      name: </span><span class="si">${</span><span class="nv">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span>&gt;&gt;<span class="si">${</span><span class="nv">compose</span><span class="si">}</span>
+
+<span class="w">  </span><span class="c1"># define helper networks</span>
+<span class="w">  </span><span class="k">for</span><span class="w"> </span>helper_name<span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="si">${</span><span class="p">!HELPER[@]</span><span class="si">}</span><span class="p">;</span><span class="w"> </span><span class="k">do</span>
+<span class="w">    </span><span class="nb">echo</span><span class="w"> </span>-e<span class="w"> </span><span class="s2">&quot;  </span><span class="si">${</span><span class="nv">helper_name</span><span class="si">}</span><span class="s2">:&quot;</span><span class="w"> </span>&gt;&gt;<span class="si">${</span><span class="nv">compose</span><span class="si">}</span>
+<span class="w">    </span><span class="nb">echo</span><span class="w"> </span>-e<span class="w"> </span><span class="s2">&quot;    external:&quot;</span><span class="w"> </span>&gt;&gt;<span class="si">${</span><span class="nv">compose</span><span class="si">}</span>
+<span class="w">    </span><span class="nb">echo</span><span class="w"> </span>-e<span class="w"> </span><span class="s2">&quot;      name: </span><span class="si">${</span><span class="nv">helper_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span>&gt;&gt;<span class="si">${</span><span class="nv">compose</span><span class="si">}</span>
+<span class="w">  </span><span class="k">done</span>
+<span class="o">}</span>
+
+<span class="c1"># require root privileges</span>
+<span class="k">if</span><span class="w"> </span><span class="o">[[</span><span class="w"> </span><span class="k">$(</span>/usr/bin/id<span class="w"> </span>-u<span class="k">)</span><span class="w"> </span>!<span class="o">=</span><span class="w"> </span><span class="s2">&quot;0&quot;</span><span class="w"> </span><span class="o">]]</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
+<span class="w">  </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Please run the script as root!&quot;</span>
+<span class="w">  </span><span class="nb">exit</span><span class="w"> </span><span class="m">1</span>
+<span class="k">fi</span>
+
+<span class="k">if</span><span class="w"> </span><span class="o">[[</span><span class="w"> </span><span class="si">${</span><span class="nv">RERUN</span><span class="si">}</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="o">]]</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
+<span class="w">  </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;You already ran the script, if you really want to run the script again set &#39;RERUN=0&#39;. (This might break your system!)&quot;</span>
+<span class="w">  </span><span class="nb">exit</span><span class="w"> </span><span class="m">1</span>
+<span class="k">fi</span>
+
+<span class="c1"># add rerun=1 variable to prevent postinstall to be executed multiple times</span>
+sed<span class="w"> </span>-i<span class="w"> </span><span class="s1">&#39;2 i\RERUN=1&#39;</span><span class="w"> </span><span class="si">${</span><span class="nv">0</span><span class="si">}</span>
+
+<span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;&gt;&gt;&gt; Installing Software&quot;</span>
+apt-get<span class="w"> </span>update
+apt-get<span class="w"> </span>install<span class="w"> </span>sudo<span class="w"> </span>curl<span class="w"> </span>wget<span class="w"> </span>borgbackup
+
+<span class="c1"># install docker if not already installed</span>
+<span class="k">if</span><span class="w"> </span><span class="o">[[</span><span class="w"> </span>-z<span class="w"> </span><span class="k">$(</span>which<span class="w"> </span>docker<span class="k">)</span><span class="w"> </span><span class="o">]]</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
+<span class="w">  </span>curl<span class="w"> </span>https://get.docker.com<span class="w"> </span><span class="p">|</span><span class="w"> </span>bash
+<span class="k">fi</span>
+
+<span class="c1"># install docker-compose if not already installed</span>
+<span class="k">if</span><span class="w"> </span><span class="o">[[</span><span class="w"> </span>-z<span class="w"> </span><span class="k">$(</span>which<span class="w"> </span>docker-compose<span class="k">)</span><span class="w"> </span><span class="o">]]</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
+<span class="w">  </span>curl<span class="w"> </span>-L<span class="w"> </span><span class="s2">&quot;https://github.com/docker/compose/releases/latest/download/docker-compose-</span><span class="k">$(</span>uname<span class="w"> </span>-s<span class="k">)</span><span class="s2">-</span><span class="k">$(</span>uname<span class="w"> </span>-m<span class="k">)</span><span class="s2">&quot;</span><span class="w"> </span>-o<span class="w"> </span>/usr/local/bin/docker-compose
+<span class="w">  </span>chmod<span class="w"> </span>+x<span class="w"> </span>/usr/local/bin/docker-compose
+<span class="k">fi</span>
+
+<span class="c1"># remove trailing slash from ADM_HOME</span>
+<span class="o">[[</span><span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">ADM_HOME</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span><span class="o">==</span><span class="w"> </span>*/<span class="w"> </span><span class="o">]]</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nv">ADM_HOME</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">ADM_HOME</span><span class="p">:</span><span class="k">:-</span><span class="nv">1</span><span class="si">}</span><span class="s2">&quot;</span>
+
+<span class="c1"># create admin group, add members to group and set permissions</span>
+<span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;&gt;&gt;&gt; Creating Admin Setup&quot;</span>
+/usr/sbin/groupadd<span class="w"> </span>-g<span class="w"> </span><span class="si">${</span><span class="nv">ADM_GID</span><span class="si">}</span><span class="w"> </span><span class="si">${</span><span class="nv">ADM_NAME</span><span class="si">}</span>
+mkdir<span class="w"> </span><span class="si">${</span><span class="nv">ADM_HOME</span><span class="si">}</span>
+chown<span class="w"> </span>-R<span class="w"> </span>root:<span class="si">${</span><span class="nv">ADM_NAME</span><span class="si">}</span><span class="w"> </span><span class="si">${</span><span class="nv">ADM_HOME</span><span class="si">}</span>
+chmod<span class="w"> </span>-R<span class="w"> </span><span class="m">775</span><span class="w"> </span><span class="si">${</span><span class="nv">ADM_HOME</span><span class="si">}</span>
+<span class="k">for</span><span class="w"> </span>user<span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="si">${</span><span class="nv">ADM_USERS</span><span class="p">[@]</span><span class="si">}</span><span class="p">;</span><span class="w"> </span><span class="k">do</span>
+<span class="w">  </span><span class="c1"># check if user exists</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="o">[</span><span class="w"> </span>!<span class="w"> </span><span class="k">$(</span>sed<span class="w"> </span>-n<span class="w"> </span><span class="s2">&quot;/^</span><span class="si">${</span><span class="nv">user</span><span class="si">}</span><span class="s2">/p&quot;</span><span class="w"> </span>/etc/passwd<span class="k">)</span><span class="w"> </span><span class="o">]</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
+<span class="w">    </span>/usr/sbin/useradd<span class="w"> </span>--create-home<span class="w"> </span>--shell<span class="o">=</span>/bin/bash<span class="w"> </span><span class="si">${</span><span class="nv">user</span><span class="si">}</span>
+<span class="w">  </span><span class="k">fi</span>
+<span class="w">  </span>/usr/sbin/usermod<span class="w"> </span>--append<span class="w"> </span>--groups<span class="o">=</span>sudo,<span class="si">${</span><span class="nv">ADM_NAME</span><span class="si">}</span><span class="w"> </span><span class="si">${</span><span class="nv">user</span><span class="si">}</span>
+
+<span class="w">  </span><span class="c1"># add aliases</span>
+<span class="w">  </span><span class="nb">echo</span><span class="w"> </span>-e<span class="w"> </span><span class="s1">&#39;\nalias dc=&quot;sudo docker-compose &quot;&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>tee<span class="w"> </span>-a<span class="w"> </span>/home/<span class="si">${</span><span class="nv">user</span><span class="si">}</span>/.bashrc<span class="w"> </span>&gt;<span class="w"> </span>/dev/null
+<span class="w">  </span><span class="nb">echo</span><span class="w"> </span>-e<span class="w"> </span><span class="s1">&#39;alias ctop=&quot;sudo ctop&quot;\n&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>tee<span class="w"> </span>-a<span class="w"> </span>/home/<span class="si">${</span><span class="nv">user</span><span class="si">}</span>/.bashrc<span class="w"> </span>&gt;<span class="w"> </span>/dev/null
+
+<span class="w">  </span><span class="c1"># check if exist</span>
+<span class="w">  </span><span class="o">[</span><span class="w"> </span>!<span class="w"> </span>-h<span class="w"> </span><span class="s2">&quot;/home/{user}/admin&quot;</span><span class="w"> </span><span class="o">]</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>ln<span class="w"> </span>-s<span class="w"> </span><span class="si">${</span><span class="nv">ADM_HOME</span><span class="si">}</span><span class="w"> </span>/home/<span class="si">${</span><span class="nv">user</span><span class="si">}</span>/admin
+<span class="k">done</span>
+
+<span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;&gt;&gt;&gt; Creating Docker Stacks&quot;</span>
+<span class="c1"># create helper networks</span>
+<span class="k">for</span><span class="w"> </span>name<span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="si">${</span><span class="p">!HELPER[@]</span><span class="si">}</span><span class="p">;</span><span class="w"> </span><span class="k">do</span>
+<span class="w">  </span>docker<span class="w"> </span>network<span class="w"> </span>inspect<span class="w"> </span><span class="si">${</span><span class="nv">name</span><span class="si">}</span><span class="w"> </span>&gt;/dev/null<span class="w"> </span><span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span><span class="w"> </span><span class="o">||</span><span class="w"> </span>docker<span class="w"> </span>network<span class="w"> </span>create<span class="w"> </span>--subnet<span class="w"> </span><span class="si">${</span><span class="nv">HELPER</span><span class="p">[</span><span class="si">${</span><span class="nv">name</span><span class="si">}</span><span class="p">]</span><span class="si">}</span><span class="w"> </span><span class="si">${</span><span class="nv">name</span><span class="si">}</span>
+<span class="k">done</span>
+
+<span class="c1"># create stack logic</span>
+mkdir<span class="w"> </span>-p<span class="w"> </span><span class="si">${</span><span class="nv">ADM_HOME</span><span class="si">}</span>/<span class="o">{</span>services,images,tools,docs<span class="o">}</span>/
+<span class="k">for</span><span class="w"> </span>name<span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="si">${</span><span class="p">!STACKS[@]</span><span class="si">}</span><span class="p">;</span><span class="w"> </span><span class="k">do</span>
+<span class="w">  </span>mkdir<span class="w"> </span>-p<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">ADM_HOME</span><span class="si">}</span><span class="s2">/{services,images}/</span><span class="si">${</span><span class="nv">name</span><span class="si">}</span><span class="s2">/&quot;</span><span class="w"> </span><span class="s2">&quot;/srv/</span><span class="si">${</span><span class="nv">name</span><span class="si">}</span><span class="s2">/&quot;</span>
+
+<span class="w">  </span><span class="c1"># create stack network</span>
+<span class="w">  </span>docker<span class="w"> </span>network<span class="w"> </span>inspect<span class="w"> </span><span class="si">${</span><span class="nv">name</span><span class="si">}</span><span class="w"> </span>&gt;/dev/null<span class="w"> </span><span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span><span class="w"> </span><span class="o">||</span><span class="w"> </span>docker<span class="w"> </span>network<span class="w"> </span>create<span class="w"> </span>--subnet<span class="w"> </span><span class="si">${</span><span class="nv">STACKS</span><span class="p">[</span><span class="si">${</span><span class="nv">name</span><span class="si">}</span><span class="p">]</span><span class="si">}</span><span class="w"> </span><span class="si">${</span><span class="nv">name</span><span class="si">}</span>
+
+<span class="w">  </span><span class="c1"># create docker-compose.yml</span>
+<span class="w">  </span><span class="o">[</span><span class="w"> </span>!<span class="w"> </span>-f<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">ADM_HOME</span><span class="si">}</span><span class="s2">/services/</span><span class="si">${</span><span class="nv">name</span><span class="si">}</span><span class="s2">/docker-compose.yml&quot;</span><span class="w"> </span><span class="o">]</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>create_compose<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">ADM_HOME</span><span class="si">}</span><span class="s2">/services/</span><span class="si">${</span><span class="nv">name</span><span class="si">}</span><span class="s2">/docker-compose.yml&quot;</span>
+<span class="k">done</span>
+
+<span class="c1"># adjust permissions</span>
+chown<span class="w"> </span>-R<span class="w"> </span>root:admin<span class="w"> </span><span class="si">${</span><span class="nv">ADM_HOME</span><span class="si">}</span>
+find<span class="w"> </span><span class="si">${</span><span class="nv">ADM_HOME</span><span class="si">}</span><span class="w"> </span>-type<span class="w"> </span>d<span class="w"> </span>-exec<span class="w"> </span>chmod<span class="w"> </span><span class="m">0775</span><span class="w"> </span><span class="o">{}</span><span class="w"> </span><span class="se">\;</span>
+find<span class="w"> </span><span class="si">${</span><span class="nv">ADM_HOME</span><span class="si">}</span><span class="w"> </span>-type<span class="w"> </span>f<span class="w"> </span>-exec<span class="w"> </span>chmod<span class="w"> </span><span class="m">0664</span><span class="w"> </span><span class="o">{}</span><span class="w"> </span><span class="se">\;</span>
+find<span class="w"> </span><span class="si">${</span><span class="nv">ADM_HOME</span><span class="si">}</span>/tools/<span class="w"> </span>-type<span class="w"> </span>f<span class="w"> </span>-exec<span class="w"> </span>chmod<span class="w"> </span><span class="m">0775</span><span class="w"> </span><span class="o">{}</span><span class="w"> </span><span class="se">\;</span>
+</code></pre></div>
+</details>
+
+<details>
+  <summary>Struktur meines Ansible Repositories</summary>
+  <div class="highlight"><pre><span></span><code>ansible
+├── group_vars
+├── host_vars
+│   ├── example.felbinger.eu
+│   ├── monitoring.felbinger.eu
+│   ├── netbox.felbinger.eu
+│   ├── preseed.felbinger.eu
+│   └── vyos.felbinger.eu
+├── roles
+│   ├── ansible-role-felbinger_container
+│   │   ├── defaults
+│   │   └── tasks
+│   ├── ansible-role-felbinger_logging
+│   │   ├── handlers
+│   │   └── tasks
+│   ├── ansible-role-felbinger_monitoring
+│   │   ├── defaults
+│   │   ├── files
+│   │   ├── tasks
+│   │   └── templates
+│   ├── ansible-role-felbinger_netbox_init
+│   │   └── tasks
+│   └── ansible-role-felbinger_nginx
+│       ├── handlers
+│       ├── tasks
+│       └── templates
+├── tasks
+└── templates
+</code></pre></div>
+</details>
+
+<details>
+  <summary>Debian Preseed Konfiguration</summary>
+  <div class="highlight"><pre><span></span><code><span class="c1">#_preseed_V1</span>
+<span class="c1">#### Contents of the preconfiguration file (for bullseye)</span>
+<span class="c1">### Localization</span>
+<span class="c1"># Preseeding only locale sets language, country and locale.</span>
+d-i<span class="w"> </span>debian-installer/locale<span class="w"> </span>string<span class="w"> </span>en_US
+
+<span class="c1"># The values can also be preseeded individually for greater flexibility.</span>
+<span class="c1">#d-i debian-installer/language string en</span>
+<span class="c1">#d-i debian-installer/country string US</span>
+<span class="c1">#d-i debian-installer/locale string en_US.UTF-8</span>
+<span class="c1"># Optionally specify additional locales to be generated.</span>
+<span class="c1">#d-i localechooser/supported-locales multiselect en_US.UTF-8, nl_NL.UTF-8</span>
+
+<span class="c1"># Keyboard selection.</span>
+d-i<span class="w"> </span>keyboard-configuration/xkb-keymap<span class="w"> </span><span class="k">select</span><span class="w"> </span>de
+<span class="c1"># d-i keyboard-configuration/toggle select No toggling</span>
+
+<span class="c1">### Network configuration</span>
+<span class="c1"># Disable network configuration entirely. This is useful for cdrom</span>
+<span class="c1"># installations on non-networked devices where the network questions,</span>
+<span class="c1"># warning and long timeouts are a nuisance.</span>
+<span class="c1">#d-i netcfg/enable boolean false</span>
+
+<span class="c1"># netcfg will choose an interface that has link if possible. This makes it</span>
+<span class="c1"># skip displaying a list if there is more than one interface.</span>
+d-i<span class="w"> </span>netcfg/choose_interface<span class="w"> </span><span class="k">select</span><span class="w"> </span>auto
+
+<span class="c1"># To pick a particular interface instead:</span>
+<span class="c1">#d-i netcfg/choose_interface select eth1</span>
+
+<span class="c1"># To set a different link detection timeout (default is 3 seconds).</span>
+<span class="c1"># Values are interpreted as seconds.</span>
+<span class="c1">#d-i netcfg/link_wait_timeout string 10</span>
+
+<span class="c1"># If you have a slow dhcp server and the installer times out waiting for</span>
+<span class="c1"># it, this might be useful.</span>
+<span class="c1">#d-i netcfg/dhcp_timeout string 60</span>
+<span class="c1">#d-i netcfg/dhcpv6_timeout string 60</span>
+
+<span class="c1"># If you prefer to configure the network manually, uncomment this line and</span>
+<span class="c1"># the static network configuration below.</span>
+<span class="c1">#d-i netcfg/disable_autoconfig boolean true</span>
+
+<span class="c1"># If you want the preconfiguration file to work on systems both with and</span>
+<span class="c1"># without a dhcp server, uncomment these lines and the static network</span>
+<span class="c1"># configuration below.</span>
+<span class="c1">#d-i netcfg/dhcp_failed note</span>
+<span class="c1">#d-i netcfg/dhcp_options select Configure network manually</span>
+
+<span class="c1"># Static network configuration.</span>
+<span class="c1">#</span>
+<span class="c1"># IPv4 example</span>
+<span class="c1">#d-i netcfg/get_ipaddress string 192.168.1.42</span>
+<span class="c1">#d-i netcfg/get_netmask string 255.255.255.0</span>
+<span class="c1">#d-i netcfg/get_gateway string 192.168.1.1</span>
+<span class="c1">#d-i netcfg/get_nameservers string 192.168.1.1</span>
+<span class="c1">#d-i netcfg/confirm_static boolean true</span>
+<span class="c1">#</span>
+<span class="c1"># IPv6 example</span>
+<span class="c1">#d-i netcfg/get_ipaddress string fc00::2</span>
+<span class="c1">#d-i netcfg/get_netmask string ffff:ffff:ffff:ffff::</span>
+<span class="c1">#d-i netcfg/get_gateway string fc00::1</span>
+<span class="c1">#d-i netcfg/get_nameservers string fc00::1</span>
+<span class="c1">#d-i netcfg/confirm_static boolean true</span>
+
+<span class="c1"># Any hostname and domain names assigned from dhcp take precedence over</span>
+<span class="c1"># values set here. However, setting the values still prevents the questions</span>
+<span class="c1"># from being shown, even if values come from dhcp.</span>
+<span class="c1">#d-i netcfg/get_hostname string unassigned-hostname</span>
+<span class="c1">#d-i netcfg/get_domain string unassigned-domain</span>
+
+<span class="c1"># If you want to force a hostname, regardless of what either the DHCP</span>
+<span class="c1"># server returns or what the reverse DNS entry for the IP is, uncomment</span>
+<span class="c1"># and adjust the following line.</span>
+<span class="c1">#d-i netcfg/hostname string somehost</span>
+
+<span class="c1"># Disable that annoying WEP key dialog.</span>
+d-i<span class="w"> </span>netcfg/wireless_wep<span class="w"> </span>string
+<span class="c1"># The wacky dhcp hostname that some ISPs use as a password of sorts.</span>
+<span class="c1">#d-i netcfg/dhcp_hostname string radish</span>
+
+<span class="c1"># If non-free firmware is needed for the network or other hardware, you can</span>
+<span class="c1"># configure the installer to always try to load it, without prompting. Or</span>
+<span class="c1"># change to false to disable asking.</span>
+<span class="c1">#d-i hw-detect/load_firmware boolean true</span>
+
+<span class="c1">### Network console</span>
+<span class="c1"># Use the following settings if you wish to make use of the network-console</span>
+<span class="c1"># component for remote installation over SSH. This only makes sense if you</span>
+<span class="c1"># intend to perform the remainder of the installation manually.</span>
+<span class="c1">#d-i anna/choose_modules string network-console</span>
+<span class="c1">#d-i network-console/authorized_keys_url string http://10.0.0.1/openssh-key</span>
+<span class="c1">#d-i network-console/password password r00tme</span>
+<span class="c1">#d-i network-console/password-again password r00tme</span>
+
+<span class="c1">### Mirror settings</span>
+<span class="c1"># If you select ftp, the mirror/country string does not need to be set.</span>
+<span class="c1">#d-i mirror/protocol string ftp</span>
+<span class="c1">#d-i mirror/country string manual</span>
+<span class="c1">#d-i mirror/http/hostname string http.us.debian.org</span>
+<span class="c1">#d-i mirror/http/directory string /debian</span>
+<span class="c1">#d-i mirror/http/proxy string</span>
+
+<span class="c1"># Suite to install.</span>
+<span class="c1">#d-i mirror/suite string testing</span>
+<span class="c1"># Suite to use for loading installer components (optional).</span>
+<span class="c1">#d-i mirror/udeb/suite string testing</span>
+
+<span class="c1">### Account setup</span>
+<span class="c1"># Skip creation of a root account (normal user account will be able to</span>
+<span class="c1"># use sudo).</span>
+d-i<span class="w"> </span>passwd/root-login<span class="w"> </span>boolean<span class="w"> </span><span class="nb">false</span>
+<span class="c1"># Alternatively, to skip creation of a normal user account.</span>
+<span class="c1">#d-i passwd/make-user boolean false</span>
+
+<span class="c1"># Root password, either in clear text</span>
+<span class="c1">#d-i passwd/root-password password r00tme</span>
+<span class="c1">#d-i passwd/root-password-again password r00tme</span>
+<span class="c1"># or encrypted using a crypt(3)  hash.</span>
+<span class="c1">#d-i passwd/root-password-crypted password $6$iX9o7PncqLMMb/ds$R1lMbxbOrctLbfe.eFk2nvduBbvL8Zzb/t/PPfUtzgb74n3Cehe9CZ42G5xx9U09DN27Z.CxwByJG60ylKfv50</span>
+
+<span class="c1"># To create a normal user account.</span>
+d-i<span class="w"> </span>passwd/user-fullname<span class="w"> </span>string<span class="w"> </span>Ansible
+d-i<span class="w"> </span>passwd/username<span class="w"> </span>string<span class="w"> </span>ansible
+<span class="c1"># Normal user&#39;s password, either in clear text</span>
+<span class="c1">#d-i passwd/user-password password insecure</span>
+<span class="c1">#d-i passwd/user-password-again password insecure</span>
+<span class="c1"># or encrypted using a crypt(3) hash.</span>
+d-i<span class="w"> </span>passwd/user-password-crypted<span class="w"> </span>password<span class="w"> </span><span class="nv">$6$iX9o7PncqLMMb</span>/ds<span class="nv">$R1lMbxbOrctLbfe</span>.eFk2nvduBbvL8Zzb/t/PPfUtzgb74n3Cehe9CZ42G5xx9U09DN27Z.CxwByJG60ylKfv50
+<span class="c1"># Create the first user with the specified UID instead of the default.</span>
+<span class="c1">#d-i passwd/user-uid string 1010</span>
+
+<span class="c1"># The user account will be added to some standard initial groups. To</span>
+<span class="c1"># override that, use this.</span>
+<span class="c1">#d-i passwd/user-default-groups string sudo</span>
+
+<span class="c1">### Clock and time zone setup</span>
+<span class="c1"># Controls whether or not the hardware clock is set to UTC.</span>
+d-i<span class="w"> </span>clock-setup/utc<span class="w"> </span>boolean<span class="w"> </span><span class="nb">true</span>
+
+<span class="c1"># You may set this to any valid setting for $TZ; see the contents of</span>
+<span class="c1"># /usr/share/zoneinfo/ for valid values.</span>
+d-i<span class="w"> </span>time/zone<span class="w"> </span>string<span class="w"> </span>Europe/Berlin
+
+<span class="c1"># Controls whether to use NTP to set the clock during the install</span>
+d-i<span class="w"> </span>clock-setup/ntp<span class="w"> </span>boolean<span class="w"> </span><span class="nb">true</span>
+<span class="c1"># NTP server to use. The default is almost always fine here.</span>
+<span class="c1">#d-i clock-setup/ntp-server string ntp.example.com</span>
+
+<span class="c1">### Partitioning</span>
+<span class="c1">## Partitioning example</span>
+<span class="c1"># If the system has free space you can choose to only partition that space.</span>
+<span class="c1"># This is only honoured if partman-auto/method (below) is not set.</span>
+<span class="c1">#d-i partman-auto/init_automatically_partition select biggest_free</span>
+
+<span class="c1"># Alternatively, you may specify a disk to partition. If the system has only</span>
+<span class="c1"># one disk the installer will default to using that, but otherwise the device</span>
+<span class="c1"># name must be given in traditional, non-devfs format (so e.g. /dev/sda</span>
+<span class="c1"># and not e.g. /dev/discs/disc0/disc).</span>
+<span class="c1"># For example, to use the first SCSI/SATA hard disk:</span>
+<span class="c1">#d-i partman-auto/disk string /dev/sda</span>
+<span class="c1"># In addition, you&#39;ll need to specify the method to use.</span>
+<span class="c1"># The presently available methods are:</span>
+<span class="c1"># - regular: use the usual partition types for your architecture</span>
+<span class="c1"># - lvm:     use LVM to partition the disk</span>
+<span class="c1"># - crypto:  use LVM within an encrypted partition</span>
+d-i<span class="w"> </span>partman-auto/method<span class="w"> </span>string<span class="w"> </span>lvm
+
+d-i<span class="w"> </span>partman-auto-lvm/new_vg_name<span class="w"> </span>string<span class="w"> </span>debian-vg
+
+<span class="c1"># You can define the amount of space that will be used for the LVM volume</span>
+<span class="c1"># group. It can either be a size with its unit (eg. 20 GB), a percentage of</span>
+<span class="c1"># free space or the &#39;max&#39; keyword.</span>
+d-i<span class="w"> </span>partman-auto-lvm/guided_size<span class="w"> </span>string<span class="w"> </span>max
+
+<span class="c1"># If one of the disks that are going to be automatically partitioned</span>
+<span class="c1"># contains an old LVM configuration, the user will normally receive a</span>
+<span class="c1"># warning. This can be preseeded away...</span>
+d-i<span class="w"> </span>partman-lvm/device_remove_lvm<span class="w"> </span>boolean<span class="w"> </span><span class="nb">true</span>
+<span class="c1"># The same applies to pre-existing software RAID array:</span>
+d-i<span class="w"> </span>partman-md/device_remove_md<span class="w"> </span>boolean<span class="w"> </span><span class="nb">true</span>
+<span class="c1"># And the same goes for the confirmation to write the lvm partitions.</span>
+d-i<span class="w"> </span>partman-lvm/confirm<span class="w"> </span>boolean<span class="w"> </span><span class="nb">true</span>
+d-i<span class="w"> </span>partman-lvm/confirm_nooverwrite<span class="w"> </span>boolean<span class="w"> </span><span class="nb">true</span>
+
+<span class="c1"># You can choose one of the three predefined partitioning recipes:</span>
+<span class="c1"># - atomic: all files in one partition</span>
+<span class="c1"># - home:   separate /home partition</span>
+<span class="c1"># - multi:  separate /home, /var, and /tmp partitions</span>
+d-i<span class="w"> </span>partman-auto/choose_recipe<span class="w"> </span><span class="k">select</span><span class="w"> </span>atomic
+
+<span class="c1"># Or provide a recipe of your own...</span>
+<span class="c1"># If you have a way to get a recipe file into the d-i environment, you can</span>
+<span class="c1"># just point at it.</span>
+<span class="c1">#d-i partman-auto/expert_recipe_file string /hd-media/recipe</span>
+
+<span class="c1"># If not, you can put an entire recipe into the preconfiguration file in one</span>
+<span class="c1"># (logical) line. This example creates a small /boot partition, suitable</span>
+<span class="c1"># swap, and uses the rest of the space for the root partition:</span>
+<span class="c1">#d-i partman-auto/expert_recipe string                         \</span>
+<span class="c1">#      boot-root ::                                            \</span>
+<span class="c1">#              40 50 100 ext3                                  \</span>
+<span class="c1">#                      $primary{ } $bootable{ }                \</span>
+<span class="c1">#                      method{ format } format{ }              \</span>
+<span class="c1">#                      use_filesystem{ } filesystem{ ext3 }    \</span>
+<span class="c1">#                      mountpoint{ /boot }                     \</span>
+<span class="c1">#              .                                               \</span>
+<span class="c1">#              500 10000 1000000000 ext3                       \</span>
+<span class="c1">#                      method{ format } format{ }              \</span>
+<span class="c1">#                      use_filesystem{ } filesystem{ ext3 }    \</span>
+<span class="c1">#                      mountpoint{ / }                         \</span>
+<span class="c1">#              .                                               \</span>
+<span class="c1">#              64 512 300% linux-swap                          \</span>
+<span class="c1">#                      method{ swap } format{ }                \</span>
+<span class="c1">#              .</span>
+
+<span class="c1"># The full recipe format is documented in the file partman-auto-recipe.txt</span>
+<span class="c1"># included in the &#39;debian-installer&#39; package or available from D-I source</span>
+<span class="c1"># repository. This also documents how to specify settings such as file</span>
+<span class="c1"># system labels, volume group names and which physical devices to include</span>
+<span class="c1"># in a volume group.</span>
+
+<span class="c1">## Partitioning for EFI</span>
+<span class="c1"># If your system needs an EFI partition you could add something like</span>
+<span class="c1"># this to the recipe above, as the first element in the recipe:</span>
+<span class="c1">#               538 538 1075 free                              \</span>
+<span class="c1">#                      $iflabel{ gpt }                         \</span>
+<span class="c1">#                      $reusemethod{ }                         \</span>
+<span class="c1">#                      method{ efi }                           \</span>
+<span class="c1">#                      format{ }                               \</span>
+<span class="c1">#               .                                              \</span>
+<span class="c1">#</span>
+<span class="c1"># The fragment above is for the amd64 architecture; the details may be</span>
+<span class="c1"># different on other architectures. The &#39;partman-auto&#39; package in the</span>
+<span class="c1"># D-I source repository may have an example you can follow.</span>
+
+<span class="c1"># This makes partman automatically partition without confirmation, provided</span>
+<span class="c1"># that you told it what to do using one of the methods above.</span>
+d-i<span class="w"> </span>partman-partitioning/confirm_write_new_label<span class="w"> </span>boolean<span class="w"> </span><span class="nb">true</span>
+d-i<span class="w"> </span>partman/choose_partition<span class="w"> </span><span class="k">select</span><span class="w"> </span>finish
+d-i<span class="w"> </span>partman/confirm<span class="w"> </span>boolean<span class="w"> </span><span class="nb">true</span>
+d-i<span class="w"> </span>partman/confirm_nooverwrite<span class="w"> </span>boolean<span class="w"> </span><span class="nb">true</span>
+
+<span class="c1"># Force UEFI booting (&#39;BIOS compatibility&#39; will be lost). Default: false.</span>
+<span class="c1">#d-i partman-efi/non_efi_system boolean true</span>
+<span class="c1"># Ensure the partition table is GPT - this is required for EFI</span>
+<span class="c1">#d-i partman-partitioning/choose_label string gpt</span>
+<span class="c1">#d-i partman-partitioning/default_label string gpt</span>
+
+<span class="c1"># When disk encryption is enabled, skip wiping the partitions beforehand.</span>
+<span class="c1">#d-i partman-auto-crypto/erase_disks boolean false</span>
+
+<span class="c1">## Partitioning using RAID</span>
+<span class="c1"># The method should be set to &quot;raid&quot;.</span>
+<span class="c1">#d-i partman-auto/method string raid</span>
+<span class="c1"># Specify the disks to be partitioned. They will all get the same layout,</span>
+<span class="c1"># so this will only work if the disks are the same size.</span>
+<span class="c1">#d-i partman-auto/disk string /dev/sda /dev/sdb</span>
+
+<span class="c1"># Next you need to specify the physical partitions that will be used.</span>
+<span class="c1">#d-i partman-auto/expert_recipe string \</span>
+<span class="c1">#      multiraid ::                                         \</span>
+<span class="c1">#              1000 5000 4000 raid                          \</span>
+<span class="c1">#                      $primary{ } method{ raid }           \</span>
+<span class="c1">#              .                                            \</span>
+<span class="c1">#              64 512 300% raid                             \</span>
+<span class="c1">#                      method{ raid }                       \</span>
+<span class="c1">#              .                                            \</span>
+<span class="c1">#              500 10000 1000000000 raid                    \</span>
+<span class="c1">#                      method{ raid }                       \</span>
+<span class="c1">#              .</span>
+
+<span class="c1"># Last you need to specify how the previously defined partitions will be</span>
+<span class="c1"># used in the RAID setup. Remember to use the correct partition numbers</span>
+<span class="c1"># for logical partitions. RAID levels 0, 1, 5, 6 and 10 are supported;</span>
+<span class="c1"># devices are separated using &quot;#&quot;.</span>
+<span class="c1"># Parameters are:</span>
+<span class="c1"># &lt;raidtype&gt; &lt;devcount&gt; &lt;sparecount&gt; &lt;fstype&gt; &lt;mountpoint&gt; \</span>
+<span class="c1">#          &lt;devices&gt; &lt;sparedevices&gt;</span>
+
+<span class="c1">#d-i partman-auto-raid/recipe string \</span>
+<span class="c1">#    1 2 0 ext3 /                    \</span>
+<span class="c1">#          /dev/sda1#/dev/sdb1       \</span>
+<span class="c1">#    .                               \</span>
+<span class="c1">#    1 2 0 swap -                    \</span>
+<span class="c1">#          /dev/sda5#/dev/sdb5       \</span>
+<span class="c1">#    .                               \</span>
+<span class="c1">#    0 2 0 ext3 /home                \</span>
+<span class="c1">#          /dev/sda6#/dev/sdb6       \</span>
+<span class="c1">#    .</span>
+
+<span class="c1"># For additional information see the file partman-auto-raid-recipe.txt</span>
+<span class="c1"># included in the &#39;debian-installer&#39; package or available from D-I source</span>
+<span class="c1"># repository.</span>
+
+<span class="c1"># This makes partman automatically partition without confirmation.</span>
+d-i<span class="w"> </span>partman-md/confirm<span class="w"> </span>boolean<span class="w"> </span><span class="nb">true</span>
+d-i<span class="w"> </span>partman-partitioning/confirm_write_new_label<span class="w"> </span>boolean<span class="w"> </span><span class="nb">true</span>
+d-i<span class="w"> </span>partman/choose_partition<span class="w"> </span><span class="k">select</span><span class="w"> </span>finish
+d-i<span class="w"> </span>partman/confirm<span class="w"> </span>boolean<span class="w"> </span><span class="nb">true</span>
+d-i<span class="w"> </span>partman/confirm_nooverwrite<span class="w"> </span>boolean<span class="w"> </span><span class="nb">true</span>
+
+<span class="c1">## Controlling how partitions are mounted</span>
+<span class="c1"># The default is to mount by UUID, but you can also choose &quot;traditional&quot; to</span>
+<span class="c1"># use traditional device names, or &quot;label&quot; to try filesystem labels before</span>
+<span class="c1"># falling back to UUIDs.</span>
+<span class="c1">#d-i partman/mount_style select uuid</span>
+
+<span class="c1">### Base system installation</span>
+<span class="c1"># Configure APT to not install recommended packages by default. Use of this</span>
+<span class="c1"># option can result in an incomplete system and should only be used by very</span>
+<span class="c1"># experienced users.</span>
+<span class="c1">#d-i base-installer/install-recommends boolean false</span>
+
+<span class="c1"># The kernel image (meta) package to be installed; &quot;none&quot; can be used if no</span>
+<span class="c1"># kernel is to be installed.</span>
+<span class="c1">#d-i base-installer/kernel/image string linux-image-686</span>
+
+<span class="c1">### Apt setup</span>
+<span class="c1"># You can choose to install non-free and contrib software.</span>
+<span class="c1">#d-i apt-setup/non-free boolean true</span>
+<span class="c1">#d-i apt-setup/contrib boolean true</span>
+<span class="c1"># Uncomment this if you don&#39;t want to use a network mirror.</span>
+<span class="c1">#d-i apt-setup/use_mirror boolean false</span>
+<span class="c1"># Select which update services to use; define the mirrors to be used.</span>
+<span class="c1"># Values shown below are the normal defaults.</span>
+<span class="c1">#d-i apt-setup/services-select multiselect security, updates</span>
+<span class="c1">#d-i apt-setup/security_host string security.debian.org</span>
+
+<span class="c1"># Additional repositories, local[0-9] available</span>
+<span class="c1">#d-i apt-setup/local0/repository string \</span>
+<span class="c1">#       http://local.server/debian stable main</span>
+<span class="c1"># https://docs.hetzner.com/robot/dedicated-server/operating-systems/hetzner-aptitude-mirror/</span>
+d-i<span class="w"> </span>apt-setup/local0/repository<span class="w"> </span>string<span class="w"> </span>http://deb.debian.org/debian/<span class="w"> </span>bullseye<span class="w"> </span>main<span class="w"> </span>contrib<span class="w"> </span>non-free
+d-i<span class="w"> </span>apt-setup/local1/repository<span class="w"> </span>string<span class="w"> </span>http://deb.debian.org/debian/<span class="w"> </span>bullseye-updates<span class="w"> </span>main<span class="w"> </span>contrib<span class="w"> </span>non-free
+<span class="c1">#d-i apt-setup/local2/repository string http://security.debian.org/debian-security bullseye-security main contrib non-free  # exists by default</span>
+<span class="c1">#d-i apt-setup/local0/comment string local server</span>
+<span class="c1"># Enable deb-src lines</span>
+d-i<span class="w"> </span>apt-setup/local0/source<span class="w"> </span>boolean<span class="w"> </span><span class="nb">true</span>
+d-i<span class="w"> </span>apt-setup/local1/source<span class="w"> </span>boolean<span class="w"> </span><span class="nb">true</span>
+<span class="c1"># URL to the public key of the local repository; you must provide a key or</span>
+<span class="c1"># apt will complain about the unauthenticated repository and so the</span>
+<span class="c1"># sources.list line will be left commented out.</span>
+<span class="c1">#d-i apt-setup/local0/key string http://local.server/key</span>
+<span class="c1"># If the provided key file ends in &quot;.asc&quot; the key file needs to be an</span>
+<span class="c1"># ASCII-armoured PGP key, if it ends in &quot;.gpg&quot; it needs to use the</span>
+<span class="c1"># &quot;GPG key public keyring&quot; format, the &quot;keybox database&quot; format is</span>
+<span class="c1"># currently not supported.</span>
+
+<span class="c1"># By default the installer requires that repositories be authenticated</span>
+<span class="c1"># using a known gpg key. This setting can be used to disable that</span>
+<span class="c1"># authentication. Warning: Insecure, not recommended.</span>
+<span class="c1">#d-i debian-installer/allow_unauthenticated boolean true</span>
+
+<span class="c1"># Uncomment this to add multiarch configuration for i386</span>
+<span class="c1">#d-i apt-setup/multiarch string i386</span>
+
+
+<span class="c1">### Package selection</span>
+tasksel<span class="w"> </span>tasksel/first<span class="w"> </span>multiselect<span class="w"> </span>standard
+
+<span class="c1"># Individual additional packages to install</span>
+<span class="c1">#d-i pkgsel/include string openssh-server build-essential</span>
+d-i<span class="w"> </span>pkgsel/include<span class="w"> </span>string<span class="w"> </span>wget<span class="w"> </span>curl<span class="w"> </span>sudo<span class="w"> </span>sed<span class="w"> </span>python3<span class="w"> </span>openssh-server<span class="w"> </span>build-essential
+<span class="c1"># Whether to upgrade packages after debootstrap.</span>
+<span class="c1"># Allowed values: none, safe-upgrade, full-upgrade</span>
+<span class="c1">#d-i pkgsel/upgrade select none</span>
+
+<span class="c1"># Some versions of the installer can report back on what software you have</span>
+<span class="c1"># installed, and what software you use. The default is not to report back,</span>
+<span class="c1"># but sending reports helps the project determine what software is most</span>
+<span class="c1"># popular and should be included on the first CD/DVD.</span>
+<span class="c1">#popularity-contest popularity-contest/participate boolean false</span>
+
+<span class="c1">### Boot loader installation</span>
+<span class="c1"># Grub is the boot loader (for x86).</span>
+
+<span class="c1"># This is fairly safe to set, it makes grub install automatically to the UEFI</span>
+<span class="c1"># partition/boot record if no other operating system is detected on the machine.</span>
+d-i<span class="w"> </span>grub-installer/only_debian<span class="w"> </span>boolean<span class="w"> </span><span class="nb">true</span>
+
+<span class="c1"># This one makes grub-installer install to the UEFI partition/boot record, if</span>
+<span class="c1"># it also finds some other OS, which is less safe as it might not be able to</span>
+<span class="c1"># boot that other OS.</span>
+<span class="c1">#d-i grub-installer/with_other_os boolean true</span>
+
+<span class="c1"># Due notably to potential USB sticks, the location of the primary drive can</span>
+<span class="c1"># not be determined safely in general, so this needs to be specified:</span>
+<span class="c1">#d-i grub-installer/bootdev  string /dev/sda</span>
+<span class="c1"># To install to the primary device (assuming it is not a USB stick):</span>
+d-i<span class="w"> </span>grub-installer/bootdev<span class="w">  </span>string<span class="w"> </span>default
+
+<span class="c1"># Alternatively, if you want to install to a location other than the UEFI</span>
+<span class="c1"># parition/boot record, uncomment and edit these lines:</span>
+<span class="c1">#d-i grub-installer/only_debian boolean false</span>
+<span class="c1">#d-i grub-installer/with_other_os boolean false</span>
+<span class="c1">#d-i grub-installer/bootdev  string (hd0,1)</span>
+<span class="c1"># To install grub to multiple disks:</span>
+<span class="c1">#d-i grub-installer/bootdev  string (hd0,1) (hd1,1) (hd2,1)</span>
+
+<span class="c1"># Optional password for grub, either in clear text</span>
+<span class="c1">#d-i grub-installer/password password r00tme</span>
+<span class="c1">#d-i grub-installer/password-again password r00tme</span>
+<span class="c1"># or encrypted using an MD5 hash, see grub-md5-crypt(8).</span>
+<span class="c1">#d-i grub-installer/password-crypted password [MD5 hash]</span>
+
+<span class="c1"># Use the following option to add additional boot parameters for the</span>
+<span class="c1"># installed system (if supported by the bootloader installer).</span>
+<span class="c1"># Note: options passed to the installer will be added automatically.</span>
+<span class="c1">#d-i debian-installer/add-kernel-opts string nousb</span>
+
+<span class="c1">### Finishing up the installation</span>
+<span class="c1"># During installations from serial console, the regular virtual consoles</span>
+<span class="c1"># (VT1-VT6) are normally disabled in /etc/inittab. Uncomment the next</span>
+<span class="c1"># line to prevent this.</span>
+<span class="c1">#d-i finish-install/keep-consoles boolean true</span>
+
+<span class="c1"># Avoid that last message about the install being complete.</span>
+d-i<span class="w"> </span>finish-install/reboot_in_progress<span class="w"> </span>note
+
+<span class="c1"># This will prevent the installer from ejecting the CD during the reboot,</span>
+<span class="c1"># which is useful in some situations.</span>
+<span class="c1">#d-i cdrom-detect/eject boolean false</span>
+
+<span class="c1"># This is how to make the installer shutdown when finished, but not</span>
+<span class="c1"># reboot into the installed system.</span>
+<span class="c1">#d-i debian-installer/exit/halt boolean true</span>
+<span class="c1"># This will power off the machine instead of just halting it.</span>
+<span class="c1">#d-i debian-installer/exit/poweroff boolean true</span>
+
+<span class="c1">### Preseeding other packages</span>
+<span class="c1"># Depending on what software you choose to install, or if things go wrong</span>
+<span class="c1"># during the installation process, it&#39;s possible that other questions may</span>
+<span class="c1"># be asked. You can preseed those too, of course. To get a list of every</span>
+<span class="c1"># possible question that could be asked during an install, do an</span>
+<span class="c1"># installation, and then run these commands:</span>
+<span class="c1">#   debconf-get-selections --installer &gt; file</span>
+<span class="c1">#   debconf-get-selections &gt;&gt; file</span>
+
+
+<span class="c1">#### Advanced options</span>
+<span class="c1">### Running custom commands during the installation</span>
+<span class="c1"># d-i preseeding is inherently not secure. Nothing in the installer checks</span>
+<span class="c1"># for attempts at buffer overflows or other exploits of the values of a</span>
+<span class="c1"># preconfiguration file like this one. Only use preconfiguration files from</span>
+<span class="c1"># trusted locations! To drive that home, and because it&#39;s generally useful,</span>
+<span class="c1"># here&#39;s a way to run any shell command you&#39;d like inside the installer,</span>
+<span class="c1"># automatically.</span>
+
+<span class="c1"># This first command is run as early as possible, just after</span>
+<span class="c1"># preseeding is read.</span>
+<span class="c1">#d-i preseed/early_command string anna-install some-udeb</span>
+<span class="c1"># This command is run immediately before the partitioner starts. It may be</span>
+<span class="c1"># useful to apply dynamic partitioner preseeding that depends on the state</span>
+<span class="c1"># of the disks (which may not be visible when preseed/early_command runs).</span>
+<span class="c1">#d-i partman/early_command \</span>
+<span class="c1">#       string debconf-set partman-auto/disk &quot;$(list-devices disk | head -n1)&quot;</span>
+<span class="c1"># This command is run just before the install finishes, but when there is</span>
+<span class="c1"># still a usable /target directory. You can chroot to /target and use it</span>
+<span class="c1"># directly, or use the apt-install and in-target commands to easily install</span>
+<span class="c1"># packages and run commands in the target system.</span>
+<span class="c1">#d-i preseed/late_command string apt-install zsh; in-target chsh -s /bin/zsh</span>
+
+d-i<span class="w"> </span>preseed/late_command<span class="w"> </span>string<span class="w"> </span><span class="k">in</span>-target<span class="w"> </span>sed<span class="w"> </span>-i<span class="w"> </span><span class="s2">&quot;/^deb cdrom:/s/^/# /&quot;</span><span class="w"> </span>/etc/apt/sources.list<span class="p">;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">                                </span><span class="k">in</span>-target<span class="w"> </span>sed<span class="w"> </span>-i<span class="w"> </span>-e<span class="w"> </span><span class="s2">&quot;/#PermitRootLogin.* /{ s|#|| ; s|prohibit-password|no| }&quot;</span><span class="w"> </span>/etc/ssh/sshd_config<span class="p">;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">                                </span><span class="k">in</span>-target<span class="w"> </span>sed<span class="w"> </span>-i<span class="w"> </span>-e<span class="w"> </span><span class="s2">&quot;/#PasswordAuthentication.* /{ s|#|| ; s|yes|no| }&quot;</span><span class="w"> </span>/etc/ssh/sshd_config<span class="p">;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">                                </span><span class="k">in</span>-target<span class="w"> </span>mkdir<span class="w"> </span>-p<span class="w"> </span>/home/ansible/.ssh/<span class="p">;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">                                </span><span class="k">in</span>-target<span class="w"> </span>chown<span class="w"> </span>-R<span class="w"> </span>ansible:ansible<span class="w"> </span>/home/ansible/.ssh<span class="p">;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">                                </span><span class="k">in</span>-target<span class="w"> </span>sh<span class="w"> </span>-c<span class="w"> </span><span class="s1">&#39;echo &quot;ssh-rsa &lt;-cut-&gt; ansible@WS1&quot; &gt;&gt; /home/ansible/.ssh/authorized_keys&#39;</span><span class="p">;</span>
+</code></pre></div>
+</details>
+
+<p>Der Wunsch nach einer besseren Lösung führte mich schließlich zu NixOS. Bereits 2020 erzählte mir ein
+Bekannter von den Vorteilen. Zunächst war ich skeptisch, doch als immer mehr Freunde und Kollegen von
+ihren positiven Erfahrungen berichteten, begann ich mich näher mit dem Konzept auseinanderzusetzen.</p>
+<p>Der Nix-Paketmanager klang vielversprechend, aber auch ungewohnt. Mein erstes Experiment war
+eine Testinstallation in einer VM - und schon nach kurzer Zeit erkannte ich das Potenzial. Die
+anfängliche Lernkurve war zwar steil, aber ich merkte schnell, dass sich der Aufwand lohnte.</p>
+<p>Nachdem die ersten Tests vielversprechend verliefen, installierte ich NixOS auf meinem Notebook.
+Anschließend begann ich, einzelne Dienste wie einen Monitoring-Server und einen NetBox-Server mit
+NixOS umzusetzen. Da dies reibungslos funktionierte, entschied ich mich, nach und nach immer mehr Systeme
+umzustellen.</p>
+<p>Im Rahmen einer wissenschaftlichen Arbeit analysierte ich zudem die Sicherheit von NixOS. In diesem Rahmen kann ich
+besonders die <a href="https://edolstra.github.io/pubs/phd-thesis.pdf">Doktorarbeit von E. Dolstra zu Nix</a>, sowie
+das <a href="https://edolstra.github.io/pubs/nixos-jfp-final.pdf">Paper zur Finalisierung von NixOS</a> empfehlen.
+Diese Arbeiten geben tiefe Einblicke in die Architektur von Nix und NixOS.</p>
+<p>Der Umstieg auf NixOS war für mich ein logischer Schritt, um mein System zuverlässiger, flexibler und
+effizienter zu verwalten. Obwohl die Lernkurve anfangs sehr steil war, hat sich der Aufwand mehr als
+gelohnt. Heute genieße ich die Vorteile eines vollständig deklarativen und reproduzierbaren Systems -
+und kann mir kaum vorstellen, zu einer klassischen Linux-Distribution zurückzukehren.</p>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+  
+
+
+
+      
+    </article>
+  </div>
+
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2020 - 2025 Nico Felbinger &nbsp; – &nbsp; <a href="/imprint.html">Imprint</a> &nbsp; – &nbsp; <a href="#__consent">Change cookie settings</a>
+    </div>
+  
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+      <div class="md-consent" data-md-component="consent" id="__consent" hidden>
+        <div class="md-consent__overlay"></div>
+        <aside class="md-consent__inner">
+          <form class="md-consent__form md-grid md-typeset" name="consent">
+            
+
+
+
+
+
+<h4>Cookie consent</h4>
+<p>We use cookies to recognize your repeated visits and preferences, as well as to measure the effectiveness of our documentation and whether users find what they're searching for. With your consent, you're helping us to make my documentation better.</p>
+<input class="md-toggle" type="checkbox" id="__settings" >
+<div class="md-consent__settings">
+  <ul class="task-list">
+    
+      
+      
+        
+        
+      
+      <li class="task-list-item">
+        <label class="task-list-control">
+          <input type="checkbox" name="analytics" >
+          <span class="task-list-indicator"></span>
+          Google Analytics
+        </label>
+      </li>
+    
+  </ul>
+</div>
+<div class="md-consent__controls">
+  
+    
+      <button class="md-button md-button--primary">Accept</button>
+    
+    
+    
+  
+    
+    
+    
+      <label class="md-button" for="__settings">Manage settings</label>
+    
+  
+    
+    
+      <button type="reset" class="md-button md-button--primary">Reject</button>
+    
+    
+  
+</div>
+          </form>
+        </aside>
+      </div>
+      <script>var consent=__md_get("__consent");if(consent)for(var input of document.forms.consent.elements)input.name&&(input.checked=consent[input.name]||!1);else"file:"!==location.protocol&&setTimeout((function(){document.querySelector("[data-md-component=consent]").hidden=!1}),250);var form=document.forms.consent;for(var action of["submit","reset"])form.addEventListener(action,(function(e){if(e.preventDefault(),"reset"===e.type)for(var n of document.forms.consent.elements)n.name&&(n.checked=!1);__md_set("__consent",Object.fromEntries(Array.from(new FormData(form).keys()).map((function(e){return[e,!0]})))),location.hash="",location.reload()}))</script>
+    
+    <script id="__config" type="application/json">{"base": "../../../..", "features": ["search.suggest", "search.highlight", "navigation.expand", "navigation.instant", "navigation.sections"], "search": "../../../../assets/javascripts/workers/search.6ce7567c.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../../../../assets/javascripts/bundle.88dd0f4e.min.js"></script>
+      
+    
+  </body>
+</html>

@@ -1,0 +1,1273 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://felbinger.eu/blog/2025/08/07/linux-game-server-manager-dayz-server.html">
+      
+      
+        <link rel="prev" href="../../05/31/nixos-router-banana-pi-r4.html">
+      
+      
+        <link rel="next" href="../27/grapheneos-gmx-freephone-esim-einrichten.html">
+      
+      
+      <link rel="icon" href="../../../../media/favicon.ico">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.49">
+    
+    
+      
+        <title>Linux Game Server Manager: DayZ Server - felbinger.eu</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.6f8fc17f.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+        <script src="../../../../assets/external/unpkg.com/iframe-worker/shim.js"></script>
+      
+    
+    
+      
+        
+        
+        
+        <link rel="stylesheet" href="../../../../assets/external/fonts.googleapis.com/css.49ea35f2.css">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="green" data-md-color-accent="lime">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#linux-game-server-manager-dayz-server" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../../.." title="felbinger.eu" class="md-header__button md-logo" aria-label="felbinger.eu" data-md-component="logo">
+      
+  <img src="../../../../media/favicon-32x32.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            felbinger.eu
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Linux Game Server Manager: DayZ Server
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="green" data-md-color-accent="lime"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 6H7c-3.31 0-6 2.69-6 6s2.69 6 6 6h10c3.31 0 6-2.69 6-6s-2.69-6-6-6m0 10H7c-2.21 0-4-1.79-4-4s1.79-4 4-4h10c2.21 0 4 1.79 4 4s-1.79 4-4 4M7 9c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="green" data-md-color-accent="lime"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h10a5 5 0 0 0 5-5 5 5 0 0 0-5-5m0 8a3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3 3 3 0 0 1-3 3"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" hidden>
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="felbinger.eu" class="md-nav__button md-logo" aria-label="felbinger.eu" data-md-component="logo">
+      
+  <img src="../../../../media/favicon-32x32.png" alt="logo">
+
+    </a>
+    felbinger.eu
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_1" id="__nav_1_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Blog
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_1_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_1">
+            <span class="md-nav__icon md-icon"></span>
+            Blog
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      <a href="../../../index.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Index
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_1_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_1_2" id="__nav_1_2_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Categories
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_2">
+            <span class="md-nav__icon md-icon"></span>
+            Categories
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../category/grapheneos.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    GrapheneOS
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../category/networking.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Networking
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../category/nixos.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    NixOS
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Knowledgebase
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            Knowledgebase
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../knowledgebase/android.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Android
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../knowledgebase/applications.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Applications
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../knowledgebase/ben-eater-8bit-computer.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Ben Eater: 8bit Computer
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../knowledgebase/cryptsetup.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Cryptsetup
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../knowledgebase/django.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Django
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../knowledgebase/hosting.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Hosting
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../knowledgebase/mysql.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    MariaDB
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../knowledgebase/nftables.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    nftables
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../knowledgebase/openssl.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    OpenSSL
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../knowledgebase/rpi.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Raspberry PI
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../knowledgebase/ssh.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    SSH
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../knowledgebase/udev.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    udev
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../knowledgebase/windows.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Windows
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#steam-account" class="md-nav__link">
+    <span class="md-ellipsis">
+      Steam Account
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#basisinstallation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Basisinstallation
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mods" class="md-nav__link">
+    <span class="md-ellipsis">
+      Mods
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Mods">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#cf-vppadmintools" class="md-nav__link">
+    <span class="md-ellipsis">
+      CF &amp; VPPAdminTools
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#deerisle" class="md-nav__link">
+    <span class="md-ellipsis">
+      DeerIsle
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#spawn-loadout" class="md-nav__link">
+    <span class="md-ellipsis">
+      Spawn-Loadout
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+  <div class="md-content md-content--post" data-md-component="content">
+    <div class="md-sidebar md-sidebar--post" data-md-component="sidebar" data-md-type="navigation">
+      <div class="md-sidebar__scrollwrap">
+        <div class="md-sidebar__inner md-post">
+          <nav class="md-nav md-nav--primary">
+            <div class="md-post__back">
+              <div class="md-nav__title md-nav__container">
+                <a href="../../../index.html" class="md-nav__link">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+                  <span class="md-ellipsis">
+                    Back to index
+                  </span>
+                </a>
+              </div>
+            </div>
+            
+              <div class="md-post__authors md-typeset">
+                
+                  <div class="md-profile md-post__profile">
+                    <span class="md-author md-author--long">
+                      <img src="../../../../assets/external/github.com/felbinger.png.jpg" alt="Nico Felbinger">
+                    </span>
+                    <span class="md-profile__description">
+                      <strong>
+                        
+                          Nico Felbinger
+                        
+                      </strong>
+                      <br>
+                      computer science student
+                    </span>
+                  </div>
+                
+              </div>
+            
+            <ul class="md-post__meta md-nav__list">
+              <li class="md-nav__item md-nav__item--section">
+                <div class="md-post__title">
+                  <span class="md-ellipsis">
+                    Metadata
+                  </span>
+                </div>
+                <nav class="md-nav">
+                  <ul class="md-nav__list">
+                    <li class="md-nav__item">
+                      <div class="md-nav__link">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 19H5V8h14m-3-7v2H8V1H6v2H5c-1.11 0-2 .89-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2h-1V1m-1 11h-5v5h5z"/></svg>
+                        <time datetime="2025-08-07 00:00:00+00:00" class="md-ellipsis">August 7, 2025</time>
+                      </div>
+                    </li>
+                    
+                      <li class="md-nav__item">
+                        <div class="md-nav__link">
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M15 13h1.5v2.82l2.44 1.41-.75 1.3L15 16.69zm4-5H5v11h4.67c-.43-.91-.67-1.93-.67-3a7 7 0 0 1 7-7c1.07 0 2.09.24 3 .67zM5 21a2 2 0 0 1-2-2V5c0-1.11.89-2 2-2h1V1h2v2h8V1h2v2h1a2 2 0 0 1 2 2v6.1c1.24 1.26 2 2.99 2 4.9a7 7 0 0 1-7 7c-1.91 0-3.64-.76-4.9-2zm11-9.85A4.85 4.85 0 0 0 11.15 16c0 2.68 2.17 4.85 4.85 4.85A4.85 4.85 0 0 0 20.85 16c0-2.68-2.17-4.85-4.85-4.85"/></svg>
+                          <time datetime="2025-08-27 00:00:00+00:00" class="md-ellipsis">August 27, 2025</time>
+                        </div>
+                      </li>
+                    
+                    
+                    
+                      
+                      <li class="md-nav__item">
+                        <div class="md-nav__link">
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 20a8 8 0 0 0 8-8 8 8 0 0 0-8-8 8 8 0 0 0-8 8 8 8 0 0 0 8 8m0-18a10 10 0 0 1 10 10 10 10 0 0 1-10 10C6.47 22 2 17.5 2 12A10 10 0 0 1 12 2m.5 5v5.25l4.5 2.67-.75 1.23L11 13V7z"/></svg>
+                          <span class="md-ellipsis">
+                            
+                              3 min read
+                            
+                          </span>
+                        </div>
+                      </li>
+                    
+                  </ul>
+                </nav>
+              </li>
+            </ul>
+          </nav>
+          
+        </div>
+      </div>
+    </div>
+    <article class="md-content__inner md-typeset">
+      
+        
+
+
+<h1 id="linux-game-server-manager-dayz-server">Linux Game Server Manager: DayZ Server<a class="headerlink" href="#linux-game-server-manager-dayz-server" title="Permanent link">&para;</a></h1>
+<!--
+TODO:
+- Setup erneut durchführen, diesmal Steam Account ohne DayZ verwenden und Alternative Lösung in Issue 4601 anwenden.
+    Wenn es funktioniert Blog-Eintrag anpassen.
+-->
+
+<p>Ein Bekannter bat mich kürzlich, einen DayZ-Server mit dem VPP-Admin-Tool und DeerIsle aufzusetzen.
+Für das Hosting entschied ich mich für einen vServer mit Debian 12 als Basis. Die Installation und
+Verwaltung des Servers erledigte ich bequem mit dem Tool <a href="https://linuxgsm.com/">Linux Game Server Managers (LGSM)</a>,
+das speziell für dedizierte Game-Server unter Linux entwickelt wurde.</p>
+<!-- more -->
+
+<h2 id="steam-account">Steam Account<a class="headerlink" href="#steam-account" title="Permanent link">&para;</a></h2>
+<p>Für den Download der Serverdateien von Steam wird ein Steam-Account benötigt. Üblicherweise erstellt
+man dafür einen separaten Account, um die eigenen Zugangsdaten nicht zu gefährden – diese liegen auf
+dem Server nämlich im Klartext.</p>
+<p>Beim DayZ-Server führt ein solcher „frischer“ Account jedoch zu Problemen: Hat der Account DayZ nicht
+gekauft, wird der Server zwar installiert und gestartet, jedoch unvollständig – es fehlen unter anderem
+die offiziellen Missionen. Dieses Verhalten wurde bereits in <a href="https://github.com/GameServerManagers/LinuxGSM/issues/4601">Issue #4601</a>
+bei LGSM dokumentiert.</p>
+<p>Zur Lösung dieses Problems gibt es zwei Ansätze:</p>
+<ol>
+<li>Die fehlenden Missionen manuell über das offizielle
+   <a href="https://github.com/BohemiaInteractive/DayZ-Central-Economy">GitHub-Repository von Bohemia Interactive</a> nachladen.</li>
+<li>Einen Steam-Account verwenden, der DayZ besitzt – wie es ein
+   <a href="https://github.com/GameServerManagers/LinuxGSM/issues/4601#issuecomment-2683274938">Nutzer</a> ebenfalls vorschlägt.</li>
+</ol>
+<p>Ich entschied mich für die zweite Variante, um mögliche Folgeprobleme zu vermeiden. Dafür habe ich meine
+eigenen Steam-Zugangsdaten temporär auf dem Server hinterlegt. Nachdem ich die bestehenden Serverdateien
+gelöscht und den SteamCMD-Login via Steam Guard bestätigt hatte, wurden alle Dateien – inklusive der
+Missionen – vollständig heruntergeladen.</p>
+<h2 id="basisinstallation">Basisinstallation<a class="headerlink" href="#basisinstallation" title="Permanent link">&para;</a></h2>
+<p><div class="highlight"><pre><span></span><code>apt-get<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>curl<span class="w"> </span>jq<span class="w"> </span>nano<span class="w"> </span>git
+
+<span class="c1"># siehe https://linuxgsm.com/servers/dayzserver/</span>
+adduser<span class="w"> </span>--disabled-password<span class="w"> </span>--gecos<span class="w"> </span><span class="s2">&quot;&quot;</span><span class="w"> </span>dayzserver
+su<span class="w"> </span>-<span class="w"> </span>dayzserver<span class="w"> </span><span class="c1"># run cmds seprate</span>
+curl<span class="w"> </span>-Lo<span class="w"> </span>linuxgsm.sh<span class="w"> </span>https://linuxgsm.sh<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>chmod<span class="w"> </span>+x<span class="w"> </span>linuxgsm.sh<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>bash<span class="w"> </span>linuxgsm.sh<span class="w"> </span>dayzserver
+mkdir<span class="w"> </span>-p<span class="w"> </span>~dayzserver/lgsm/config-lgsm/dayzserver/
+cat<span class="w"> </span><span class="s">&lt;&lt;_EOF &gt;&gt; ~dayzserver/lgsm/config-lgsm/dayzserver/secrets-dayzserver.cfg</span>
+<span class="s">steamuser=</span>
+<span class="s">steampass=</span>
+<span class="s">_EOF</span>
+./dayzserver<span class="w"> </span>install
+</code></pre></div>
+Nachdem die erste Ausführung des Install-Befehls, die Verzeichnisstruktur angelegt hat, ist feststellbar,
+dass diverse Abhängigkeiten nicht installiert sind. Der Einfachste weg diese zu installieren ist es
+diesen Befehl erneut als root-Nutzer auszuführen. Danach erfolgt die eigentliche Serverinstallation als
+der zuvor angelegte, nicht-privilegierte Benutzer:
+<div class="highlight"><pre><span></span><code><span class="c1"># wieder zurück von su shell in root shell</span>
+<span class="nb">exit</span>
+~dayzserver/dayzserver<span class="w"> </span>install
+
+<span class="c1"># anschließend als dayzserver nutzer</span>
+su<span class="w"> </span>-<span class="w"> </span>dayzserver
+./dayzserver<span class="w"> </span>install
+</code></pre></div></p>
+<p>Die Konfiguration des Servers erfolgt in der Datei <code>~dayzserver/serverfiles/cfg/dayzserver.server.cfg</code>. Ich
+passte zunächst folgende Einstellungen direkt per sed an:
+<div class="highlight"><pre><span></span><code>sed<span class="w"> </span>-i<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-e<span class="w"> </span><span class="s1">&#39;s|hostname.*|hostname = &quot;felbinger.eu&quot;;|g&#39;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-e<span class="w"> </span><span class="s1">&#39;s|passwordAdmin.*|passwordAdmin = &quot;&#39;</span>r4nd0m-s3cr3t<span class="s1">&#39;&quot;;|g&#39;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-e<span class="w"> </span><span class="s1">&#39;s|maxPlayers.*|maxPlayers = 10;|g&#39;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-e<span class="w"> </span><span class="s1">&#39;s|disable3rdPerson.*|disable3rdPerson = 1;|g&#39;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-e<span class="w"> </span><span class="s1">&#39;s|disableCrosshair.*|disableCrosshair = 1;|g&#39;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>~dayzserver/serverfiles/cfg/dayzserver.server.cfg
+</code></pre></div></p>
+<p>Nun kann der Server mit dem Befehl <code>./dayzserver start</code> gestartet wurde. Die Konsole des DayZ Servers steht in
+einer tmux-Session zur Verfügung, die vereinfacht mit <code>./dayzserver console</code> geöffnet werden kann.</p>
+<p>Ich konnte dem Server im Anschluss erfolgreich über den DayZ Launcher (unter Servers → Direct Connection) beitreten.</p>
+<h2 id="mods">Mods<a class="headerlink" href="#mods" title="Permanent link">&para;</a></h2>
+<h3 id="cf-vppadmintools">CF &amp; VPPAdminTools<a class="headerlink" href="#cf-vppadmintools" title="Permanent link">&para;</a></h3>
+<p>Im nächsten Schritt stand die Installation der benötigten Mods an.
+Den Anfang machte das gewünschte Admin-Werkzeug: das VPP-Admin-Tool.</p>
+<p>Die Entwickler stellen im <a href="https://github.com/VanillaPlusPlus/VPP-Admin-Tools/wiki/Installation-&amp;-Configuration">offiziellen Wiki</a>
+eine ausführliche Anleitung für die Installation und Konfiguration auf dedizierten Servern zur Verfügung.</p>
+<p>Die benötigten Mods – insbesondere CF (eine Basisabhängigkeit vieler Mods) und VPPAdminTools selbst – wurden zunächst auf dem Client
+über den Steam Workshop heruntergeladen. Anschließend kopierte ich sie manuell auf den Server in das entsprechende serverfiles-Verzeichnis.</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># ls -l ~dayzserver/serverfiles</span>
+total<span class="w"> </span><span class="m">60352</span>
+drwxr-xr-x<span class="w"> </span><span class="m">1</span><span class="w"> </span>dayzserver<span class="w"> </span>dayzserver<span class="w">    </span><span class="m">11900</span><span class="w"> </span>Aug<span class="w">  </span><span class="m">6</span><span class="w"> </span><span class="m">19</span>:09<span class="w"> </span>addons
+-rwxr-xr-x<span class="w"> </span><span class="m">1</span><span class="w"> </span>dayzserver<span class="w"> </span>dayzserver<span class="w">      </span><span class="m">637</span><span class="w"> </span>Aug<span class="w">  </span><span class="m">6</span><span class="w"> </span><span class="m">19</span>:08<span class="w"> </span>ban.txt
+drwxr-xr-x<span class="w"> </span><span class="m">1</span><span class="w"> </span>dayzserver<span class="w"> </span>dayzserver<span class="w">       </span><span class="m">70</span><span class="w"> </span>Aug<span class="w">  </span><span class="m">6</span><span class="w"> </span><span class="m">19</span>:09<span class="w"> </span>battleye
+drwxr-xr-x<span class="w"> </span><span class="m">1</span><span class="w"> </span>dayzserver<span class="w"> </span>dayzserver<span class="w">       </span><span class="m">50</span><span class="w"> </span>Aug<span class="w">  </span><span class="m">6</span><span class="w"> </span><span class="m">19</span>:21<span class="w"> </span>@CF<span class="w">              </span><span class="c1"># &lt;---</span>
+drwxr-xr-x<span class="w"> </span><span class="m">1</span><span class="w"> </span>dayzserver<span class="w"> </span>dayzserver<span class="w">       </span><span class="m">42</span><span class="w"> </span>Aug<span class="w">  </span><span class="m">6</span><span class="w"> </span><span class="m">19</span>:11<span class="w"> </span>cfg
+-rwxr-xr-x<span class="w"> </span><span class="m">1</span><span class="w"> </span>dayzserver<span class="w"> </span>dayzserver<span class="w">     </span><span class="m">1956</span><span class="w"> </span>Aug<span class="w">  </span><span class="m">6</span><span class="w"> </span><span class="m">19</span>:08<span class="w"> </span>dayz.gproj
+-rwxr-xr-x<span class="w"> </span><span class="m">1</span><span class="w"> </span>dayzserver<span class="w"> </span>dayzserver<span class="w"> </span><span class="m">23222512</span><span class="w"> </span>Aug<span class="w">  </span><span class="m">6</span><span class="w"> </span><span class="m">19</span>:08<span class="w"> </span>DayZServer
+-rwxr-xr-x<span class="w"> </span><span class="m">1</span><span class="w"> </span>dayzserver<span class="w"> </span>dayzserver<span class="w">     </span><span class="m">1106</span><span class="w"> </span>Aug<span class="w">  </span><span class="m">6</span><span class="w"> </span><span class="m">19</span>:08<span class="w"> </span>dayzsetting.xml
+drwxr-xr-x<span class="w"> </span><span class="m">1</span><span class="w"> </span>dayzserver<span class="w"> </span>dayzserver<span class="w">       </span><span class="m">48</span><span class="w"> </span>Aug<span class="w">  </span><span class="m">6</span><span class="w"> </span><span class="m">19</span>:33<span class="w"> </span>docs
+drwxr-xr-x<span class="w"> </span><span class="m">1</span><span class="w"> </span>dayzserver<span class="w"> </span>dayzserver<span class="w">      </span><span class="m">474</span><span class="w"> </span>Aug<span class="w">  </span><span class="m">6</span><span class="w"> </span><span class="m">19</span>:09<span class="w"> </span>dta
+drwxr-xr-x<span class="w"> </span><span class="m">1</span><span class="w"> </span>dayzserver<span class="w"> </span>dayzserver<span class="w">      </span><span class="m">144</span><span class="w"> </span>Aug<span class="w">  </span><span class="m">6</span><span class="w"> </span><span class="m">19</span>:37<span class="w"> </span>keys
+-rwxr-xr-x<span class="w"> </span><span class="m">1</span><span class="w"> </span>dayzserver<span class="w"> </span>dayzserver<span class="w">   </span><span class="m">391056</span><span class="w"> </span>Aug<span class="w">  </span><span class="m">6</span><span class="w"> </span><span class="m">19</span>:08<span class="w"> </span>libsteam_api.so
+drwxr-xr-x<span class="w"> </span><span class="m">1</span><span class="w"> </span>dayzserver<span class="w"> </span>dayzserver<span class="w">      </span><span class="m">120</span><span class="w"> </span>Aug<span class="w">  </span><span class="m">6</span><span class="w"> </span><span class="m">19</span>:09<span class="w"> </span>mpmissions
+drwxr-xr-x<span class="w"> </span><span class="m">1</span><span class="w"> </span>dayzserver<span class="w"> </span>dayzserver<span class="w">       </span><span class="m">12</span><span class="w"> </span>Aug<span class="w">  </span><span class="m">6</span><span class="w"> </span><span class="m">19</span>:09<span class="w"> </span>sakhal
+-rwxr-xr-x<span class="w"> </span><span class="m">1</span><span class="w"> </span>dayzserver<span class="w"> </span>dayzserver<span class="w">     </span><span class="m">3165</span><span class="w"> </span>Aug<span class="w">  </span><span class="m">6</span><span class="w"> </span><span class="m">19</span>:08<span class="w"> </span>serverDZ.cfg
+drwxr-xr-x<span class="w"> </span><span class="m">1</span><span class="w"> </span>dayzserver<span class="w"> </span>dayzserver<span class="w">      </span><span class="m">200</span><span class="w"> </span>Aug<span class="w">  </span><span class="m">6</span><span class="w"> </span><span class="m">19</span>:09<span class="w"> </span>server_manager
+-rwxr-xr-x<span class="w"> </span><span class="m">1</span><span class="w"> </span>dayzserver<span class="w"> </span>dayzserver<span class="w">        </span><span class="m">6</span><span class="w"> </span>Aug<span class="w">  </span><span class="m">6</span><span class="w"> </span><span class="m">19</span>:08<span class="w"> </span>steam_appid.txt
+drwxr-xr-x<span class="w"> </span><span class="m">1</span><span class="w"> </span>dayzserver<span class="w"> </span>dayzserver<span class="w">       </span><span class="m">74</span><span class="w"> </span>Aug<span class="w">  </span><span class="m">6</span><span class="w"> </span><span class="m">19</span>:09<span class="w"> </span>steamapps
+-rwxr-xr-x<span class="w"> </span><span class="m">1</span><span class="w"> </span>dayzserver<span class="w"> </span>dayzserver<span class="w"> </span><span class="m">38156120</span><span class="w"> </span>Aug<span class="w">  </span><span class="m">6</span><span class="w"> </span><span class="m">19</span>:08<span class="w"> </span>steamclient.so
+drwxr-xr-x<span class="w"> </span><span class="m">1</span><span class="w"> </span>dayzserver<span class="w"> </span>dayzserver<span class="w">       </span><span class="m">50</span><span class="w"> </span>Aug<span class="w">  </span><span class="m">6</span><span class="w"> </span><span class="m">19</span>:32<span class="w"> </span>@VPPAdminTools<span class="w">    </span><span class="c1"># &lt;---</span>
+-rwxr-xr-x<span class="w"> </span><span class="m">1</span><span class="w"> </span>dayzserver<span class="w"> </span>dayzserver<span class="w">      </span><span class="m">766</span><span class="w"> </span>Aug<span class="w">  </span><span class="m">6</span><span class="w"> </span><span class="m">19</span>:08<span class="w"> </span>whitelist.txt
+</code></pre></div>
+<p>Anschließend mussten die Signaturdateien (BIKeys) der verwendeten Mods in das Serververzeichnis kopiert werden.
+Nur so erkennt der Server die Mods als gültig und erlaubt es den Clients, sich mit aktivierten Mods zu verbinden.
+<div class="highlight"><pre><span></span><code>cp<span class="w"> </span>~dayzserver/serverfiles/@CF/keys/Jacob_Mango_V3.bikey<span class="w"> </span>~dayzserver/serverfiles/keys/
+cp<span class="w"> </span>~dayzserver/serverfiles/@VPPAdminTools/keys/VPP.bikey<span class="w"> </span>~dayzserver/serverfiles/keys/
+</code></pre></div></p>
+<p>Zuletzt wurden die Mods dauerhaft in die Serverkonfiguration eingebunden. Dafür ergänzte ich zunächst die
+<code>dayzserver.cfg</code> im LGSM-Konfigurationsverzeichnis um den entsprechenden mods-Eintrag:
+<div class="highlight"><pre><span></span><code>cat<span class="w"> </span><span class="s">&lt;&lt;_EOF &gt;&gt; ~dayzserver/lgsm/config-lgsm/dayzserver/dayzserver.cfg</span>
+<span class="s">mods=&quot;@CF\;@VPPAdminTools&quot;</span>
+<span class="s">_EOF</span>
+</code></pre></div></p>
+<p>Nach einem Neustart des Servers sollte nun automatisch im Profilverzeichnis unter
+<code>~dayzserver/.local/share/DayZ Other Profiles/Server</code> die Konfiguration für das
+VPP-Admin-Tool erstellt werden, die für die weitere Konfiguration entscheidend ist.</p>
+<p>Da diese Konfigurationsdateien nicht generiert wurden, entschied ich mich, das
+Profilverzeichnis manuell über die Startparameter zu setzen. In diesem Fall musste
+ich allerdings auch die Mods direkt über den -mod-Parameter angeben, da die zuvor
+gesetzte mods-Variable nicht mehr ausgewertet wurde:</p>
+<div class="highlight"><pre><span></span><code>cat<span class="w"> </span><span class="s">&lt;&lt;_EOF &gt;&gt; ~dayzserver/lgsm/config-lgsm/dayzserver/dayzserver.cfg</span>
+<span class="s">startparameters=&quot;-ip=${ip} -port=${port} -config=${servercfgfullpath} -profiles=profiles -mod=@CF\;@VPPAdminTools -servermod=${servermods} -bepath=${bepath} -limitFPS=60 -dologs -adminlog -freezeCheck&quot;</span>
+<span class="s">_EOF</span>
+<span class="c1"># mods variable is no longer in use</span>
+sed<span class="w"> </span>-i<span class="w"> </span><span class="s1">&#39;/mods.*/d&#39;</span><span class="w"> </span>~dayzserver/lgsm/config-lgsm/dayzserver/dayzserver.cfg
+</code></pre></div>
+<p>Nachdem ich mit <code>mkdir ~dayzserver/serverfiles/profiles</code> das Verzeichnis erstellt hatte und den Server neu
+startete, wurden die Konfigurationsdateien für das VPP-Admin-Tool wie erwartet generiert. Um einen Spieler
+als Administrator einzutragen, wird dessen SteamID64 benötigt. Diese lässt sich auf zwei Wegen ermitteln:</p>
+<ol>
+<li>Während der Spieler dem Server beitritt, erscheint seine Steam-ID im Server-Log.</li>
+<li>Alternativ kann die ID über <a href="https://www.steamidfinder.com/">steamidfinder.com</a> aus dem Steam-Benutzernamen
+   oder der Profil-URL ermittelt werden. Die benötigte ID steht im Feld steamID64.</li>
+</ol>
+<p>Mehrere Administratoren können definiert werden, indem in der Datei <code>SuperAdmins.txt</code> pro Zeile eine Steam-ID
+eingetragen wird. Außerdem ist ein Passwort erforderlich, das die berechtigten Nutzer beim Öffnen des Tools im
+Spiel eingeben müssen.</p>
+<p><div class="highlight"><pre><span></span><code><span class="nb">echo</span><span class="w"> </span>adminUid<span class="w"> </span>&gt;<span class="w"> </span>~dayzserver/serverfiles/profiles/VPPAdminTools/Permissions/SuperAdmins/SuperAdmins.txt
+<span class="nb">echo</span><span class="w"> </span>adm1n-s3cr3t<span class="w"> </span>&gt;<span class="w"> </span>~dayzserver/serverfiles/profiles/VPPAdminTools/Permissions/credentials.txt
+</code></pre></div>
+Nach einem weiteren Neustart des Servers (<code>~dayzserver/dayzserver restart</code>) konnte das VPP-Admin-Tool im Spiel
+wie erwartet verwendet werden – nach Eingabe des festgelegten Passworts hatte der konfigurierte Benutzer Zugriff
+auf alle administrativen Funktionen.</p>
+<h3 id="deerisle">DeerIsle<a class="headerlink" href="#deerisle" title="Permanent link">&para;</a></h3>
+<p>Der DeerIsle Mod wurde ebenfalls vom Client heruntergeladen und in das Verzeichnis
+<code>~dayzserver/serverfiles/@DeerIsle</code> hochgeladen. Die beiden benötigten Signing Keys kopierte ich anschließend mit:
+<div class="highlight"><pre><span></span><code>cp<span class="w"> </span>~dayzserver/serverfiles/@DeerIsle/keys/*<span class="w"> </span>~dayzserver/serverfiles/keys/
+</code></pre></div></p>
+<p>In der Serverkonfiguration <code>~dayzserver/lgsm/config-lgsm/dayzserver/dayzserver.cfg</code> wurden die "startparameters" entsprechend
+angepasst, um den Mod zusätzlich zu laden (<code>-mod=@CF\;@VPPAdminTools\;@DeerIsle</code>).</p>
+<p>Um die eigentliche Mission zu installieren, klonte ich das offizielle Repository,
+verschob die Missionsdatei und passte die Serverkonfiguration an:
+<div class="highlight"><pre><span></span><code>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/johnmclane666/Deerisle-Stable
+mv<span class="w"> </span>Deerisle-Stable/V5.9/empty.deerisle<span class="w"> </span>~dayzserver/serverfiles/mpmissions
+rm<span class="w"> </span>-r<span class="w"> </span>Deerisle-Stable
+sed<span class="w"> </span>-i<span class="w"> </span><span class="s1">&#39;s/template.*/template = &quot;empty.deerisle&quot;;/&#39;</span><span class="w"> </span>~dayzserver/serverfiles/cfg/dayzserver.server.cfg
+</code></pre></div></p>
+<p>Damit war die DeerIsle-Mission auf dem Server einsatzbereit.</p>
+<h2 id="spawn-loadout">Spawn-Loadout<a class="headerlink" href="#spawn-loadout" title="Permanent link">&para;</a></h2>
+<p>Abschließend wurde die Mission so angepasst, dass das Spawn-Loadout der Spieler verändert wird.
+Dazu wurde die unten stehende C-Funktion in der Datei <code>~dayzserver/serverfiles/mpmission/empty.deerisle/init.c</code> modifiziert.
+<div class="highlight"><pre><span></span><code><span class="w">  </span><span class="n">override</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="n">StartingEquipSetup</span><span class="p">(</span><span class="n">PlayerBase</span><span class="w"> </span><span class="n">player</span><span class="p">,</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">clothesChosen</span><span class="p">)</span>
+<span class="w">  </span><span class="p">{</span>
+<span class="w">    </span><span class="n">player</span><span class="p">.</span><span class="n">RemoveAllItems</span><span class="p">();</span>
+
+<span class="w">    </span><span class="c1">// Military Uniform and Boots</span>
+<span class="w">    </span><span class="n">EntityAI</span><span class="w"> </span><span class="n">boots</span><span class="p">,</span><span class="w"> </span><span class="n">knife</span><span class="p">;</span>
+<span class="w">    </span><span class="n">player</span><span class="p">.</span><span class="n">GetInventory</span><span class="p">().</span><span class="n">CreateInInventory</span><span class="p">(</span><span class="s">&quot;TTsKOJacket_Camo&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">player</span><span class="p">.</span><span class="n">GetInventory</span><span class="p">().</span><span class="n">CreateInInventory</span><span class="p">(</span><span class="s">&quot;TTSKOPants&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">player</span><span class="p">.</span><span class="n">GetInventory</span><span class="p">().</span><span class="n">CreateInInventory</span><span class="p">(</span><span class="s">&quot;TacticalGloves_Green&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">boots</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">player</span><span class="p">.</span><span class="n">GetInventory</span><span class="p">().</span><span class="n">CreateInInventory</span><span class="p">(</span><span class="s">&quot;MilitaryBoots_Brown&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">knife</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">boots</span><span class="p">.</span><span class="n">GetInventory</span><span class="p">().</span><span class="n">CreateInInventory</span><span class="p">(</span><span class="s">&quot;CombatKnife&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">player</span><span class="p">.</span><span class="n">SetQuickBarEntityShortcut</span><span class="p">(</span><span class="n">knife</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">);</span><span class="w"> </span><span class="c1">// Add to quick bar</span>
+
+<span class="w">    </span><span class="c1">// Tactial helmet with nvg and flashlight</span>
+<span class="w">    </span><span class="c1">//EntityAI helmet, helmetAttachment;</span>
+<span class="w">    </span><span class="c1">//helmet = player.GetInventory().CreateInInventory(&quot;Mich2001Helmet&quot;);</span>
+<span class="w">    </span><span class="c1">//helmetAttachment = helmet.GetInventory().CreateAttachment(&quot;UniversalLight&quot;);</span>
+<span class="w">    </span><span class="c1">//helmetAttachment.GetInventory().CreateAttachment(&quot;Battery9V&quot;);</span>
+<span class="w">    </span><span class="c1">//helmetAttachment = helmet.GetInventory().CreateAttachment(&quot;NVGoggles&quot;);</span>
+<span class="w">    </span><span class="c1">//helmetAttachment.GetInventory().CreateAttachment(&quot;Battery9V&quot;);</span>
+
+<span class="w">    </span><span class="c1">// Belt with knife and fully equipped pistol</span>
+<span class="w">    </span><span class="n">EntityAI</span><span class="w"> </span><span class="n">belt</span><span class="p">,</span><span class="w"> </span><span class="n">beltHolster</span><span class="p">,</span><span class="w"> </span><span class="n">beltPistol</span><span class="p">,</span><span class="w"> </span><span class="n">beltPistolAttachment</span><span class="p">;</span>
+<span class="w">    </span><span class="n">belt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">player</span><span class="p">.</span><span class="n">GetInventory</span><span class="p">().</span><span class="n">CreateInInventory</span><span class="p">(</span><span class="s">&quot;MilitaryBelt&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">belt</span><span class="p">.</span><span class="n">GetInventory</span><span class="p">().</span><span class="n">CreateInInventory</span><span class="p">(</span><span class="s">&quot;Canteen&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="c1">//beltHolster = belt.GetInventory().CreateInInventory(&quot;NylonKnifeSheath&quot;);</span>
+<span class="w">    </span><span class="c1">//beltHolster.GetInventory().CreateInInventory(&quot;CombatKnife&quot;);</span>
+<span class="w">    </span><span class="n">beltHolster</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">belt</span><span class="p">.</span><span class="n">GetInventory</span><span class="p">().</span><span class="n">CreateInInventory</span><span class="p">(</span><span class="s">&quot;PlateCarrierHolster&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">beltPistol</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">beltHolster</span><span class="p">.</span><span class="n">GetInventory</span><span class="p">().</span><span class="n">CreateInInventory</span><span class="p">(</span><span class="s">&quot;Glock19&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">player</span><span class="p">.</span><span class="n">SetQuickBarEntityShortcut</span><span class="p">(</span><span class="n">beltPistol</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span><span class="w"> </span><span class="c1">// Add to quick bar</span>
+<span class="w">    </span><span class="n">beltPistol</span><span class="p">.</span><span class="n">GetInventory</span><span class="p">().</span><span class="n">CreateAttachment</span><span class="p">(</span><span class="s">&quot;Mag_Glock_15Rnd&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="c1">//beltPistol.GetInventory().CreateAttachment(&quot;PistolSuppressor&quot;);</span>
+<span class="w">    </span><span class="c1">//beltPistolAttachment = beltPistolAttachment.GetInventory().CreateAttachment(&quot;FNP45_MRDSOptic&quot;);</span>
+<span class="w">    </span><span class="c1">//beltPistolAttachment.GetInventory().CreateAttachment(&quot;Battery9V&quot;);</span>
+<span class="w">    </span><span class="c1">//beltPistolAttachment = beltPistolAttachment.GetInventory().CreateAttachment(&quot;TLRLight&quot;);</span>
+<span class="w">    </span><span class="c1">//beltPistolAttachment.GetInventory().CreateAttachment(&quot;Battery9V&quot;);</span>
+<span class="w">    </span><span class="n">player</span><span class="p">.</span><span class="n">GetInventory</span><span class="p">().</span><span class="n">CreateInInventory</span><span class="p">(</span><span class="s">&quot;Mag_Glock_15Rnd&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">player</span><span class="p">.</span><span class="n">GetInventory</span><span class="p">().</span><span class="n">CreateInInventory</span><span class="p">(</span><span class="s">&quot;Ammo_9x19&quot;</span><span class="p">);</span>
+
+<span class="w">    </span><span class="c1">// Plate carrier</span>
+<span class="w">    </span><span class="c1">//EntityAI vest, pouches, vestHolster, vestPistol;</span>
+<span class="w">    </span><span class="c1">//vest = player.GetInventory().CreateInInventory(&quot;PlateCarrierVest&quot;);</span>
+<span class="w">    </span><span class="c1">//vestHolster = vest.GetInventory().CreateAttachment(&quot;PlateCarrierHolster&quot;);</span>
+<span class="w">    </span><span class="c1">//vestPistol = vestHolster.GetInventory().CreateInInventory(&quot;Magnum&quot;);</span>
+<span class="w">    </span><span class="c1">//player.SetQuickBarEntityShortcut(vestPistol, 2); // Add to quick bar</span>
+<span class="w">    </span><span class="c1">//pouches = vest.GetInventory().CreateAttachment(&quot;PlateCarrierPouches&quot;);</span>
+<span class="w">    </span><span class="c1">//pouches.GetInventory().CreateInInventory(&quot;Ammo_357&quot;);</span>
+
+<span class="w">    </span><span class="n">player</span><span class="p">.</span><span class="n">GetInventory</span><span class="p">().</span><span class="n">CreateInInventory</span><span class="p">(</span><span class="s">&quot;BandageDressing&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">player</span><span class="p">.</span><span class="n">GetInventory</span><span class="p">().</span><span class="n">CreateInInventory</span><span class="p">(</span><span class="s">&quot;BandageDressing&quot;</span><span class="p">);</span>
+
+<span class="w">    </span><span class="n">EntityAI</span><span class="w"> </span><span class="n">itemEnt</span><span class="p">;</span>
+<span class="w">    </span><span class="n">string</span><span class="w"> </span><span class="n">chemlightArray</span><span class="p">[]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="s">&quot;Chemlight_White&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="s">&quot;Chemlight_Yellow&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="s">&quot;Chemlight_Green&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="s">&quot;Chemlight_Red&quot;</span>
+<span class="w">    </span><span class="p">};</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">rndIndex</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Math</span><span class="p">.</span><span class="n">RandomInt</span><span class="p">(</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="n">itemEnt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">player</span><span class="p">.</span><span class="n">GetInventory</span><span class="p">().</span><span class="n">CreateInInventory</span><span class="p">(</span><span class="w"> </span><span class="n">chemlightArray</span><span class="p">[</span><span class="n">rndIndex</span><span class="p">]</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="n">SetRandomHealth</span><span class="p">(</span><span class="w"> </span><span class="n">itemEnt</span><span class="w"> </span><span class="p">);</span>
+
+<span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">rand</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Math</span><span class="p">.</span><span class="n">RandomFloatInclusive</span><span class="p">(</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">rand</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mf">0.35</span><span class="w"> </span><span class="p">)</span>
+<span class="w">      </span><span class="n">itemEnt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">player</span><span class="p">.</span><span class="n">GetInventory</span><span class="p">().</span><span class="n">CreateInInventory</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;Apple&quot;</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">rand</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mf">0.65</span><span class="w"> </span><span class="p">)</span>
+<span class="w">      </span><span class="n">itemEnt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">player</span><span class="p">.</span><span class="n">GetInventory</span><span class="p">().</span><span class="n">CreateInInventory</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;Pear&quot;</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="k">else</span>
+<span class="w">      </span><span class="n">itemEnt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">player</span><span class="p">.</span><span class="n">GetInventory</span><span class="p">().</span><span class="n">CreateInInventory</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;Plum&quot;</span><span class="w"> </span><span class="p">);</span>
+<span class="w">    </span><span class="n">SetRandomHealth</span><span class="p">(</span><span class="w"> </span><span class="n">itemEnt</span><span class="w"> </span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+</code></pre></div>
+Die verwendeten Classnames für die Items können online eingesehen werden, beispielsweise <a href="https://github.com/CypherMediaGIT/DayZClassNames2020/blob/master/classname2020">hier</a>.</p>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+  
+
+
+
+      
+    </article>
+  </div>
+
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2020 - 2025 Nico Felbinger &nbsp; – &nbsp; <a href="/imprint.html">Imprint</a> &nbsp; – &nbsp; <a href="#__consent">Change cookie settings</a>
+    </div>
+  
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+      <div class="md-consent" data-md-component="consent" id="__consent" hidden>
+        <div class="md-consent__overlay"></div>
+        <aside class="md-consent__inner">
+          <form class="md-consent__form md-grid md-typeset" name="consent">
+            
+
+
+
+
+
+<h4>Cookie consent</h4>
+<p>We use cookies to recognize your repeated visits and preferences, as well as to measure the effectiveness of our documentation and whether users find what they're searching for. With your consent, you're helping us to make my documentation better.</p>
+<input class="md-toggle" type="checkbox" id="__settings" >
+<div class="md-consent__settings">
+  <ul class="task-list">
+    
+      
+      
+        
+        
+      
+      <li class="task-list-item">
+        <label class="task-list-control">
+          <input type="checkbox" name="analytics" >
+          <span class="task-list-indicator"></span>
+          Google Analytics
+        </label>
+      </li>
+    
+  </ul>
+</div>
+<div class="md-consent__controls">
+  
+    
+      <button class="md-button md-button--primary">Accept</button>
+    
+    
+    
+  
+    
+    
+    
+      <label class="md-button" for="__settings">Manage settings</label>
+    
+  
+    
+    
+      <button type="reset" class="md-button md-button--primary">Reject</button>
+    
+    
+  
+</div>
+          </form>
+        </aside>
+      </div>
+      <script>var consent=__md_get("__consent");if(consent)for(var input of document.forms.consent.elements)input.name&&(input.checked=consent[input.name]||!1);else"file:"!==location.protocol&&setTimeout((function(){document.querySelector("[data-md-component=consent]").hidden=!1}),250);var form=document.forms.consent;for(var action of["submit","reset"])form.addEventListener(action,(function(e){if(e.preventDefault(),"reset"===e.type)for(var n of document.forms.consent.elements)n.name&&(n.checked=!1);__md_set("__consent",Object.fromEntries(Array.from(new FormData(form).keys()).map((function(e){return[e,!0]})))),location.hash="",location.reload()}))</script>
+    
+    <script id="__config" type="application/json">{"base": "../../../..", "features": ["search.suggest", "search.highlight", "navigation.expand", "navigation.instant", "navigation.sections"], "search": "../../../../assets/javascripts/workers/search.6ce7567c.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../../../../assets/javascripts/bundle.88dd0f4e.min.js"></script>
+      
+    
+  </body>
+</html>

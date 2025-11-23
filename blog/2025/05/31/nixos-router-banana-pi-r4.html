@@ -1,0 +1,1374 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://felbinger.eu/blog/2025/05/31/nixos-router-banana-pi-r4.html">
+      
+      
+        <link rel="prev" href="../10/nixos-asbr-mit-vrf-zur-separierung-von-egp-und-igp.html">
+      
+      
+        <link rel="next" href="../../08/07/linux-game-server-manager-dayz-server.html">
+      
+      
+      <link rel="icon" href="../../../../media/favicon.ico">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.49">
+    
+    
+      
+        <title>NixOS Router: Banana PI R4 - felbinger.eu</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.6f8fc17f.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+        <script src="../../../../assets/external/unpkg.com/iframe-worker/shim.js"></script>
+      
+    
+    
+      
+        
+        
+        
+        <link rel="stylesheet" href="../../../../assets/external/fonts.googleapis.com/css.49ea35f2.css">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="green" data-md-color-accent="lime">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#nixos-router-banana-pi-r4" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../../.." title="felbinger.eu" class="md-header__button md-logo" aria-label="felbinger.eu" data-md-component="logo">
+      
+  <img src="../../../../media/favicon-32x32.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            felbinger.eu
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              NixOS Router: Banana PI R4
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="green" data-md-color-accent="lime"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 6H7c-3.31 0-6 2.69-6 6s2.69 6 6 6h10c3.31 0 6-2.69 6-6s-2.69-6-6-6m0 10H7c-2.21 0-4-1.79-4-4s1.79-4 4-4h10c2.21 0 4 1.79 4 4s-1.79 4-4 4M7 9c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="green" data-md-color-accent="lime"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h10a5 5 0 0 0 5-5 5 5 0 0 0-5-5m0 8a3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3 3 3 0 0 1-3 3"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" hidden>
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="felbinger.eu" class="md-nav__button md-logo" aria-label="felbinger.eu" data-md-component="logo">
+      
+  <img src="../../../../media/favicon-32x32.png" alt="logo">
+
+    </a>
+    felbinger.eu
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_1" id="__nav_1_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Blog
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_1_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_1">
+            <span class="md-nav__icon md-icon"></span>
+            Blog
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      <a href="../../../index.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Index
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_1_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_1_2" id="__nav_1_2_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Categories
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_2">
+            <span class="md-nav__icon md-icon"></span>
+            Categories
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../category/grapheneos.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    GrapheneOS
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../category/networking.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Networking
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../category/nixos.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    NixOS
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Knowledgebase
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            Knowledgebase
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../knowledgebase/android.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Android
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../knowledgebase/applications.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Applications
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../knowledgebase/ben-eater-8bit-computer.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Ben Eater: 8bit Computer
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../knowledgebase/cryptsetup.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Cryptsetup
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../knowledgebase/django.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Django
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../knowledgebase/hosting.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Hosting
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../knowledgebase/mysql.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    MariaDB
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../knowledgebase/nftables.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    nftables
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../knowledgebase/openssl.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    OpenSSL
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../knowledgebase/rpi.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Raspberry PI
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../knowledgebase/ssh.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    SSH
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../knowledgebase/udev.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    udev
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../knowledgebase/windows.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Windows
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#verwendung-als-all-in-one-netzwerkgerat" class="md-nav__link">
+    <span class="md-ellipsis">
+      Verwendung als All-In-One Netzwerkgerät
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#verwandte-arbeiten" class="md-nav__link">
+    <span class="md-ellipsis">
+      Verwandte Arbeiten
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#beschaffung-und-zusammenbau" class="md-nav__link">
+    <span class="md-ellipsis">
+      Beschaffung und Zusammenbau
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#initialer-start-mit-vorinstalliertem-openwrt" class="md-nav__link">
+    <span class="md-ellipsis">
+      Initialer Start mit vorinstalliertem OpeNWRT
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#nixos-sbc" class="md-nav__link">
+    <span class="md-ellipsis">
+      NixOS SBC
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="NixOS SBC">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#bootstrap-image" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bootstrap Image
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#modifikationen" class="md-nav__link">
+    <span class="md-ellipsis">
+      Modifikationen
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Modifikationen">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#initialkonfiguration" class="md-nav__link">
+    <span class="md-ellipsis">
+      Initialkonfiguration
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#8-gb-ram" class="md-nav__link">
+    <span class="md-ellipsis">
+      8 GB RAM
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#wireguard" class="md-nav__link">
+    <span class="md-ellipsis">
+      Wireguard
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#wifi-modul" class="md-nav__link">
+    <span class="md-ellipsis">
+      WiFi Modul
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#nutzung" class="md-nav__link">
+    <span class="md-ellipsis">
+      Nutzung
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Nutzung">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#initial-testphase" class="md-nav__link">
+    <span class="md-ellipsis">
+      Initial Testphase
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+  <div class="md-content md-content--post" data-md-component="content">
+    <div class="md-sidebar md-sidebar--post" data-md-component="sidebar" data-md-type="navigation">
+      <div class="md-sidebar__scrollwrap">
+        <div class="md-sidebar__inner md-post">
+          <nav class="md-nav md-nav--primary">
+            <div class="md-post__back">
+              <div class="md-nav__title md-nav__container">
+                <a href="../../../index.html" class="md-nav__link">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+                  <span class="md-ellipsis">
+                    Back to index
+                  </span>
+                </a>
+              </div>
+            </div>
+            
+              <div class="md-post__authors md-typeset">
+                
+                  <div class="md-profile md-post__profile">
+                    <span class="md-author md-author--long">
+                      <img src="../../../../assets/external/github.com/felbinger.png.jpg" alt="Nico Felbinger">
+                    </span>
+                    <span class="md-profile__description">
+                      <strong>
+                        
+                          Nico Felbinger
+                        
+                      </strong>
+                      <br>
+                      computer science student
+                    </span>
+                  </div>
+                
+              </div>
+            
+            <ul class="md-post__meta md-nav__list">
+              <li class="md-nav__item md-nav__item--section">
+                <div class="md-post__title">
+                  <span class="md-ellipsis">
+                    Metadata
+                  </span>
+                </div>
+                <nav class="md-nav">
+                  <ul class="md-nav__list">
+                    <li class="md-nav__item">
+                      <div class="md-nav__link">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 19H5V8h14m-3-7v2H8V1H6v2H5c-1.11 0-2 .89-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2h-1V1m-1 11h-5v5h5z"/></svg>
+                        <time datetime="2025-05-31 00:00:00+00:00" class="md-ellipsis">May 31, 2025</time>
+                      </div>
+                    </li>
+                    
+                      <li class="md-nav__item">
+                        <div class="md-nav__link">
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M15 13h1.5v2.82l2.44 1.41-.75 1.3L15 16.69zm4-5H5v11h4.67c-.43-.91-.67-1.93-.67-3a7 7 0 0 1 7-7c1.07 0 2.09.24 3 .67zM5 21a2 2 0 0 1-2-2V5c0-1.11.89-2 2-2h1V1h2v2h8V1h2v2h1a2 2 0 0 1 2 2v6.1c1.24 1.26 2 2.99 2 4.9a7 7 0 0 1-7 7c-1.91 0-3.64-.76-4.9-2zm11-9.85A4.85 4.85 0 0 0 11.15 16c0 2.68 2.17 4.85 4.85 4.85A4.85 4.85 0 0 0 20.85 16c0-2.68-2.17-4.85-4.85-4.85"/></svg>
+                          <time datetime="2025-08-10 00:00:00+00:00" class="md-ellipsis">August 10, 2025</time>
+                        </div>
+                      </li>
+                    
+                    
+                      <li class="md-nav__item">
+                        <div class="md-nav__link">
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9 3v15h3V3zm3 2 4 13 3-1-4-13zM5 5v13h3V5zM3 19v2h18v-2z"/></svg>
+                          <span class="md-ellipsis">
+                            in
+                            
+                              <a href="../../../category/nixos.html">NixOS</a>, 
+                              <a href="../../../category/networking.html">Networking</a></span>
+                        </div>
+                      </li>
+                    
+                    
+                      
+                      <li class="md-nav__item">
+                        <div class="md-nav__link">
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 20a8 8 0 0 0 8-8 8 8 0 0 0-8-8 8 8 0 0 0-8 8 8 8 0 0 0 8 8m0-18a10 10 0 0 1 10 10 10 10 0 0 1-10 10C6.47 22 2 17.5 2 12A10 10 0 0 1 12 2m.5 5v5.25l4.5 2.67-.75 1.23L11 13V7z"/></svg>
+                          <span class="md-ellipsis">
+                            
+                              10 min read
+                            
+                          </span>
+                        </div>
+                      </li>
+                    
+                  </ul>
+                </nav>
+              </li>
+            </ul>
+          </nav>
+          
+        </div>
+      </div>
+    </div>
+    <article class="md-content__inner md-typeset">
+      
+        
+
+
+<h1 id="nixos-router-banana-pi-r4">NixOS Router: Banana PI R4<a class="headerlink" href="#nixos-router-banana-pi-r4" title="Permanent link">&para;</a></h1>
+<p>Der <a href="https://wiki.banana-pi.org/Banana_Pi_BPI-R4">Banana Pi R4</a> ist ein leistungsfähiges und
+dabei preislich sehr attraktives Netzwerkgerät, das speziell für anspruchsvolle Anwendungen
+entwickelt wurde. Ausgestattet mit dem MediaTek MT7988 SoC und bis zu 8 GB DDR4-RAM bietet
+er eine starke Grundlage für moderne Netzwerkinfrastrukturen. Besonders hervorzuheben sind
+die beiden integrierten SFP+ Schnittstellen, die High-Speed-Datenübertragungen mit bis zu
+10 Gbit/s ermöglichen. Durch die Unterstützung von Wi-Fi 6, einem M.2-Steckplatz für NVMe-
+oder 5G-Module sowie vielseitigen GPIO-Pins ist der BPI-R4 äußerst flexibel und erweiterbar.</p>
+<!-- more -->
+
+<h2 id="verwendung-als-all-in-one-netzwerkgerat">Verwendung als All-In-One Netzwerkgerät<a class="headerlink" href="#verwendung-als-all-in-one-netzwerkgerat" title="Permanent link">&para;</a></h2>
+<!--
+- ifstate (Interface Configuration)
+- Firewall/IDS/IPS: nftables (L4 Firewall) / ?? (L7 Firewall) / Suricata (IDS/IPS)
+- Knot Resolver/DNS als Recursive/Authorative DNS Server
+- Kea DHCP Server für DHCPv4 sowie DHCPv6-PD / radvd für SLAAC
+- FRR für dynamisches Routing
+- NAT64 Gateway
+- Monitoring: SNMPd/LLDP/Prometheus Exporter
+- Telefonanlage: Asterisk
+- Zigbee2MQTT Gateway
+- Radius für 802.1X (LAN) ?
+- hostapd für Wireless AP ?
+-->
+
+<p>Der Banana Pi R4 soll in meinem Heimnetz nicht nur die klassische Rolle eines Routers
+übernehmen, sondern sich als vielseitige All-in-One-Netzwerklösung beweisen. Neben
+grundlegenden Aufgaben wie Routing und Firewalling plane ich den Einsatz als NAT64-Gateway,
+um IPv6-only Clients den Zugriff auf IPv4-Dienste zu ermöglichen. Auch als Firewall mit
+Deep Packet Inspection und einem Intrusion Detection/Prevention System wird das Gerät zum
+zentralen Sicherheitsbaustein.</p>
+<p>Für maximale Flexibilität bei der Konfiguration der Netzwerkschnittstellen setze ich auf
+ifstate, ein deklaratives Werkzeug zur Netzwerkkonfiguration. Die dynamische Routing-Komponente
+übernimmt FRR, während nftables als leistungsstarke Firewall-Engine fungiert. Zusätzlich
+experimentiere ich mit verschiedenen Layer-7-Firewalls und Suricata als IDS/IPS.</p>
+<p>Auch Dienste wie Knot Resolver/DNS (als rekursiver/autoritativer DNS-Server), Kea für DHCPv4
+und DHCPv6-PD, sowie radvd für SLAAC kommen zum Einsatz. Optional plane ich, Asterisk als
+VoIP-Telefonanlage zu betreiben, um eine vollständige IP-PBX bereitzustellen.</p>
+<p>Abgerundet wird das ganze durch LLDP zur Nachbarschaftserkennung sowie diverse Prometheus
+Metrics Exporters für Monitoring-Zwecke. Ziel ist es, eine robuste, sichere und flexible
+Plattform zu schaffen, die alle zentralen Netzaufgaben in einem kompakten Gerät bündelt
+– und das auf Basis von NixOS, um alles deklarativ und reproduzierbar zu halten.</p>
+<h2 id="verwandte-arbeiten">Verwandte Arbeiten<a class="headerlink" href="#verwandte-arbeiten" title="Permanent link">&para;</a></h2>
+<p>Für das Vorgängermodell, den Banana Pi R3, gibt es bereits eine größtenteils funktionale
+NixOS-Implementierungen. Siehe <a href="https://github.com/ghostbuster91/blogposts/blob/main/router2023/main.md">Router 2023: Part 1</a>, <a href="https://github.com/ghostbuster91/blogposts/blob/main/router2023-part2/main.md">Router 2023: Part 2</a>, <a href="https://github.com/nakato/nixos-bpir3-example">Beispielkonfiguration</a>.</p>
+<p>Mitte 2024 entwickelte sich aus dieser Beispielkonfiguration <a href="https://github.com/nakato/nixos-sbc">NixOS SBC</a>
+- ein Modul explizit für Einplatinencomputer, welches auch die Unterstützung des BPI-R4 anstrebt.</p>
+<p>Unabhängig davon Dokumentierten die Nutzer newAM und K900 ihre eigenen Fortschritte in
+separaten Git Repositores. Siehe: <a href="https://github.com/newAM/nixos-bpi-r4">github:newAM/nixos-bpi-r4</a>, <a href="https://gitlab.com/K900/nix/-/blob/master/shared/platform/bpi-r4.nix">gitlab:k900/nix</a></p>
+<h2 id="beschaffung-und-zusammenbau">Beschaffung und Zusammenbau<a class="headerlink" href="#beschaffung-und-zusammenbau" title="Permanent link">&para;</a></h2>
+<p>Die Suche nach einem Anbieter, der die 8-GB-Variante des Banana Pi R4 inklusive Zubehör nach
+Deutschland liefert, erwies sich als herausfordernd. Letztendlich habe ich mich für folgenden
+Artikel entschieden: <a href="https://www.amazon.de/dp/B0F2HZSH3L">amazon.de/dp/B0F2HZSH3L</a>.
+Abweichend zur Produktbeschreibung und den Abbildungen wurde anstatt eines US-Netzteils ein
+EU-Netzteil mitgeliefert.</p>
+<p><img alt="Lieferumfang" src="../../../../media/posts/bpir4-package.png" /></p>
+<p>Der Zusammenbau gestaltet sich dank der ausführlichen Anleitung unter
+<a href="https://docs.banana-pi.org/en/BPI-R4/BPI-R4_Accessory_installation">docs.banana-pi.org/en/BPI-R4/BPI-R4_Accessory_installation</a>
+äußerst einfach und problemlos.</p>
+<h2 id="initialer-start-mit-vorinstalliertem-openwrt">Initialer Start mit vorinstalliertem OpeNWRT<a class="headerlink" href="#initialer-start-mit-vorinstalliertem-openwrt" title="Permanent link">&para;</a></h2>
+<p>Zwei <a href="https://de.wikipedia.org/wiki/DIP-Schalter">DIP-Schalter</a> erlauben die Auswahl des
+Bootmediums. Zunächst stellte ich diese auf die Position 01, um vom NAND-Chip zu booten.
+Auf meinem Board war dort OpenWRT in der Version 21.02 installiert. Der Bootlog kann auf
+<a href="https://felbinger.eu/attachments/bpi-r4-openwrt21-bootlog.txt">https://felbinger.eu/attachments/bpi-r4-openwrt21-bootlog.txt</a> betrachtet werden.</p>
+<h2 id="nixos-sbc">NixOS SBC<a class="headerlink" href="#nixos-sbc" title="Permanent link">&para;</a></h2>
+<h3 id="bootstrap-image">Bootstrap Image<a class="headerlink" href="#bootstrap-image" title="Permanent link">&para;</a></h3>
+<p>Im Anschluss nutzte ich die folgenden Befehle, um das Bootstrap-Image von NixOS SBC auf
+die SD-Karte zu schreiben:
+<div class="highlight"><pre><span></span><code>nix<span class="w"> </span>build<span class="w"> </span>github:nakato/nixos-sbc#sdImages.x86_64-linux.sdImage-bananapi-bpir4
+zstd<span class="w"> </span>-d<span class="w"> </span>--stdout<span class="w"> </span>result/sd-image/nixos-sd-BananaPi-BPiR4-v0.3.raw.zst<span class="w"> </span><span class="p">|</span><span class="w"> </span>sudo<span class="w"> </span>dd<span class="w"> </span><span class="nv">of</span><span class="o">=</span>/dev/sdb<span class="w"> </span><span class="nv">bs</span><span class="o">=</span>4M<span class="w"> </span><span class="nv">status</span><span class="o">=</span>progress
+</code></pre></div>
+Nach dem Umstellen der DIP-Schalter auf Position 11 startete das Gerät NixOS erfolgreich
+von der SD-Karte.</p>
+<p>Bereits aus den Logs (<a href="https://felbinger.eu/attachments/bpi-r4-nixos-sbc-bootlog.txt">https://felbinger.eu/attachments/bpi-r4-nixos-sbc-bootlog.txt</a>) kann
+entnommen werden, dass anders als beim OpenWRT Image lediglich 4 GB RAM erkannt werden. Nach
+dem Login mit den Initial-Zugangsdaten (Benutzername: <code>root</code>, Passwort: <code>SBCDefaultBootstrapPassword</code>)
+bestätigte sich dies, sowie die Tatsache, dass das WLAN Modul noch nicht erkannt wurde.</p>
+<!-- TODO lässt sich aus Boot-Logs nicht entnehmen, da zu diesem Zeitpunkt WLAN Modul noch nicht eingebaut war -->
+
+<h3 id="modifikationen">Modifikationen<a class="headerlink" href="#modifikationen" title="Permanent link">&para;</a></h3>
+<p>Der nächste Schritt war es, NixOS SBC so anzupassen, dass eine Veränderungen möglich waren.</p>
+<h4 id="initialkonfiguration">Initialkonfiguration<a class="headerlink" href="#initialkonfiguration" title="Permanent link">&para;</a></h4>
+<p>Dazu wurde das Repository geklont und zunächst um eine Initialkonfiguration ähnlich der
+Konfiguration des Bootstrap Images zu erweitern. Dazu wurde die Flake wie folgt erweitert:
+<div class="highlight"><pre><span></span><code><span class="gd">--- a/flake.nix</span>
+<span class="gi">+++ b/flake.nix</span>
+<span class="gu">@@ -59,6 +59,13 @@</span>
+<span class="w"> </span>                  sbc.bootstrap.initialBootstrapImage = true;
+<span class="w"> </span>                  sbc.version = &quot;0.3&quot;;
+<span class="w"> </span>                  nixpkgs.hostPlatform.system = system;
+<span class="gi">+</span>
+<span class="gi">+                  nix.settings.experimental-features = [&quot;nix-command&quot; &quot;flakes&quot;];</span>
+<span class="gi">+                  services.openssh = {</span>
+<span class="gi">+                    enable = true;</span>
+<span class="gi">+                    settings.PermitRootLogin = &quot;yes&quot;;</span>
+<span class="gi">+                  };</span>
+<span class="gi">+                  users.users.root.password = lib.mkForce &quot;root&quot;;</span>
+<span class="w"> </span>                }
+<span class="w"> </span>              ]
+<span class="w"> </span>              ++ (lib.optionals (device ? extraModules) device.extraModules)
+</code></pre></div></p>
+<p>Anschließend wurde eine neue SD Karte mit dem Image geflashed:
+<div class="highlight"><pre><span></span><code>nix<span class="w"> </span>build<span class="w"> </span>.#sdImages.x86_64-linux.sdImage-bananapi-bpir4
+zstd<span class="w"> </span>-d<span class="w"> </span>--stdout<span class="w"> </span>result/sd-image/nixos-sd-BananaPi-BPiR4-v0.3.raw.zst<span class="w"> </span><span class="p">|</span><span class="w"> </span>sudo<span class="w"> </span>dd<span class="w"> </span><span class="nv">of</span><span class="o">=</span>/dev/sdb<span class="w"> </span><span class="nv">bs</span><span class="o">=</span>4M<span class="w"> </span><span class="nv">status</span><span class="o">=</span>progress
+</code></pre></div></p>
+<p>Nachdem das System von dieser gestartet wurde, war feststellbar, dass das Passwort auf root gesetzt war und der SSH Login mit dem root-Nutzer möglich war.</p>
+<h4 id="8-gb-ram">8 GB RAM<a class="headerlink" href="#8-gb-ram" title="Permanent link">&para;</a></h4>
+<p>Wie bereits beschrieben, konnte mithilfe des NixOS SBC Bootstrap-Image festgestellt werden, dass lediglich 4 GB Arbeitsspeicher erkannt wurde.</p>
+<p>In einem Beitrag im Banana Pi Forum fand ich heraus, dass für die Nutzung von 8 GB RAM zwei Bedingungen erfüllt sein mussten. Zum einen muss die DRAM-Konfiguration (dram_configs.mk) eine AVAIL_DRAM_SIZE von 4096 haben, sodass die Einzelmodule korrekt erkannt werden. Außerdem muss, während des Kompilierens der ATF DDR4_4BG_MODE=1 gesetzt werden.</p>
+<p>Innerhalb von NixOS SBC wird github:mtk-openwrt/arm-trusted-firmware in einer Version vom März 2025 eingesetzt. Betrachtet man die seit dem durchgeführten Änderungen, so ist erkennbar, dass <a href="https://github.com/mtk-openwrt/arm-trusted-firmware/blob/mtksoc/plat/mediatek/mt7988/drivers/dram/dram-configs.mk#L12-L20">Anfang Juli 2025 eine DRAM Konfiguration implementiert wurde</a>.</p>
+<p>Somit ist ein Update dieses Repositories in NixOS SBC nötig. Zusammengefasst ließ sich die Unterstützung der 8 GB RAM durch folgenden Patch implementieren:
+<div class="highlight"><pre><span></span><code><span class="gd">--- a/pkgs/bananaPiR4/default.nix</span>
+<span class="gi">+++ b/pkgs/bananaPiR4/default.nix</span>
+<span class="gu">@@ -52,7 +52,7 @@</span>
+
+<span class="w"> </span>  armTrustedFirmwareMT7988 =
+<span class="w"> </span>    (buildArmTrustedFirmware rec {
+<span class="gd">-      extraMakeFlags = [&quot;USE_MKIMAGE=1&quot; &quot;DRAM_USE_COMB=1&quot; &quot;BOOT_DEVICE=sdmmc&quot; &quot;bl2&quot; &quot;bl31&quot;];</span>
+<span class="gi">+      extraMakeFlags = [&quot;USE_MKIMAGE=1&quot; &quot;DRAM_USE_COMB=1&quot; &quot;DDR4_4BG_MODE=1&quot; &quot;BOOT_DEVICE=sdmmc&quot; &quot;bl2&quot; &quot;bl31&quot;];</span>
+<span class="w"> </span>      platform = &quot;mt7988&quot;;
+<span class="w"> </span>      extraMeta.platforms = [&quot;aarch64-linux&quot;];
+<span class="w"> </span>      filesToInstall = [&quot;build/${platform}/release/bl2.img&quot; &quot;build/${platform}/release/bl31.bin&quot;];
+<span class="gu">@@ -61,9 +61,9 @@</span>
+<span class="w"> </span>      src = fetchFromGitHub {
+<span class="w"> </span>        owner = &quot;mtk-openwrt&quot;;
+<span class="w"> </span>        repo = &quot;arm-trusted-firmware&quot;;
+<span class="gd">-        # mtksoc HEAD 2025-03-12</span>
+<span class="gd">-        rev = &quot;e090770684e775711a624e68e0b28112227a4c38&quot;;</span>
+<span class="gd">-        hash = &quot;sha256-VI5OB2nWdXUjkSuUXl/0yQN+/aJp9Jkt+hy7DlL+PMg=&quot;;</span>
+<span class="gi">+        # mtksoc HEAD 2025-07-11</span>
+<span class="gi">+        rev = &quot;78a0dfd927bb00ce973a1f8eb4079df0f755887a&quot;;</span>
+<span class="gi">+        hash = &quot;sha256-m9ApkBVf0I11rNg68vxofGRJ+BcnlM6C+Zrn8TfMvbY=&quot;;</span>
+<span class="w"> </span>      };
+<span class="w"> </span>      version = &quot;2.12.0-mtk&quot;;
+<span class="w"> </span>      nativeBuildInputs = oldAttrs.nativeBuildInputs ++ [dtc ubootTools which python3];
+</code></pre></div></p>
+<!--
+#### Linux Kernel: 6.12 -> 6.16
+tbd
+<!-- k900 nutzt 6.16 mit weiteren modifikationen und eigenem u-boot - ->
+Vielleicht will man das aber auch gar nicht, weil LTS kernel?
+-->
+
+<h4 id="wireguard">Wireguard<a class="headerlink" href="#wireguard" title="Permanent link">&para;</a></h4>
+<p>Erst während des Einrichtungsprozesses stellte sich heraus, dass keine Wireguard-Interfaces erzeugt
+werden konnten, da das entsprechende Kernel-Modul nicht gefunden wurde. Dieses Problem lässt sich
+jedoch beheben, indem man die <code>structuredExtraConfig</code> anpasst und Wireguard als Kernelmodul hinzufügt:
+<div class="highlight"><pre><span></span><code><span class="gd">--- a/pkgs/bananaPiR4/default.nix</span>
+<span class="gi">+++ b/pkgs/bananaPiR4/default.nix</span>
+<span class="gu">@@ -253,6 +253,30 @@</span>
+
+<span class="w"> </span>      XFRM_USER = module;
+<span class="w"> </span>      NFT_XFRM = module;
+<span class="gi">+</span>
+<span class="gi">+      ## WireGuard support ##</span>
+<span class="gi">+      WIREGUARD = module;</span>
+<span class="gi">+      WIREGUARD_DEBUG = no;</span>
+<span class="gi">+</span>
+<span class="gi">+      # Network dependencies</span>
+<span class="gi">+      NET = yes;</span>
+<span class="gi">+      INET = yes;</span>
+<span class="gi">+      NET_UDP_TUNNEL = module;</span>
+<span class="gi">+      NET_FOU = module;</span>
+<span class="gi">+</span>
+<span class="gi">+      # Crypto dependencies</span>
+<span class="gi">+      CRYPTO = yes;</span>
+<span class="gi">+      CRYPTO_BLKCIPHER = yes;</span>
+<span class="gi">+      CRYPTO_BLAKE2S = module;</span>
+<span class="gi">+      CRYPTO_CHACHA20 = module;</span>
+<span class="gi">+      CRYPTO_CHACHA20_NEON = module;</span>
+<span class="gi">+      CRYPTO_CURVE25519 = module;</span>
+<span class="gi">+      CRYPTO_CURVE25519_NEON = module;</span>
+<span class="gi">+      CRYPTO_CHACHA20POLY1305 = module;</span>
+<span class="gi">+      CRYPTO_LIB_CHACHA20 = module;</span>
+<span class="gi">+      CRYPTO_LIB_POLY1305 = module;</span>
+<span class="gi">+      CRYPTO_LIB_CURVE25519 = module;</span>
+<span class="gi">+      CRYPTO_LIB_CHACHA20POLY1305 = module;</span>
+<span class="w"> </span>    };
+
+<span class="w"> </span>    argsOverride = {
+</code></pre></div></p>
+<h4 id="wifi-modul">WiFi Modul<a class="headerlink" href="#wifi-modul" title="Permanent link">&para;</a></h4>
+<p>tbd</p>
+<!-- https://github.com/nakato/nixos-sbc/pull/30 -->
+
+<h3 id="nutzung">Nutzung<a class="headerlink" href="#nutzung" title="Permanent link">&para;</a></h3>
+<p>Nachdem die vorerst notwendigen Modifikationen am System durchgeführt werden,
+kann dieses genutzt werden. Dafür werden die oben beschrieben Komponenten in
+NixOS deklarativ konfiguriert.</p>
+<h4 id="initial-testphase">Initial Testphase<a class="headerlink" href="#initial-testphase" title="Permanent link">&para;</a></h4>
+<p><strong>Planung</strong>:
+Für den ersten Testeinsatz des Systems wird ein einfaches Client-Netzwerk ohne
+komplexe Anforderungen angenommen. Dies ermöglicht eine grundlegende Überprüfung
+der Funktionalität und Leistungsfähigkeit des Systems.</p>
+<p><strong>Netzwerkdiagramm</strong>:
+<img alt="Network Diagram" src="../../../../media/posts/bpir4-diagram.png" /></p>
+<p><strong>Konfiguration</strong>:
+Im ersten Schritt wird lediglich eine Basiskonfiguration bestehend aus der
+ifstate-Schnittstellenkonfiguration, dem Knot Resolver als Recursive DNS Server,
+einem Kea DHCPv4 Server für das Client-Segment und einer einfachen Firewall mit
+NAT Funktionalitätdurchgeführt.</p>
+<details>
+<summary>Konfiguration des Switching Chips in ifstate 2.0.0</summary>
+
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+  networking<span class="o">.</span>ifstate<span class="o">.</span>settings<span class="o">.</span><span class="ss">interfaces</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;br-lan&quot;</span> <span class="o">=</span> <span class="p">{</span>
+      <span class="ss">addresses</span> <span class="o">=</span> <span class="p">[</span> <span class="s2">&quot;192.168.178.1/24&quot;</span> <span class="p">];</span>
+      <span class="ss">link</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="ss">kind</span> <span class="o">=</span> <span class="s2">&quot;bridge&quot;</span><span class="p">;</span>
+        <span class="ss">state</span> <span class="o">=</span> <span class="s2">&quot;up&quot;</span><span class="p">;</span>
+      <span class="p">};</span>
+    <span class="p">};</span>
+    <span class="ss">lan1</span> <span class="o">=</span> <span class="p">{</span>
+      <span class="ss">link</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="ss">state</span> <span class="o">=</span> <span class="s2">&quot;up&quot;</span><span class="p">;</span>
+        <span class="ss">kind</span> <span class="o">=</span> <span class="s2">&quot;dsa&quot;</span><span class="p">;</span>
+        <span class="ss">link</span> <span class="o">=</span> <span class="s2">&quot;end0&quot;</span><span class="p">;</span>
+        <span class="ss">master</span> <span class="o">=</span> <span class="s2">&quot;br-lan&quot;</span><span class="p">;</span>
+      <span class="p">};</span>
+    <span class="p">};</span>
+    <span class="ss">lan2</span> <span class="o">=</span> <span class="p">{</span>
+      <span class="ss">link</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="ss">state</span> <span class="o">=</span> <span class="s2">&quot;up&quot;</span><span class="p">;</span>
+        <span class="ss">kind</span> <span class="o">=</span> <span class="s2">&quot;dsa&quot;</span><span class="p">;</span>
+        <span class="ss">link</span> <span class="o">=</span> <span class="s2">&quot;end0&quot;</span><span class="p">;</span>
+        <span class="ss">master</span> <span class="o">=</span> <span class="s2">&quot;br-lan&quot;</span><span class="p">;</span>
+      <span class="p">};</span>
+    <span class="p">};</span>
+    <span class="ss">lan3</span> <span class="o">=</span> <span class="p">{</span>
+      <span class="ss">link</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="ss">state</span> <span class="o">=</span> <span class="s2">&quot;up&quot;</span><span class="p">;</span>
+        <span class="ss">kind</span> <span class="o">=</span> <span class="s2">&quot;dsa&quot;</span><span class="p">;</span>
+        <span class="ss">link</span> <span class="o">=</span> <span class="s2">&quot;end0&quot;</span><span class="p">;</span>
+        <span class="ss">master</span> <span class="o">=</span> <span class="s2">&quot;br-lan&quot;</span><span class="p">;</span>
+      <span class="p">};</span>
+    <span class="p">};</span>
+  <span class="p">};</span>
+<span class="p">}</span>
+</code></pre></div>
+</details>
+
+<p><strong>Testen</strong>:
+Neben der IPv4 Adressvergabe mittels DHCP, dem DNS Recursor und der NAT wurde primär die Distributed
+Switch Architecture (DSA), also die korrekte Funktionalität des eingebauten Switching Chips getestet
+wurde. Hierfür kam das Tool iperf zum Einsatz, bei dem 10 GBit Netzwerktraffic zwischen Notebook und
+Computer mit einer Geschwindigkeit von 1 Gbit/s ohne wesentliche Belastung der CPU des Routers
+übertragen wurden. Das Ergebnis zeigte, dass der Switching-Chip wie erwartet funktioniert.</p>
+<hr />
+<p>Fortsetzung folgt...</p>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+  
+
+
+
+      
+    </article>
+  </div>
+
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2020 - 2025 Nico Felbinger &nbsp; – &nbsp; <a href="/imprint.html">Imprint</a> &nbsp; – &nbsp; <a href="#__consent">Change cookie settings</a>
+    </div>
+  
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+      <div class="md-consent" data-md-component="consent" id="__consent" hidden>
+        <div class="md-consent__overlay"></div>
+        <aside class="md-consent__inner">
+          <form class="md-consent__form md-grid md-typeset" name="consent">
+            
+
+
+
+
+
+<h4>Cookie consent</h4>
+<p>We use cookies to recognize your repeated visits and preferences, as well as to measure the effectiveness of our documentation and whether users find what they're searching for. With your consent, you're helping us to make my documentation better.</p>
+<input class="md-toggle" type="checkbox" id="__settings" >
+<div class="md-consent__settings">
+  <ul class="task-list">
+    
+      
+      
+        
+        
+      
+      <li class="task-list-item">
+        <label class="task-list-control">
+          <input type="checkbox" name="analytics" >
+          <span class="task-list-indicator"></span>
+          Google Analytics
+        </label>
+      </li>
+    
+  </ul>
+</div>
+<div class="md-consent__controls">
+  
+    
+      <button class="md-button md-button--primary">Accept</button>
+    
+    
+    
+  
+    
+    
+    
+      <label class="md-button" for="__settings">Manage settings</label>
+    
+  
+    
+    
+      <button type="reset" class="md-button md-button--primary">Reject</button>
+    
+    
+  
+</div>
+          </form>
+        </aside>
+      </div>
+      <script>var consent=__md_get("__consent");if(consent)for(var input of document.forms.consent.elements)input.name&&(input.checked=consent[input.name]||!1);else"file:"!==location.protocol&&setTimeout((function(){document.querySelector("[data-md-component=consent]").hidden=!1}),250);var form=document.forms.consent;for(var action of["submit","reset"])form.addEventListener(action,(function(e){if(e.preventDefault(),"reset"===e.type)for(var n of document.forms.consent.elements)n.name&&(n.checked=!1);__md_set("__consent",Object.fromEntries(Array.from(new FormData(form).keys()).map((function(e){return[e,!0]})))),location.hash="",location.reload()}))</script>
+    
+    <script id="__config" type="application/json">{"base": "../../../..", "features": ["search.suggest", "search.highlight", "navigation.expand", "navigation.instant", "navigation.sections"], "search": "../../../../assets/javascripts/workers/search.6ce7567c.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../../../../assets/javascripts/bundle.88dd0f4e.min.js"></script>
+      
+    
+  </body>
+</html>
