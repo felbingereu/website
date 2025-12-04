@@ -197,3 +197,5 @@ site
 
 # the directory to which privacy plugin downloads assets to
 .cache
+
+result
