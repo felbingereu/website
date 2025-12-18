@@ -8,11 +8,13 @@
       
       
       
-        <link rel="canonical" href="https://felbinger.eu/knowledgebase/windows.html">
+        <link rel="canonical" href="https://felbinger.eu/knowledgebase/ffmpeg.html">
       
       
-        <link rel="prev" href="udev.html">
+        <link rel="prev" href="django.html">
       
+      
+        <link rel="next" href="hosting.html">
       
       
       <link rel="icon" href="../media/favicon.ico">
@@ -20,7 +22,7 @@
     
     
       
-        <title>Windows - felbinger.eu</title>
+        <title>ffmpeg - felbinger.eu</title>
       
     
     
@@ -74,7 +76,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#windows" class="md-skip">
+        <a href="#ffmpeg" class="md-skip">
           Skip to content
         </a>
       
@@ -109,7 +111,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Windows
+              ffmpeg
             
           </span>
         </div>
@@ -561,10 +563,30 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="ffmpeg.html" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    ffmpeg
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="ffmpeg.html" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
@@ -573,6 +595,44 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#static-color" class="md-nav__link">
+    <span class="md-ellipsis">
+      static color
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#stack-videos" class="md-nav__link">
+    <span class="md-ellipsis">
+      stack videos
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -729,30 +789,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  <span class="md-ellipsis">
-    Windows
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="windows.html" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="windows.html" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -761,35 +801,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#reinstall-boot-manager" class="md-nav__link">
-    <span class="md-ellipsis">
-      Reinstall Boot Manager
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -829,9 +840,18 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#reinstall-boot-manager" class="md-nav__link">
+  <a href="#static-color" class="md-nav__link">
     <span class="md-ellipsis">
-      Reinstall Boot Manager
+      static color
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#stack-videos" class="md-nav__link">
+    <span class="md-ellipsis">
+      stack videos
     </span>
   </a>
   
@@ -852,59 +872,23 @@
                   
 
 
-<h1 id="windows">Windows<a class="headerlink" href="#windows" title="Permanent link">&para;</a></h1>
-<h2 id="reinstall-boot-manager">Reinstall Boot Manager<a class="headerlink" href="#reinstall-boot-manager" title="Permanent link">&para;</a></h2>
-<p>These instructions also work if:
-- Bitlocker is activated
-- the EFI partition is not displayed as a volume.</p>
-<ol>
-<li>
-<p>Delete EFI partition using <code>diskpart</code>:
-   <div class="highlight"><pre><span></span><code>REM select correct disk (replace x with the id of the disk)
-list disk
-sel disk X
-REM select efi partition (replace n with the id of the efi partition)
-list part
-sel part N
-REM delete efi partition
-del part override
-</code></pre></div></p>
-</li>
-<li>
-<p>Create new EFI partition using <code>diskpart</code>:
-   <div class="highlight"><pre><span></span><code>REM create efi system partition
-create partition EFI size=200
-REM format partition as fat32
-format quick fs=fat32 label=&quot;System&quot;
+<h1 id="ffmpeg">ffmpeg<a class="headerlink" href="#ffmpeg" title="Permanent link">&para;</a></h1>
+<h2 id="static-color">static color<a class="headerlink" href="#static-color" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code>ffmpeg<span class="w"> </span>-f<span class="w"> </span>lavfi<span class="w"> </span>-i<span class="w"> </span><span class="nv">color</span><span class="o">=</span><span class="nv">c</span><span class="o">=</span>red:s<span class="o">=</span>1280x720:d<span class="o">=</span><span class="m">10</span><span class="w"> </span>-c:v<span class="w"> </span>libx264<span class="w"> </span>-pix_fmt<span class="w"> </span>yuv420p<span class="w"> </span>output.mp4
 </code></pre></div>
-   If more disk space is required to create the fat32 system (16 MB is not enough!), the C: partition can be reduced in size:
-   <div class="highlight"><pre><span></span><code>REM select C:\ (replace n with the id of the root partition (probally the largest one))
-list part
-sel part N
-REM create more free space (200mb)
-shrink desired=200
-</code></pre></div></p>
-</li>
-<li>
-<p>Assign letter for EFI partition using <code>diskpart</code>:
-   <div class="highlight"><pre><span></span><code>REM select efi partition (replace n with the id of the efi partition)
-list vol
-sel vol N
-assign letter Y:
-</code></pre></div></p>
-</li>
-<li>
-<p>Reinstall Bootloader
-   <div class="highlight"><pre><span></span><code>bootrec /rebuildbcd
-bootrec /fixmbr
-bootrec /fixboot  # works even if you get access denied...
-bcdboot c:\Windows /s Y: /f ALL
-</code></pre></div></p>
-</li>
-<li>
-<p>Reboot</p>
-</li>
-</ol>
+<h2 id="stack-videos">stack videos<a class="headerlink" href="#stack-videos" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code><span class="c1"># create videos with static color to visualize stacking</span>
+<span class="k">for</span><span class="w"> </span>c<span class="w"> </span><span class="k">in</span><span class="w"> </span>red<span class="w"> </span>green<span class="w"> </span>blue<span class="w"> </span>yellow<span class="p">;</span><span class="w"> </span><span class="k">do</span>
+<span class="w">  </span>ffmpeg<span class="w"> </span>-f<span class="w"> </span>lavfi<span class="w"> </span>-i<span class="w"> </span><span class="nv">color</span><span class="o">=</span><span class="nv">c</span><span class="o">=</span><span class="si">${</span><span class="nv">c</span><span class="si">}</span>:s<span class="o">=</span>1280x720:d<span class="o">=</span><span class="m">10</span><span class="w"> </span>-c:v<span class="w"> </span>libx264<span class="w"> </span>-pix_fmt<span class="w"> </span>yuv420p<span class="w"> </span><span class="si">${</span><span class="nv">c</span><span class="si">}</span>.mp4
+<span class="k">done</span>
+
+ffmpeg<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-i<span class="w"> </span>red.mp4<span class="w"> </span>-i<span class="w"> </span>green.mp4<span class="w"> </span>-i<span class="w"> </span>blue.mp4<span class="w"> </span>-i<span class="w"> </span>yellow.mp4<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-filter_complex<span class="w"> </span><span class="s2">&quot; \</span>
+<span class="s2">    [0:v][1:v][2:v][3:v]xstack=inputs=4:layout=0_0|w0_0|0_h0|w0_h0[out] \</span>
+<span class="s2">  &quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-map<span class="w"> </span><span class="s2">&quot;[out]&quot;</span><span class="w"> </span>-c:v<span class="w"> </span>libx264<span class="w"> </span>-crf<span class="w"> </span><span class="m">23</span><span class="w"> </span>-preset<span class="w"> </span>veryfast<span class="w"> </span>output.mp4
+</code></pre></div>
 
 
 
