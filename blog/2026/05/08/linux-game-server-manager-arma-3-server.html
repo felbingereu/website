@@ -8,13 +8,11 @@
       
       
       
-        <link rel="canonical" href="https://felbinger.eu/blog/2025/08/27/grapheneos-gmx-freephone-esim-einrichten.html">
+        <link rel="canonical" href="https://felbinger.eu/blog/2026/05/08/linux-game-server-manager-arma-3-server.html">
       
       
-        <link rel="prev" href="../07/linux-game-server-manager-dayz-server.html">
+        <link rel="prev" href="../../../2025/08/27/grapheneos-gmx-freephone-esim-einrichten.html">
       
-      
-        <link rel="next" href="../../../2026/05/08/linux-game-server-manager-arma-3-server.html">
       
       
       <link rel="icon" href="../../../../media/favicon.ico">
@@ -22,7 +20,7 @@
     
     
       
-        <title>GrapheneOS: GMX FreePhone eSIM einrichten - felbinger.eu</title>
+        <title>Linux Game Server Manager: Arma 3 Server - felbinger.eu</title>
       
     
     
@@ -76,7 +74,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#grapheneos-gmx-freephone-esim-einrichten" class="md-skip">
+        <a href="#linux-game-server-manager-arma-3-server" class="md-skip">
           Skip to content
         </a>
       
@@ -111,7 +109,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              GrapheneOS: GMX FreePhone eSIM einrichten
+              Linux Game Server Manager: Arma 3 Server
             
           </span>
         </div>
@@ -781,6 +779,32 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#steam-account" class="md-nav__link">
+    <span class="md-ellipsis">
+      Steam Account
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#basisinstallation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Basisinstallation
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -835,20 +859,10 @@
                     <li class="md-nav__item">
                       <div class="md-nav__link">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 19H5V8h14m-3-7v2H8V1H6v2H5c-1.11 0-2 .89-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2h-1V1m-1 11h-5v5h5z"/></svg>
-                        <time datetime="2025-08-27 00:00:00+00:00" class="md-ellipsis">August 27, 2025</time>
+                        <time datetime="2026-05-08 00:00:00+00:00" class="md-ellipsis">May 8, 2026</time>
                       </div>
                     </li>
                     
-                    
-                      <li class="md-nav__item">
-                        <div class="md-nav__link">
-                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9 3v15h3V3zm3 2 4 13 3-1-4-13zM5 5v13h3V5zM3 19v2h18v-2z"/></svg>
-                          <span class="md-ellipsis">
-                            in
-                            
-                              <a href="../../../category/grapheneos.html">GrapheneOS</a></span>
-                        </div>
-                      </li>
                     
                     
                       
@@ -877,42 +891,51 @@
         
 
 
-<h1 id="grapheneos-gmx-freephone-esim-einrichten">GrapheneOS: GMX FreePhone eSIM einrichten<a class="headerlink" href="#grapheneos-gmx-freephone-esim-einrichten" title="Permanent link">&para;</a></h1>
-<p><a href="https://grapheneos.org/">GrapheneOS</a> ist ein alternatives Android-Betriebssystem, das auf
-ausgewählten Pixel-Geräten läuft und besonderen Wert auf Sicherheit und Datenschutz legt.
-Viele Nutzer setzen es ein, um die volle Kontrolle über ihr Gerät zu behalten und gleichzeitig
-von Googles Diensten möglichst unabhängig zu sein.</p>
-<p>GMX ist eigentlich vor allem als E-Mail-Anbieter bekannt, bietet inzwischen aber auch
-Mobilfunktarife an. Einer davon ist <a href="https://www.gmx.net/handy/freephone/">GMX FreePhone</a>,
-ein für 12 Monate kostenloser Basistarif mit 3 GB Datenvolumen pro Monat. Wichtig zu wissen:
-es gibt nur eine eSIM, keine klassische Plastikkarte.</p>
+<h1 id="linux-game-server-manager-arma-3-server">Linux Game Server Manager: Arma 3 Server<a class="headerlink" href="#linux-game-server-manager-arma-3-server" title="Permanent link">&para;</a></h1>
+<p>Dieser Blog Post beschreibt die Installation eines Arma 3 Exile Servers auf einem vServer
+mit Debian 13 und <a href="https://linuxgsm.com/">Linux Game Server Managers (LGSM)</a>.</p>
 <!-- more -->
 
-<p>Um den FreePhone Tarif zu testen, habe ich mir einen Account bei GMX angelegt. Zur
-Verifizierung der eigenen Identität ist eine Telefonnummer erforderlich. Nach dem Login
-in der GMX Mail App kann der FreePhone Vertrag abgeschlossen werden. Kurze Zeit später
-erhielt ich eine E-Mail mit dem Betreff "Ihr GMX FreePhone Vertrag: Aktivieren Sie jetzt
-Ihre eSIM". Diese beinhaltet Anweisungen für das weitere Vorgehen, den Nutzernamen für den
-Online-Zugang sowie einen Link für die Aktivierung in folgender Form: <code>https://service.freephone.gmx.net/myData/eSimActivation?tkn=...</code></p>
-<p>Nach Installation der GMX FreePhone App, versuchte ich mich mit dem Aktivierungslink in der
-App anzumelden. Dies funktionierte leider nicht. Ich entschied mich, die "Passwort vergessen"
-Funktion zu nutzen um mir ein neues Passwort zuschicken zu lassen. Hierfür war eine Angabe des
-Nutzernamens sowie der PLZ erforderlich. Nachdem ich eine E-Mail mit dem Betreff: "Ihr neues
-Passwort für die Servicewelt" mit dem neuen Passwort erhalten habe, war der Login möglich.</p>
-<p>Direkt nach dem Login tauchte dann auch wie erwartet der Punkt "eSIM Aktivierung" auf.</p>
-<p><img alt="eSIM activation successful" src="../../../../media/posts/gos-esim-activated.png" /></p>
-<p><img alt="eSIM Daten" src="../../../../media/posts/gos-esim-data.png" /></p>
-<p>Surfen über LTE/5G ist direkt möglich. Der erstbeste Speedtest ergibt etwa 10 MBit/s im Download.
-Der volle Funktionsumfang des Tarifs kann nach der Zustellung des Aktivierungscodes per Post und
-Eingabe in der App genutzt werden.</p>
-<p><img alt="Eingabe Aktivierungscode" src="../../../../media/posts/gos-esim-verify.png" /></p>
-<p><strong>Schlussbemerkungen:</strong><br />
-Meine Absicht war es zu testen, ob eSIMs prinzipiell unter GrapheneOS funktionieren.
-Meines Kenntnisstandes nach ist die Aktivierung von eSIMs unter GrapheneOS inzwischen
-auch ohne Google Play Services im Hauptprofil möglich. Für die Nutzung des GMX-FreePhone-Tarifs
-ist jedoch die oben genannte App erforderlich. Da ich diese lediglich über den Google
-Play Store beziehen konnte, war ihre Installation notwendig.
-Die Aktivierung der eSIM mit der GMX-App unter einem anderen Nutzer war nicht möglich.</p>
+<h2 id="steam-account">Steam Account<a class="headerlink" href="#steam-account" title="Permanent link">&para;</a></h2>
+<p>Für den Download der Serverdateien von Steam wird ein Steam-Account benötigt.
+Da die Zugangsdaten im Klartext auf dem Server abgelegt werden müssen, empfielt
+sich die Erstellung eines separaten Steam Accounts.</p>
+<h2 id="basisinstallation">Basisinstallation<a class="headerlink" href="#basisinstallation" title="Permanent link">&para;</a></h2>
+<p><div class="highlight"><pre><span></span><code>apt-get<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>curl<span class="w"> </span>jq<span class="w"> </span>nano<span class="w"> </span>git
+
+<span class="c1"># siehe https://linuxgsm.com/servers/arma3server/</span>
+adduser<span class="w"> </span>--disabled-password<span class="w"> </span>--gecos<span class="w"> </span><span class="s2">&quot;&quot;</span><span class="w"> </span>arma3server
+su<span class="w"> </span>-<span class="w"> </span>arma3server<span class="w"> </span><span class="c1"># run cmds seprate</span>
+curl<span class="w"> </span>-Lo<span class="w"> </span>linuxgsm.sh<span class="w"> </span>https://linuxgsm.sh<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>chmod<span class="w"> </span>+x<span class="w"> </span>linuxgsm.sh<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>bash<span class="w"> </span>linuxgsm.sh<span class="w"> </span>arma3server
+mkdir<span class="w"> </span>-p<span class="w"> </span>~arma3server/lgsm/config-lgsm/arma3server/
+cat<span class="w"> </span><span class="s">&lt;&lt;_EOF &gt;&gt; ~arma3server/lgsm/config-lgsm/arma3server/secrets-arma3server.cfg</span>
+<span class="s">steamuser=</span>
+<span class="s">steampass=</span>
+<span class="s">_EOF</span>
+./arma3server<span class="w"> </span>install
+</code></pre></div>
+Nachdem die erste Ausführung des Install-Befehls, die Verzeichnisstruktur angelegt hat, ist feststellbar,
+dass diverse Abhängigkeiten nicht installiert sind. Der Einfachste weg diese zu installieren ist es
+diesen Befehl erneut als root-Nutzer auszuführen. Danach erfolgt die eigentliche Serverinstallation als
+der zuvor angelegte, nicht-privilegierte Benutzer:
+<div class="highlight"><pre><span></span><code><span class="c1"># wieder zurück von su shell in root shell</span>
+<span class="nb">exit</span>
+~arma3server/arma3server<span class="w"> </span>install
+
+<span class="c1"># anschließend als arma3server nutzer</span>
+su<span class="w"> </span>-<span class="w"> </span>arma3server
+./arma3server<span class="w"> </span>install
+</code></pre></div></p>
+<p>Die Konfiguration des Servers erfolgt in der Datei <code>~arma3server/serverfiles/cfg/arma3server.server.cfg</code>.
+<div class="highlight"><pre><span></span><code>sed<span class="w"> </span>-i<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-e<span class="w"> </span><span class="s1">&#39;s|hostname.*|hostname = &quot;felbinger.eu&quot;;|g&#39;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-e<span class="w"> </span><span class="s1">&#39;s|passwordAdmin.*|passwordAdmin = &quot;&#39;</span>r4nd0m-s3cr3t<span class="s1">&#39;&quot;;|g&#39;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-e<span class="w"> </span><span class="s1">&#39;s|maxPlayers.*|maxPlayers = 10;|g&#39;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>~arma3server/serverfiles/cfg/arma3server.server.cfg
+</code></pre></div></p>
+<p>Nun kann der Server mit dem Befehl <code>./arma3server start</code> gestartet wurde. Die Konsole des Servers
+steht in einer tmux-Session zur Verfügung, die mit <code>./arma3server console</code> geöffnet werden kann.</p>
+<p>Für die Installation von Mods wie Exile werden weitere Blog Posts folgen.</p>
 
 
 
