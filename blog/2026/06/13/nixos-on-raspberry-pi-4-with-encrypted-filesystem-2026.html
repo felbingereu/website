@@ -8,28 +8,26 @@
       
       
       
-        <link rel="canonical" href="https://felbinger.eu/blog/category/nixos.html">
+        <link rel="canonical" href="https://felbinger.eu/blog/2026/06/13/nixos-on-raspberry-pi-4-with-encrypted-filesystem-2026.html">
       
       
-        <link rel="prev" href="networking.html">
+        <link rel="prev" href="../../05/08/linux-game-server-manager-arma-3-server.html">
       
       
-        <link rel="next" href="../../knowledgebase/android.html">
       
-      
-      <link rel="icon" href="../../media/favicon.ico">
+      <link rel="icon" href="../../../../media/favicon.ico">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.49">
     
     
       
-        <title>NixOS - felbinger.eu</title>
+        <title>NixOS on Raspberry Pi 4 with Encrypted Filesystem (2026) - felbinger.eu</title>
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.6f8fc17f.min.css">
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.6f8fc17f.min.css">
       
         
-        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.06af60db.min.css">
       
       
 
@@ -37,7 +35,7 @@
     
     
       
-        <script src="../../assets/external/unpkg.com/iframe-worker/shim.js"></script>
+        <script src="../../../../assets/external/unpkg.com/iframe-worker/shim.js"></script>
       
     
     
@@ -45,12 +43,12 @@
         
         
         
-        <link rel="stylesheet" href="../../assets/external/fonts.googleapis.com/css.49ea35f2.css">
+        <link rel="stylesheet" href="../../../../assets/external/fonts.googleapis.com/css.49ea35f2.css">
         <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
       
     
     
-    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -76,7 +74,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#nixos" class="md-skip">
+        <a href="#nixos-on-raspberry-pi-4-with-encrypted-filesystem-2026" class="md-skip">
           Skip to content
         </a>
       
@@ -92,9 +90,9 @@
 
 <header class="md-header md-header--shadow" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="../.." title="felbinger.eu" class="md-header__button md-logo" aria-label="felbinger.eu" data-md-component="logo">
+    <a href="../../../.." title="felbinger.eu" class="md-header__button md-logo" aria-label="felbinger.eu" data-md-component="logo">
       
-  <img src="../../media/favicon-32x32.png" alt="logo">
+  <img src="../../../../media/favicon-32x32.png" alt="logo">
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
@@ -111,7 +109,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              NixOS
+              NixOS on Raspberry Pi 4 with Encrypted Filesystem (2026)
             
           </span>
         </div>
@@ -205,7 +203,9 @@
           
             
               
-              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" hidden>
                 <div class="md-sidebar__scrollwrap">
                   <div class="md-sidebar__inner">
                     
@@ -214,9 +214,9 @@
 
 <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../.." title="felbinger.eu" class="md-nav__button md-logo" aria-label="felbinger.eu" data-md-component="logo">
+    <a href="../../../.." title="felbinger.eu" class="md-nav__button md-logo" aria-label="felbinger.eu" data-md-component="logo">
       
-  <img src="../../media/favicon-32x32.png" alt="logo">
+  <img src="../../../../media/favicon-32x32.png" alt="logo">
 
     </a>
     felbinger.eu
@@ -270,12 +270,14 @@
                 
   
   
+    
+  
   
     
   
   
-    <li class="md-nav__item">
-      <a href="../index.html" class="md-nav__link">
+    <li class="md-nav__item md-nav__item--active">
+      <a href="../../../index.html" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -293,8 +295,6 @@
                 
   
   
-    
-  
   
   
     
@@ -303,11 +303,13 @@
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1_2" checked>
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_1_2" >
         
           
           <label class="md-nav__link" for="__nav_1_2" id="__nav_1_2_label" tabindex="0">
@@ -321,7 +323,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_2_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_2_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_1_2">
             <span class="md-nav__icon md-icon"></span>
             Categories
@@ -337,7 +339,7 @@
   
   
     <li class="md-nav__item">
-      <a href="grapheneos.html" class="md-nav__link">
+      <a href="../../../category/grapheneos.html" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -360,7 +362,7 @@
   
   
     <li class="md-nav__item">
-      <a href="networking.html" class="md-nav__link">
+      <a href="../../../category/networking.html" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -378,23 +380,12 @@
                 
   
   
-    
-  
   
     
-      
-    
   
   
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-      <a href="nixos.html" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../../../category/nixos.html" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -403,7 +394,6 @@
   
 
       </a>
-      
     </li>
   
 
@@ -473,7 +463,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../knowledgebase/android.html" class="md-nav__link">
+      <a href="../../../../knowledgebase/android.html" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -494,7 +484,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../knowledgebase/applications.html" class="md-nav__link">
+      <a href="../../../../knowledgebase/applications.html" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -515,7 +505,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../knowledgebase/ben-eater-8bit-computer.html" class="md-nav__link">
+      <a href="../../../../knowledgebase/ben-eater-8bit-computer.html" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -536,7 +526,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../knowledgebase/cryptsetup.html" class="md-nav__link">
+      <a href="../../../../knowledgebase/cryptsetup.html" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -557,7 +547,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../knowledgebase/django.html" class="md-nav__link">
+      <a href="../../../../knowledgebase/django.html" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -578,7 +568,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../knowledgebase/ffmpeg.html" class="md-nav__link">
+      <a href="../../../../knowledgebase/ffmpeg.html" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -599,7 +589,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../knowledgebase/hosting.html" class="md-nav__link">
+      <a href="../../../../knowledgebase/hosting.html" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -620,7 +610,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../knowledgebase/mysql.html" class="md-nav__link">
+      <a href="../../../../knowledgebase/mysql.html" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -641,7 +631,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../knowledgebase/nftables.html" class="md-nav__link">
+      <a href="../../../../knowledgebase/nftables.html" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -662,7 +652,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../knowledgebase/openssl.html" class="md-nav__link">
+      <a href="../../../../knowledgebase/openssl.html" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -683,7 +673,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../knowledgebase/rpi.html" class="md-nav__link">
+      <a href="../../../../knowledgebase/rpi.html" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -704,7 +694,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../knowledgebase/ssh.html" class="md-nav__link">
+      <a href="../../../../knowledgebase/ssh.html" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -725,7 +715,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../knowledgebase/udev.html" class="md-nav__link">
+      <a href="../../../../knowledgebase/udev.html" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -746,7 +736,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../knowledgebase/windows.html" class="md-nav__link">
+      <a href="../../../../knowledgebase/windows.html" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -775,6 +765,8 @@
             
             
               
+                
+              
               <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
                 <div class="md-sidebar__scrollwrap">
                   <div class="md-sidebar__inner">
@@ -794,388 +786,228 @@
             
           
           
-  <div class="md-content" data-md-component="content">
-    <div class="md-content__inner">
-      <header class="md-typeset">
-        <h1 id="nixos">NixOS<a class="headerlink" href="#nixos" title="Permanent link">&para;</a></h1>
-      </header>
-      
-        <article class="md-post md-post--excerpt">
-  <header class="md-post__header">
-    
-      <nav class="md-post__authors md-typeset">
-        
-          <span class="md-author">
-            <img src="../../assets/external/github.com/felbinger.png.jpg" alt="Nico Felbinger">
-          </span>
-        
-      </nav>
-    
-    <div class="md-post__meta md-meta">
-      <ul class="md-meta__list">
-        <li class="md-meta__item">
-          <time datetime="2026-06-13 00:00:00+00:00">June 13, 2026</time></li>
-        
-          <li class="md-meta__item">
-            in
+  <div class="md-content md-content--post" data-md-component="content">
+    <div class="md-sidebar md-sidebar--post" data-md-component="sidebar" data-md-type="navigation">
+      <div class="md-sidebar__scrollwrap">
+        <div class="md-sidebar__inner md-post">
+          <nav class="md-nav md-nav--primary">
+            <div class="md-post__back">
+              <div class="md-nav__title md-nav__container">
+                <a href="../../../index.html" class="md-nav__link">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+                  <span class="md-ellipsis">
+                    Back to index
+                  </span>
+                </a>
+              </div>
+            </div>
             
-              <a href="nixos.html" class="md-meta__link">NixOS</a></li>
-        
-        
+              <div class="md-post__authors md-typeset">
+                
+                  <div class="md-profile md-post__profile">
+                    <span class="md-author md-author--long">
+                      <img src="../../../../assets/external/github.com/felbinger.png.jpg" alt="Nico Felbinger">
+                    </span>
+                    <span class="md-profile__description">
+                      <strong>
+                        
+                          Nico Felbinger
+                        
+                      </strong>
+                      <br>
+                      computer science student
+                    </span>
+                  </div>
+                
+              </div>
+            
+            <ul class="md-post__meta md-nav__list">
+              <li class="md-nav__item md-nav__item--section">
+                <div class="md-post__title">
+                  <span class="md-ellipsis">
+                    Metadata
+                  </span>
+                </div>
+                <nav class="md-nav">
+                  <ul class="md-nav__list">
+                    <li class="md-nav__item">
+                      <div class="md-nav__link">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 19H5V8h14m-3-7v2H8V1H6v2H5c-1.11 0-2 .89-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2h-1V1m-1 11h-5v5h5z"/></svg>
+                        <time datetime="2026-06-13 00:00:00+00:00" class="md-ellipsis">June 13, 2026</time>
+                      </div>
+                    </li>
+                    
+                    
+                      <li class="md-nav__item">
+                        <div class="md-nav__link">
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9 3v15h3V3zm3 2 4 13 3-1-4-13zM5 5v13h3V5zM3 19v2h18v-2z"/></svg>
+                          <span class="md-ellipsis">
+                            in
+                            
+                              <a href="../../../category/nixos.html">NixOS</a></span>
+                        </div>
+                      </li>
+                    
+                    
+                      
+                      <li class="md-nav__item">
+                        <div class="md-nav__link">
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 20a8 8 0 0 0 8-8 8 8 0 0 0-8-8 8 8 0 0 0-8 8 8 8 0 0 0 8 8m0-18a10 10 0 0 1 10 10 10 10 0 0 1-10 10C6.47 22 2 17.5 2 12A10 10 0 0 1 12 2m.5 5v5.25l4.5 2.67-.75 1.23L11 13V7z"/></svg>
+                          <span class="md-ellipsis">
+                            
+                              3 min read
+                            
+                          </span>
+                        </div>
+                      </li>
+                    
+                  </ul>
+                </nav>
+              </li>
+            </ul>
+          </nav>
           
-          <li class="md-meta__item">
-            
-              3 min read
-            
-          </li>
-        
-      </ul>
-      
+        </div>
+      </div>
     </div>
-  </header>
-  <div class="md-post__content md-typeset">
-    <h2 id="nixos-on-raspberry-pi-4-with-encrypted-filesystem-2026"><a class="toclink" href="../2026/06/13/nixos-on-raspberry-pi-4-with-encrypted-filesystem-2026.html">NixOS on Raspberry Pi 4 with Encrypted Filesystem (2026)</a></h2>
+    <article class="md-content__inner md-typeset">
+      
+        
+
+
+<h1 id="nixos-on-raspberry-pi-4-with-encrypted-filesystem-2026">NixOS on Raspberry Pi 4 with Encrypted Filesystem (2026)<a class="headerlink" href="#nixos-on-raspberry-pi-4-with-encrypted-filesystem-2026" title="Permanent link">&para;</a></h1>
 <p>First I downloaded the latest <code>nixos-image-sd-card-*-aarch64-linux.img</code> from hydra
 (see <a href="https://hydra.nixos.org/job/nixos/release-26.05/nixos.sd_image.aarch64-linux">https://hydra.nixos.org/job/nixos/release-26.05/nixos.sd_image.aarch64-linux</a>)
 and flashed it onto an usb stick.</p>
 <p>Next I booted the Raspberry Pi from the USB stick, waited for the system to finish starting, then reinserted the microSD card.</p>
+<!-- more -->
 
-    
-      <nav class="md-post__action">
-        <a href="../2026/06/13/nixos-on-raspberry-pi-4-with-encrypted-filesystem-2026.html">
-          Continue reading
-        </a>
-      </nav>
-    
-  </div>
-</article>
-      
-        <article class="md-post md-post--excerpt">
-  <header class="md-post__header">
-    
-      <nav class="md-post__authors md-typeset">
-        
-          <span class="md-author">
-            <img src="../../assets/external/github.com/felbinger.png.jpg" alt="Nico Felbinger">
-          </span>
-        
-      </nav>
-    
-    <div class="md-post__meta md-meta">
-      <ul class="md-meta__list">
-        <li class="md-meta__item">
-          <time datetime="2025-05-31 00:00:00+00:00">May 31, 2025</time></li>
-        
-          <li class="md-meta__item">
-            in
-            
-              <a href="nixos.html" class="md-meta__link">NixOS</a>, 
-              <a href="networking.html" class="md-meta__link">Networking</a></li>
-        
-        
-          
-          <li class="md-meta__item">
-            
-              10 min read
-            
-          </li>
-        
-      </ul>
-      
-    </div>
-  </header>
-  <div class="md-post__content md-typeset">
-    <h2 id="nixos-router-banana-pi-r4"><a class="toclink" href="../2025/05/31/nixos-router-banana-pi-r4.html">NixOS Router: Banana PI R4</a></h2>
-<p>Der <a href="https://wiki.banana-pi.org/Banana_Pi_BPI-R4">Banana Pi R4</a> ist ein leistungsfähiges und
-dabei preislich sehr attraktives Netzwerkgerät, das speziell für anspruchsvolle Anwendungen
-entwickelt wurde. Ausgestattet mit dem MediaTek MT7988 SoC und bis zu 8 GB DDR4-RAM bietet
-er eine starke Grundlage für moderne Netzwerkinfrastrukturen. Besonders hervorzuheben sind
-die beiden integrierten SFP+ Schnittstellen, die High-Speed-Datenübertragungen mit bis zu
-10 Gbit/s ermöglichen. Durch die Unterstützung von Wi-Fi 6, einem M.2-Steckplatz für NVMe-
-oder 5G-Module sowie vielseitigen GPIO-Pins ist der BPI-R4 äußerst flexibel und erweiterbar.</p>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
+<p>The Raspberry Pi may need a firmware upgrade to support booting from USB
+(see <a href="https://nixos.wiki/wiki/NixOS_on_ARM/Raspberry_Pi_4#USB_boot">https://nixos.wiki/wiki/NixOS_on_ARM/Raspberry_Pi_4#USB_boot</a>).
+<div class="highlight"><pre><span></span><code>nix-shell<span class="w"> </span>-p<span class="w"> </span>raspberrypi-eeprom<span class="w"> </span>--run<span class="w"> </span><span class="s1">&#39;rpi-eeprom-update -d -a&#39;</span>
+</code></pre></div></p>
+</div>
+<p>The guide at <a href="https://www.thenegation.com/posts/nixos-rpi4-luks/">https://www.thenegation.com/posts/nixos-rpi4-luks/</a> was followed for the most part,
+though it's slightly outdated. Since nixpkgs 26.05, the Raspberry Pi vendor kernel was removed
+from the binary cache and will soon be removed from nixpkgs entirely. Attempting to use it causes
+long installation times because the kernel must be built locally. Most users will be fine using
+the standard aarch64-linux kernel - more details follow after the installation process.</p>
+<div class="highlight"><pre><span></span><code>wipefs<span class="w"> </span>-a<span class="w"> </span>/dev/mmcblk0
 
-    
-      <nav class="md-post__action">
-        <a href="../2025/05/31/nixos-router-banana-pi-r4.html">
-          Continue reading
-        </a>
-      </nav>
-    
-  </div>
-</article>
-      
-        <article class="md-post md-post--excerpt">
-  <header class="md-post__header">
-    
-      <nav class="md-post__authors md-typeset">
-        
-          <span class="md-author">
-            <img src="../../assets/external/github.com/felbinger.png.jpg" alt="Nico Felbinger">
-          </span>
-        
-      </nav>
-    
-    <div class="md-post__meta md-meta">
-      <ul class="md-meta__list">
-        <li class="md-meta__item">
-          <time datetime="2025-05-10 00:00:00+00:00">May 10, 2025</time></li>
-        
-          <li class="md-meta__item">
-            in
-            
-              <a href="nixos.html" class="md-meta__link">NixOS</a>, 
-              <a href="networking.html" class="md-meta__link">Networking</a></li>
-        
-        
-          
-          <li class="md-meta__item">
-            
-              9 min read
-            
-          </li>
-        
-      </ul>
-      
-    </div>
-  </header>
-  <div class="md-post__content md-typeset">
-    <h2 id="nixos-asbr-mit-vrf-zur-separierung-von-egp-und-igp"><a class="toclink" href="../2025/05/10/nixos-asbr-mit-vrf-zur-separierung-von-egp-und-igp.html">NixOS: ASBR mit VRF zur Separierung von EGP und IGP</a></h2>
-<p>In unserem Netzwerk betreiben wir einen ASBR (Autonomous System Boundary Router) auf Basis
-von NixOS, <a href="https://ifstate.net/">ifstate</a> und <a href="https://frrouting.org/">FRRouting</a>. Ziel war
-es, das EGP (Exterior Gateway Protocol) und das IGP (Interior Gateway Protocol) mittels
-einer VRF (Virtual Routing and Forwarding) voneinander zu trennen.</p>
+parted<span class="w"> </span>/dev/mmcblk0<span class="w"> </span>--<span class="w"> </span>mklabel<span class="w"> </span>gpt
+parted<span class="w"> </span>/dev/mmcblk0<span class="w"> </span>--<span class="w"> </span>mkpart<span class="w"> </span>ESP<span class="w"> </span>fat32<span class="w"> </span>1MiB<span class="w"> </span>4096MiB
+parted<span class="w"> </span>/dev/mmcblk0<span class="w"> </span>--<span class="w"> </span><span class="nb">set</span><span class="w"> </span><span class="m">1</span><span class="w"> </span>boot<span class="w"> </span>on
+parted<span class="w"> </span>/dev/mmcblk0<span class="w"> </span>--<span class="w"> </span>mkpart<span class="w"> </span>primary<span class="w"> </span>4096MiB<span class="w"> </span><span class="m">100</span>%
 
-    
-      <nav class="md-post__action">
-        <a href="../2025/05/10/nixos-asbr-mit-vrf-zur-separierung-von-egp-und-igp.html">
-          Continue reading
-        </a>
-      </nav>
-    
-  </div>
-</article>
-      
-        <article class="md-post md-post--excerpt">
-  <header class="md-post__header">
-    
-      <nav class="md-post__authors md-typeset">
-        
-          <span class="md-author">
-            <img src="../../assets/external/github.com/felbinger.png.jpg" alt="Nico Felbinger">
-          </span>
-        
-      </nav>
-    
-    <div class="md-post__meta md-meta">
-      <ul class="md-meta__list">
-        <li class="md-meta__item">
-          <time datetime="2025-03-10 00:00:00+00:00">March 10, 2025</time></li>
-        
-          <li class="md-meta__item">
-            in
-            
-              <a href="nixos.html" class="md-meta__link">NixOS</a></li>
-        
-        
-          
-          <li class="md-meta__item">
-            
-              5 min read
-            
-          </li>
-        
-      </ul>
-      
-    </div>
-  </header>
-  <div class="md-post__content md-typeset">
-    <h2 id="aufsetzen-eines-knot-resolvers"><a class="toclink" href="../2025/03/10/aufsetzen-eines-knot-resolvers.html">Aufsetzen eines Knot Resolvers</a></h2>
-<p>Letztes Wochenende habe ich auf einem System Knot Resolver ausgerollt.
-Meine Absicht war es, einen dnsmasq zu ersetzen, um DNS over TLS (DoT)
-zu implementieren. dnsmasq hatte in meinem Setup mehrere Funktionen:
-dnsmasq überschieb bestimmte Adressen, blockierte Werbung und leitete
-bestimmte Zonen an andere DNS-Server weiter. Knot Resolver sollte all
-diese Aufgaben übernehmen.</p>
+cryptsetup<span class="w"> </span>luksFormat<span class="w"> </span>/dev/mmcblk0p2
+cryptsetup<span class="w"> </span>luksOpen<span class="w"> </span>/dev/mmcblk0p2<span class="w"> </span>cryptroot
 
-    
-      <nav class="md-post__action">
-        <a href="../2025/03/10/aufsetzen-eines-knot-resolvers.html">
-          Continue reading
-        </a>
-      </nav>
-    
-  </div>
-</article>
-      
-        <article class="md-post md-post--excerpt">
-  <header class="md-post__header">
-    
-      <nav class="md-post__authors md-typeset">
-        
-          <span class="md-author">
-            <img src="../../assets/external/github.com/felbinger.png.jpg" alt="Nico Felbinger">
-          </span>
-        
-      </nav>
-    
-    <div class="md-post__meta md-meta">
-      <ul class="md-meta__list">
-        <li class="md-meta__item">
-          <time datetime="2025-02-15 00:00:00+00:00">February 15, 2025</time></li>
-        
-          <li class="md-meta__item">
-            in
-            
-              <a href="nixos.html" class="md-meta__link">NixOS</a></li>
-        
-        
-          
-          <li class="md-meta__item">
-            
-              2 min read
-            
-          </li>
-        
-      </ul>
-      
-    </div>
-  </header>
-  <div class="md-post__content md-typeset">
-    <h2 id="nixos-cherry-picken-von-commits"><a class="toclink" href="../2025/02/15/nixos-cherry-picken-von-commits.html">NixOS: Cherry-Picken von Commits</a></h2>
-<p>Wenn man an nixpkgs arbeitet oder einen Pull Request testet, möchte man oft nicht einfach
-auf den Master-Branch wechseln, nur um die Änderungen aus diesem PR zu testen. Stattdessen
-ist es oft sinnvoller, die notwendigen Commits direkt in die eigene Version von nixpkgs zu
-übernehmen. So kann man spezifische Änderungen testen, ohne die gesamte Umgebung auf den
-neuesten Stand zu bringen. Besonders praktisch ist das, wenn man mit einer stabilen Version
-von nixpkgs arbeitet, etwa einem Release-Branch, und nur gezielt bestimmte Commits aus einem
-PR übernehmen möchte.</p>
+pvcreate<span class="w"> </span>/dev/mapper/cryptroot
+vgcreate<span class="w"> </span>vg0<span class="w"> </span>/dev/mapper/cryptroot
+lvcreate<span class="w"> </span>-l<span class="w"> </span><span class="s1">&#39;100%FREE&#39;</span><span class="w"> </span>-n<span class="w"> </span>root<span class="w"> </span>vg0
 
-    
-      <nav class="md-post__action">
-        <a href="../2025/02/15/nixos-cherry-picken-von-commits.html">
-          Continue reading
-        </a>
-      </nav>
-    
-  </div>
-</article>
-      
-        <article class="md-post md-post--excerpt">
-  <header class="md-post__header">
-    
-      <nav class="md-post__authors md-typeset">
-        
-          <span class="md-author">
-            <img src="../../assets/external/github.com/felbinger.png.jpg" alt="Nico Felbinger">
-          </span>
-        
-      </nav>
-    
-    <div class="md-post__meta md-meta">
-      <ul class="md-meta__list">
-        <li class="md-meta__item">
-          <time datetime="2025-02-15 00:00:00+00:00">February 15, 2025</time></li>
-        
-          <li class="md-meta__item">
-            in
-            
-              <a href="nixos.html" class="md-meta__link">NixOS</a></li>
-        
-        
-          
-          <li class="md-meta__item">
-            
-              5 min read
-            
-          </li>
-        
-      </ul>
-      
-    </div>
-  </header>
-  <div class="md-post__content md-typeset">
-    <h2 id="warum-ich-nixos-nutze"><a class="toclink" href="../2025/02/15/warum-ich-nixos-nutze.html">Warum ich NixOS nutze</a></h2>
-<p>Mein Weg zu NixOS war keine spontane Entscheidung, sondern das Ergebnis jahrelanger Erfahrungen
-mit verschiedenen Linux-Distributionen. Ich habe früh angefangen, alternative Betriebssysteme
-auszuprobieren, und hatte immer den Anspruch, mein System möglichst effizient, stabil und
-flexibel zu gestalten. Doch erst mit NixOS habe ich eine Lösung gefunden, die meine Anforderungen
-wirklich erfüllt.</p>
+mkfs.fat<span class="w"> </span>/dev/mmcblk0p1
+mkfs.ext4<span class="w"> </span>-L<span class="w"> </span>root<span class="w"> </span>/dev/vg0/root
 
-    
-      <nav class="md-post__action">
-        <a href="../2025/02/15/warum-ich-nixos-nutze.html">
-          Continue reading
-        </a>
-      </nav>
-    
-  </div>
-</article>
-      
-        <article class="md-post md-post--excerpt">
-  <header class="md-post__header">
-    
-      <nav class="md-post__authors md-typeset">
-        
-          <span class="md-author">
-            <img src="../../assets/external/github.com/felbinger.png.jpg" alt="Nico Felbinger">
-          </span>
-        
-      </nav>
-    
-    <div class="md-post__meta md-meta">
-      <ul class="md-meta__list">
-        <li class="md-meta__item">
-          <time datetime="2025-01-30 00:00:00+00:00">January 30, 2025</time></li>
-        
-          <li class="md-meta__item">
-            in
-            
-              <a href="nixos.html" class="md-meta__link">NixOS</a></li>
-        
-        
-          
-          <li class="md-meta__item">
-            
-              5 min read
-            
-          </li>
-        
-      </ul>
-      
-    </div>
-  </header>
-  <div class="md-post__content md-typeset">
-    <h2 id="nixos-erstellen-eines-neuen-pakets"><a class="toclink" href="../2025/01/30/nixos-erstellen-eines-neuen-pakets.html">NixOS: Erstellen eines neuen Pakets</a></h2>
-<p>Dieser Artikel entstand, weil ein Bekannter mich bat, ihm zu zeigen, wie man eine Software
-für Nix paketiert und in <a href="https://github.com/nixos/nixpkgs">github.com/nixos/nixpkgs</a> integriert.
-Konkret ging es um das Paket <code>alertmanager-gotify-bridge</code>, das eine Brücke zwischen dem Prometheus
-Alertmanager und Gotify bildet. Ziel war es, nicht nur das Paket zu erstellen, sondern auch den
-gesamten Prozess zu verstehen, um es später selbstständig in das offizielle nixpkgs-Repository
-einzubringen. Um diesen Ablauf für andere nachvollziehbar zu machen, entschied ich mich, ihn
-umfassend zu dokumentieren.</p>
+mount<span class="w"> </span>/dev/vg0/root<span class="w"> </span>/mnt
+mkdir<span class="w"> </span>/mnt/boot
+mount<span class="w"> </span>/dev/mmcblk0p1<span class="w"> </span>/mnt/boot
 
-    
-      <nav class="md-post__action">
-        <a href="../2025/01/30/nixos-erstellen-eines-neuen-pakets.html">
-          Continue reading
-        </a>
-      </nav>
-    
-  </div>
-</article>
-      
-      
-        
-          
+mkdir<span class="w"> </span>/firmware
+mount<span class="w"> </span>/dev/sda1<span class="w"> </span>/firmware
+cp<span class="w"> </span>/firmware/*<span class="w"> </span>/mnt/boot
+umount<span class="w"> </span>/firmware
+
+sudo<span class="w"> </span>nixos-generate-config<span class="w"> </span>--root<span class="w"> </span>/mnt
+cat<span class="w"> </span><span class="s">&lt;&lt;_EOF &gt; /mnt/etc/nixos/configuration.nix</span>
+<span class="s">{ pkgs, ... }:</span>
+<span class="s">{</span>
+<span class="s">  imports = [ ./hardware-configuration.nix ];</span>
+
+<span class="s">  boot = {</span>
+<span class="s">    loader = {</span>
+<span class="s">      grub.enable = false;</span>
+<span class="s">      generic-extlinux-compatible.enable = true;</span>
+<span class="s">    };</span>
+
+<span class="s">    initrd.luks.devices.luksroot = {</span>
+<span class="s">      device = &quot;/dev/disk/by-uuid/$(sudo blkid /dev/mmcblk0p2 | sed -E &#39;s/.*\sUUID=&quot;([a-f0-9-]+)&quot;.*/\1/&#39;)&quot;;</span>
+<span class="s">      preLVM = true;</span>
+<span class="s">      allowDiscards = true;</span>
+<span class="s">    };</span>
+<span class="s">  };</span>
+
+<span class="s">  services.openssh.enable = true;</span>
+
+<span class="s">  system.stateVersion = &quot;26.05&quot;;</span>
+<span class="s">}</span>
+<span class="s">_EOF</span>
+
+nixos-install
+</code></pre></div>
+<p>After reboot, the initrd prompted to unlock the drive. My USB keyboard failed to respond (probally the driver hasn't been loaded),
+so I used UART (GPIO 14 for TXD and GPIO 15 for RXD, see <a href="https://pinout.xyz/pinout/uart">https://pinout.xyz/pinout/uart</a>) to unlock the drive and configure the network.
+<a href="https://wiki.nixos.org/wiki/Remote_disk_unlocking">Remote unlocking</a> was then planned to be configured anyway, so it didn't matter for me.</p>
+<p>For Raspberry PI related features (e.g. i2c, gpio, ...) take a look at <a href="https://github.com/NixOS/nixos-hardware/blob/master/raspberry-pi/4/">https://github.com/NixOS/nixos-hardware/blob/master/raspberry-pi/4/</a>.</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># flake.nix</span>
+<span class="p">{</span>
+  <span class="ss">inputs</span> <span class="o">=</span> <span class="p">{</span>
+    nixpkgs<span class="o">.</span><span class="ss">url</span> <span class="o">=</span> <span class="s2">&quot;github:nixos/nixpkgs/nixos-26.05&quot;</span><span class="p">;</span>
+    <span class="ss">nixos-hardware</span> <span class="o">=</span> <span class="p">{</span>
+      <span class="ss">url</span> <span class="o">=</span> <span class="s2">&quot;github:NixOS/nixos-hardware&quot;</span><span class="p">;</span>
+      inputs<span class="o">.</span>nixpkgs<span class="o">.</span><span class="ss">follows</span> <span class="o">=</span> <span class="s2">&quot;nixpkgs&quot;</span><span class="p">;</span>
+    <span class="p">};</span>
+  <span class="p">};</span>
+  <span class="ss">outputs</span> <span class="o">=</span>
+    <span class="p">{</span>
+      nixpkgs<span class="p">,</span>
+      nixos-hardware<span class="p">,</span>
+      <span class="o">...</span>
+    <span class="p">}@</span>inputs<span class="p">:</span>
+    <span class="k">let</span>
+      <span class="k">inherit</span> <span class="p">(</span>inputs<span class="o">.</span>nixpkgs<span class="p">)</span> lib<span class="p">;</span>
+      <span class="ss">defaultSystems</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s2">&quot;x86_64-linux&quot;</span>
+        <span class="s2">&quot;x86_64-darwin&quot;</span>
+        <span class="s2">&quot;aarch64-linux&quot;</span>
+        <span class="s2">&quot;aarch64-darwin&quot;</span>
+      <span class="p">];</span>
+      <span class="ss">eachDefaultSystem</span> <span class="o">=</span> lib<span class="o">.</span>genAttrs defaultSystems<span class="p">;</span>
+      <span class="ss">system</span> <span class="o">=</span> <span class="s2">&quot;aarch64-linux&quot;</span><span class="p">;</span>
+    <span class="k">in</span>
+    <span class="p">{</span>
+      nixosConfigurations<span class="o">.</span><span class="ss">rpi</span> <span class="o">=</span> nixpkgs<span class="o">.</span>lib<span class="o">.</span>nixosSystem <span class="p">{</span>
+        <span class="k">inherit</span> system<span class="p">;</span>
+        <span class="ss">pkgs</span> <span class="o">=</span> <span class="nb">import</span> nixpkgs <span class="p">{</span> <span class="k">inherit</span> system<span class="p">;</span> <span class="p">};</span>
+        <span class="ss">modules</span> <span class="o">=</span> <span class="p">[</span>
+          <span class="l">./configuration.nix</span>
+          nixos-hardware<span class="o">.</span>nixosModules<span class="o">.</span>raspberry-pi-4
+        <span class="p">];</span>
+      <span class="p">};</span>
+    <span class="p">};</span>
+<span class="p">}</span>
+</code></pre></div>
 
 
 
-<nav class="md-pagination">
+
+
+
+
   
-</nav>
-        
+  
+
+
+
+
+  
+
+
+
       
-    </div>
+    </article>
   </div>
 
           
@@ -1264,10 +1096,10 @@ umfassend zu dokumentieren.</p>
       </div>
       <script>var consent=__md_get("__consent");if(consent)for(var input of document.forms.consent.elements)input.name&&(input.checked=consent[input.name]||!1);else"file:"!==location.protocol&&setTimeout((function(){document.querySelector("[data-md-component=consent]").hidden=!1}),250);var form=document.forms.consent;for(var action of["submit","reset"])form.addEventListener(action,(function(e){if(e.preventDefault(),"reset"===e.type)for(var n of document.forms.consent.elements)n.name&&(n.checked=!1);__md_set("__consent",Object.fromEntries(Array.from(new FormData(form).keys()).map((function(e){return[e,!0]})))),location.hash="",location.reload()}))</script>
     
-    <script id="__config" type="application/json">{"base": "../..", "features": ["search.suggest", "search.highlight", "navigation.expand", "navigation.instant", "navigation.sections"], "search": "../../assets/javascripts/workers/search.6ce7567c.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    <script id="__config" type="application/json">{"base": "../../../..", "features": ["search.suggest", "search.highlight", "navigation.expand", "navigation.instant", "navigation.sections"], "search": "../../../../assets/javascripts/workers/search.6ce7567c.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../../assets/javascripts/bundle.88dd0f4e.min.js"></script>
+      <script src="../../../../assets/javascripts/bundle.88dd0f4e.min.js"></script>
       
     
   </body>
