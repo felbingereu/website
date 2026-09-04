@@ -1,5 +1,16 @@
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA512
+
 Contact: mailto:security@felbinger.eu
 Expires: 2030-12-31T23:59:59.999Z
 Preferred-Languages: en, de
 Encryption: https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x0797d2389769ca1e57b72ed92ba7811687c90de4
 
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEARYKAB0WIQSiMO/seQ+wYYzaZvFuTIxwh+/urgUCapsM9QAKCRBuTIxwh+/u
+ruWGAP0RKKAF6Z8PQ/H7RVOX9kEkDMLLnL10/5EZ/eb6g/ydJgD/SNUE4+YX0iFC
+fzlGLypFiJs+dHE7MIX0gOgUqvpP7wM=
+=c2Cp
+-----END PGP SIGNATURE-----
