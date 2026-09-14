@@ -927,22 +927,22 @@ Umgang mit Git hat.</p>
     <code>maintainers/maintainers-list.nix</code> angelegt werden.
     <div class="highlight"><pre><span></span><code><span class="l">&lt;handle&gt;</span> <span class="o">=</span> <span class="p">{</span>
   <span class="c1"># Required</span>
-  <span class="ss">name</span> <span class="o">=</span> <span class="s2">&quot;Your name&quot;</span><span class="p">;</span>
+  <span class="ss">name</span> <span class="o">=</span> <span class="s2">"Your name"</span><span class="p">;</span>
 
   <span class="c1"># Optional, but at least one of email, matrix or githubId must be given</span>
-  <span class="ss">email</span> <span class="o">=</span> <span class="s2">&quot;address@example.org&quot;</span><span class="p">;</span>
-  <span class="ss">matrix</span> <span class="o">=</span> <span class="s2">&quot;@user:example.org&quot;</span><span class="p">;</span>
-  <span class="ss">github</span> <span class="o">=</span> <span class="s2">&quot;&lt;github-name&gt;&quot;</span><span class="p">;</span>
+  <span class="ss">email</span> <span class="o">=</span> <span class="s2">"address@example.org"</span><span class="p">;</span>
+  <span class="ss">matrix</span> <span class="o">=</span> <span class="s2">"@user:example.org"</span><span class="p">;</span>
+  <span class="ss">github</span> <span class="o">=</span> <span class="s2">"&lt;github-name&gt;"</span><span class="p">;</span>
   <span class="ss">githubId</span> <span class="o">=</span> your-github-id<span class="p">;</span> <span class="c1"># see profile -&gt; profile picture -&gt; url</span>
 
   <span class="ss">keys</span> <span class="o">=</span> <span class="p">[{</span>
-    <span class="ss">fingerprint</span> <span class="o">=</span> <span class="s2">&quot;AAAA BBBB CCCC DDDD EEEE  FFFF 0000 1111 2222 3333&quot;</span><span class="p">;</span>
+    <span class="ss">fingerprint</span> <span class="o">=</span> <span class="s2">"AAAA BBBB CCCC DDDD EEEE  FFFF 0000 1111 2222 3333"</span><span class="p">;</span>
   <span class="p">}];</span>
 <span class="p">};</span>
 </code></pre></div>
     Anschließend werden die Änderungen hinzugefügt:
     <div class="highlight"><pre><span></span><code>git<span class="w"> </span>add<span class="w"> </span>maintainers/maintainers-list.nix
-git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;maintainers: add &lt;handle&gt;&quot;</span>
+git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">"maintainers: add &lt;handle&gt;"</span>
 </code></pre></div></p>
 </li>
 <li>
@@ -966,22 +966,22 @@ Die Lizenz kann mit <code>lib.licenses.asl20</code> definiert werden (siehe <a h
  fetchFromGitHub<span class="p">,</span>
 <span class="p">}:</span>
 buildGoModule <span class="k">rec</span> <span class="p">{</span>
-  <span class="ss">pname</span> <span class="o">=</span> <span class="s2">&quot;alertmanager-gotify-bridge&quot;</span><span class="p">;</span>  <span class="c1"># name of the package</span>
-  <span class="ss">version</span> <span class="o">=</span> <span class="s2">&quot;2.3.1&quot;</span><span class="p">;</span>  <span class="c1"># version of last release (on github)</span>
+  <span class="ss">pname</span> <span class="o">=</span> <span class="s2">"alertmanager-gotify-bridge"</span><span class="p">;</span>  <span class="c1"># name of the package</span>
+  <span class="ss">version</span> <span class="o">=</span> <span class="s2">"2.3.1"</span><span class="p">;</span>  <span class="c1"># version of last release (on github)</span>
 
   <span class="ss">src</span> <span class="o">=</span> fetchFromGitHub <span class="p">{</span>
-    <span class="ss">owner</span> <span class="o">=</span> <span class="s2">&quot;DRuggeri&quot;</span><span class="p">;</span>  <span class="c1"># github owner</span>
-    <span class="ss">repo</span> <span class="o">=</span> <span class="s2">&quot;alertmanager_gotify_bridge&quot;</span><span class="p">;</span>  <span class="c1"># github repository name</span>
-    <span class="ss">tag</span> <span class="o">=</span> <span class="s2">&quot;v</span><span class="si">${</span>version<span class="si">}</span><span class="s2">&quot;</span><span class="p">;</span>  <span class="c1"># releases use semver schema for versioning</span>
-    <span class="ss">hash</span> <span class="o">=</span> lib<span class="o">.</span>fakeHash<span class="p">;</span>  <span class="c1"># we don&#39;t know the hash yet, so let&#39;s use a fake one</span>
+    <span class="ss">owner</span> <span class="o">=</span> <span class="s2">"DRuggeri"</span><span class="p">;</span>  <span class="c1"># github owner</span>
+    <span class="ss">repo</span> <span class="o">=</span> <span class="s2">"alertmanager_gotify_bridge"</span><span class="p">;</span>  <span class="c1"># github repository name</span>
+    <span class="ss">tag</span> <span class="o">=</span> <span class="s2">"v</span><span class="si">${</span>version<span class="si">}</span><span class="s2">"</span><span class="p">;</span>  <span class="c1"># releases use semver schema for versioning</span>
+    <span class="ss">hash</span> <span class="o">=</span> lib<span class="o">.</span>fakeHash<span class="p">;</span>  <span class="c1"># we don't know the hash yet, so let's use a fake one</span>
   <span class="p">};</span>
 
   <span class="ss">vendorHash</span> <span class="o">=</span> lib<span class="o">.</span>fakeHash<span class="p">;</span>
 
   <span class="ss">meta</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="ss">description</span> <span class="o">=</span> <span class="s2">&quot;Bridge between Prometheus AlertManager and a Gotify server&quot;</span><span class="p">;</span>
-    <span class="ss">homepage</span> <span class="o">=</span> <span class="s2">&quot;https://github.com/DRuggeri/alertmanager_gotify_bridge&quot;</span><span class="p">;</span>
-    <span class="ss">changelog</span> <span class="o">=</span> <span class="s2">&quot;https://github.com/DRuggeri/alertmanager_gotify_bridge/releases/tag/v</span><span class="si">${</span>version<span class="si">}</span><span class="s2">&quot;</span><span class="p">;</span>
+    <span class="ss">description</span> <span class="o">=</span> <span class="s2">"Bridge between Prometheus AlertManager and a Gotify server"</span><span class="p">;</span>
+    <span class="ss">homepage</span> <span class="o">=</span> <span class="s2">"https://github.com/DRuggeri/alertmanager_gotify_bridge"</span><span class="p">;</span>
+    <span class="ss">changelog</span> <span class="o">=</span> <span class="s2">"https://github.com/DRuggeri/alertmanager_gotify_bridge/releases/tag/v</span><span class="si">${</span>version<span class="si">}</span><span class="s2">"</span><span class="p">;</span>
     <span class="ss">license</span> <span class="o">=</span> lib<span class="o">.</span>licenses<span class="o">.</span>asl20<span class="p">;</span>
     <span class="ss">maintainers</span> <span class="o">=</span> <span class="k">with</span> lib<span class="o">.</span>maintainers<span class="p">;</span> <span class="p">[</span> <span class="l">&lt;handle&gt;</span> <span class="p">];</span>
   <span class="p">};</span>
@@ -991,20 +991,20 @@ buildGoModule <span class="k">rec</span> <span class="p">{</span>
     kann das Programm mithilfe des Befehls <code>nix build -f . alertmanager-gotify-bridge</code> gebaut werden.</p>
 <p>Beim ersten Ausführen wurde der Build jedoch abgebrochen, da Nix einen Fehler im Zusammenhang mit dem
 <code>src.hash</code>-Attribut erkennt:
-<div class="highlight"><pre><span></span><code>error:<span class="w"> </span><span class="nb">hash</span><span class="w"> </span>mismatch<span class="w"> </span><span class="k">in</span><span class="w"> </span>fixed-output<span class="w"> </span>derivation<span class="w"> </span><span class="s1">&#39;/nix/store/9v7c1qjzibbq3r4v579h684zgkbg0nkz-source.drv&#39;</span>:
+<div class="highlight"><pre><span></span><code>error:<span class="w"> </span><span class="nb">hash</span><span class="w"> </span>mismatch<span class="w"> </span><span class="k">in</span><span class="w"> </span>fixed-output<span class="w"> </span>derivation<span class="w"> </span><span class="s1">'/nix/store/9v7c1qjzibbq3r4v579h684zgkbg0nkz-source.drv'</span>:
 <span class="w">  </span>specified:<span class="w"> </span>sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA<span class="o">=</span>
 <span class="w">     </span>got:<span class="w">    </span>sha256-yXPOrpkhQUNPg5YNBxsgGijT1utRcUZ1k38T7wmkbgg<span class="o">=</span>
-error:<span class="w"> </span><span class="m">1</span><span class="w"> </span>dependencies<span class="w"> </span>of<span class="w"> </span>derivation<span class="w"> </span><span class="s1">&#39;/nix/store/zafjqknp6vq3lrh1lf4y9h1npim3vzz6-alertmanager-gotify-bridge-2.3.1.drv&#39;</span><span class="w"> </span>failed<span class="w"> </span>to<span class="w"> </span>build
+error:<span class="w"> </span><span class="m">1</span><span class="w"> </span>dependencies<span class="w"> </span>of<span class="w"> </span>derivation<span class="w"> </span><span class="s1">'/nix/store/zafjqknp6vq3lrh1lf4y9h1npim3vzz6-alertmanager-gotify-bridge-2.3.1.drv'</span><span class="w"> </span>failed<span class="w"> </span>to<span class="w"> </span>build
 </code></pre></div></p>
 <p>Auch nachdem der korrekte Hash in <code>src.hash</code> eingetragen und der Build erneut gestartet wurde, bricht Nix den
 Build-Prozess ab, da der <code>vendorHash</code> ebenfalls falsch ist:
-<div class="highlight"><pre><span></span><code>error:<span class="w"> </span><span class="nb">hash</span><span class="w"> </span>mismatch<span class="w"> </span><span class="k">in</span><span class="w"> </span>fixed-output<span class="w"> </span>derivation<span class="w"> </span><span class="s1">&#39;/nix/store/gx9qq67fn953xyzfgznz4ygh9p1rirbc-alertmanager-gotify-bridge-2.3.1-go-modules.drv&#39;</span>:
+<div class="highlight"><pre><span></span><code>error:<span class="w"> </span><span class="nb">hash</span><span class="w"> </span>mismatch<span class="w"> </span><span class="k">in</span><span class="w"> </span>fixed-output<span class="w"> </span>derivation<span class="w"> </span><span class="s1">'/nix/store/gx9qq67fn953xyzfgznz4ygh9p1rirbc-alertmanager-gotify-bridge-2.3.1-go-modules.drv'</span>:
 <span class="w">  </span>specified:<span class="w"> </span>sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA<span class="o">=</span>
 <span class="w">     </span>got:<span class="w">    </span>sha256-YDSKSSMTdjROyBaiOO2tZtu9QPKSUqwAd8VWf3ZOvDI<span class="o">=</span>
-error:<span class="w"> </span><span class="m">1</span><span class="w"> </span>dependencies<span class="w"> </span>of<span class="w"> </span>derivation<span class="w"> </span><span class="s1">&#39;/nix/store/pgrywjs655jqkn2p11hg8hg7nh835m1f-alertmanager-gotify-bridge-2.3.1.drv&#39;</span><span class="w"> </span>failed<span class="w"> </span>to<span class="w"> </span>build
+error:<span class="w"> </span><span class="m">1</span><span class="w"> </span>dependencies<span class="w"> </span>of<span class="w"> </span>derivation<span class="w"> </span><span class="s1">'/nix/store/pgrywjs655jqkn2p11hg8hg7nh835m1f-alertmanager-gotify-bridge-2.3.1.drv'</span><span class="w"> </span>failed<span class="w"> </span>to<span class="w"> </span>build
 </code></pre></div></p>
 <p>Nachdem auch dieser korrigiert ist schlug der Build mit folgender Fehlermeldung fehl:
-<div class="highlight"><pre><span></span><code>error:<span class="w"> </span>builder<span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="s1">&#39;/nix/store/q8751wvq5fnrlr8d0h1dlpdihn2jclcv-alertmanager-gotify-bridge-2.3.1.drv&#39;</span><span class="w"> </span>failed<span class="w"> </span>with<span class="w"> </span><span class="nb">exit</span><span class="w"> </span>code<span class="w"> </span><span class="m">1</span><span class="p">;</span>
+<div class="highlight"><pre><span></span><code>error:<span class="w"> </span>builder<span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="s1">'/nix/store/q8751wvq5fnrlr8d0h1dlpdihn2jclcv-alertmanager-gotify-bridge-2.3.1.drv'</span><span class="w"> </span>failed<span class="w"> </span>with<span class="w"> </span><span class="nb">exit</span><span class="w"> </span>code<span class="w"> </span><span class="m">1</span><span class="p">;</span>
 <span class="w">   </span>last<span class="w"> </span><span class="m">25</span><span class="w"> </span>log<span class="w"> </span>lines:
 <span class="w">   </span>&gt;<span class="w"> </span>vendor/golang.org/x/exp/constraints/constraints.go:49:2:<span class="w"> </span>embedding<span class="w"> </span>interface<span class="w"> </span>element<span class="w"> </span>Integer<span class="w"> </span><span class="p">|</span><span class="w"> </span>Float<span class="w"> </span><span class="p">|</span><span class="w"> </span>~string<span class="w"> </span>requires<span class="w"> </span>go1.18<span class="w"> </span>or<span class="w"> </span>later<span class="w"> </span><span class="o">(</span>-lang<span class="w"> </span>was<span class="w"> </span><span class="nb">set</span><span class="w"> </span>to<span class="w"> </span>go1.16<span class="p">;</span><span class="w"> </span>check<span class="w"> </span>go.mod<span class="o">)</span>
 <span class="w">   </span>&gt;<span class="w"> </span><span class="c1"># go.opentelemetry.io/otel/internal/attribute</span>
@@ -1015,7 +1015,7 @@ error:<span class="w"> </span><span class="m">1</span><span class="w"> </span>de
 <span class="w">   </span>&gt;<span class="w"> </span>vendor/go.opentelemetry.io/otel/internal/attribute/attribute.go:34:16:<span class="w"> </span>embedding<span class="w"> </span>interface<span class="w"> </span>element<span class="w"> </span>bool<span class="w"> </span><span class="p">|</span><span class="w"> </span>int64<span class="w"> </span><span class="p">|</span><span class="w"> </span>float64<span class="w"> </span><span class="p">|</span><span class="w"> </span>string<span class="w"> </span>requires<span class="w"> </span>go1.18<span class="w"> </span>or<span class="w"> </span>later<span class="w"> </span><span class="o">(</span>-lang<span class="w"> </span>was<span class="w"> </span><span class="nb">set</span><span class="w"> </span>to<span class="w"> </span>go1.16<span class="p">;</span><span class="w"> </span>check<span class="w"> </span>go.mod<span class="o">)</span>
 <span class="w">   </span>&gt;<span class="w"> </span>vendor/go.opentelemetry.io/otel/internal/attribute/attribute.go:34:51:<span class="w"> </span>predeclared<span class="w"> </span>any<span class="w"> </span>requires<span class="w"> </span>go1.18<span class="w"> </span>or<span class="w"> </span>later<span class="w"> </span><span class="o">(</span>-lang<span class="w"> </span>was<span class="w"> </span><span class="nb">set</span><span class="w"> </span>to<span class="w"> </span>go1.16<span class="p">;</span><span class="w"> </span>check<span class="w"> </span>go.mod<span class="o">)</span>
 <span class="w">   </span>&lt;...<span class="w"> </span>SNIP<span class="w"> </span>...&gt;
-<span class="w">   </span>For<span class="w"> </span>full<span class="w"> </span>logs,<span class="w"> </span>run<span class="w"> </span><span class="s1">&#39;nix log /nix/store/q8751wvq5fnrlr8d0h1dlpdihn2jclcv-alertmanager-gotify-bridge-2.3.1.drv&#39;</span>.
+<span class="w">   </span>For<span class="w"> </span>full<span class="w"> </span>logs,<span class="w"> </span>run<span class="w"> </span><span class="s1">'nix log /nix/store/q8751wvq5fnrlr8d0h1dlpdihn2jclcv-alertmanager-gotify-bridge-2.3.1.drv'</span>.
 </code></pre></div></p>
 <p>Um diesen Fehler zu beheben, musste die in der <code>go.mod</code> definierten Go-Version aktualisiert werden. Dazu wurde
 <github.com/DRuggeri/alertmanager_gotify_bridge> zunächst geforked und geklont. Nachdem die Version in der <code>go.mod</code> auf 1.18 gesetzt
@@ -1031,23 +1031,23 @@ in der <code>go.sum</code>, hinzuzufügen.</p>
   fetchFromGitHub<span class="p">,</span>
 <span class="p">}:</span>
 buildGoModule <span class="k">rec</span> <span class="p">{</span>
-  <span class="ss">pname</span> <span class="o">=</span> <span class="s2">&quot;alertmanager-gotify-bridge&quot;</span><span class="p">;</span>
-  <span class="ss">version</span> <span class="o">=</span> <span class="s2">&quot;2.3.1&quot;</span><span class="p">;</span>
+  <span class="ss">pname</span> <span class="o">=</span> <span class="s2">"alertmanager-gotify-bridge"</span><span class="p">;</span>
+  <span class="ss">version</span> <span class="o">=</span> <span class="s2">"2.3.1"</span><span class="p">;</span>
 
   <span class="ss">src</span> <span class="o">=</span> fetchFromGitHub <span class="p">{</span>
-    <span class="ss">owner</span> <span class="o">=</span> <span class="s2">&quot;DRuggeri&quot;</span><span class="p">;</span>
-    <span class="ss">repo</span> <span class="o">=</span> <span class="s2">&quot;alertmanager_gotify_bridge&quot;</span><span class="p">;</span>
-    <span class="ss">tag</span> <span class="o">=</span> <span class="s2">&quot;v</span><span class="si">${</span>version<span class="si">}</span><span class="s2">&quot;</span><span class="p">;</span>
-    <span class="ss">hash</span> <span class="o">=</span> <span class="s2">&quot;sha256-yXPOrpkhQUNPg5YNBxsgGijT1utRcUZ1k38T7wmkbgg=&quot;</span><span class="p">;</span>
+    <span class="ss">owner</span> <span class="o">=</span> <span class="s2">"DRuggeri"</span><span class="p">;</span>
+    <span class="ss">repo</span> <span class="o">=</span> <span class="s2">"alertmanager_gotify_bridge"</span><span class="p">;</span>
+    <span class="ss">tag</span> <span class="o">=</span> <span class="s2">"v</span><span class="si">${</span>version<span class="si">}</span><span class="s2">"</span><span class="p">;</span>
+    <span class="ss">hash</span> <span class="o">=</span> <span class="s2">"sha256-yXPOrpkhQUNPg5YNBxsgGijT1utRcUZ1k38T7wmkbgg="</span><span class="p">;</span>
   <span class="p">};</span>
   <span class="ss">patches</span> <span class="o">=</span> <span class="p">[</span> <span class="l">./go.sum.patch</span> <span class="l">./go.mod.patch</span> <span class="p">];</span>
 
-  <span class="ss">vendorHash</span> <span class="o">=</span> <span class="s2">&quot;sha256-APFoNLCrSiAoeuVIzlnmtUthyqFDcG0cjoJf/jGbrTg=&quot;</span><span class="p">;</span>
+  <span class="ss">vendorHash</span> <span class="o">=</span> <span class="s2">"sha256-APFoNLCrSiAoeuVIzlnmtUthyqFDcG0cjoJf/jGbrTg="</span><span class="p">;</span>
 
   <span class="ss">meta</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="ss">description</span> <span class="o">=</span> <span class="s2">&quot;A bridge between Prometheus AlertManager and a Gotify server&quot;</span><span class="p">;</span>
-    <span class="ss">homepage</span> <span class="o">=</span> <span class="s2">&quot;https://github.com/DRuggeri/alertmanager_gotify_bridge&quot;</span><span class="p">;</span>
-    <span class="ss">changelog</span> <span class="o">=</span> <span class="s2">&quot;https://github.com/DRuggeri/alertmanager_gotify_bridge/releases/tag/v</span><span class="si">${</span>version<span class="si">}</span><span class="s2">&quot;</span><span class="p">;</span>
+    <span class="ss">description</span> <span class="o">=</span> <span class="s2">"A bridge between Prometheus AlertManager and a Gotify server"</span><span class="p">;</span>
+    <span class="ss">homepage</span> <span class="o">=</span> <span class="s2">"https://github.com/DRuggeri/alertmanager_gotify_bridge"</span><span class="p">;</span>
+    <span class="ss">changelog</span> <span class="o">=</span> <span class="s2">"https://github.com/DRuggeri/alertmanager_gotify_bridge/releases/tag/v</span><span class="si">${</span>version<span class="si">}</span><span class="s2">"</span><span class="p">;</span>
     <span class="ss">license</span> <span class="o">=</span> lib<span class="o">.</span>licenses<span class="o">.</span>asl20<span class="p">;</span>
     <span class="ss">maintainers</span> <span class="o">=</span> <span class="k">with</span> lib<span class="o">.</span>maintainers<span class="p">;</span> <span class="p">[</span> <span class="l">&lt;handle&gt;</span> <span class="p">];</span>
   <span class="p">};</span>
@@ -1059,11 +1059,11 @@ buildGoModule <span class="k">rec</span> <span class="p">{</span>
     Die resultierende <code>alertmanager_gotify_brudge</code> Binary ist im Verzeichnis <code>result</code> zu finden.</p>
 <p>Nun kann die <code>package.nix</code> sowie die beiden Patches <code>go.{mod,sum}</code> zur Staging Umgebung hinzugefügt, commited und gepushed werden.
 <div class="highlight"><pre><span></span><code>git<span class="w"> </span>add<span class="w"> </span>pkgs/by-name/al/alertmanager-gotify-bridge/
-git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;alertmanager-gotify-bridge: init at 2.3.1&quot;</span>
+git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">"alertmanager-gotify-bridge: init at 2.3.1"</span>
 git<span class="w"> </span>push<span class="w"> </span>-u<span class="w"> </span>origin<span class="w"> </span>alertmanager-gotify-bridge
 </code></pre></div></p>
 <p>Zuletzt wird der Pull Request erstellt (siehe Nachricht von <code>git push</code>) und geprüft, ob die Pakete alle kompilieren:
-<div class="highlight"><pre><span></span><code>nix-shell<span class="w"> </span>-p<span class="w"> </span>nixpkgs-review<span class="w"> </span>--run<span class="w"> </span><span class="s2">&quot;nixpkgs-review rev HEAD --print-result&quot;</span>
+<div class="highlight"><pre><span></span><code>nix-shell<span class="w"> </span>-p<span class="w"> </span>nixpkgs-review<span class="w"> </span>--run<span class="w"> </span><span class="s2">"nixpkgs-review rev HEAD --print-result"</span>
 </code></pre></div></p>
 </li>
 </ol>

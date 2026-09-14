@@ -1005,27 +1005,27 @@ sudo<span class="w"> </span>dnf<span class="w"> </span>install<span class="w"> <
 <span class="w">  </span>https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-<span class="k">$(</span>rpm<span class="w"> </span>-E<span class="w"> </span>%fedora<span class="k">)</span>.noarch.rpm
 
 <span class="c1">## check if packages in configuration, which require pre install commands ##</span>
-<span class="o">[[</span><span class="w"> </span><span class="si">${</span><span class="nv">DNF_PACKAGES</span><span class="p">[@]</span><span class="si">}</span><span class="w"> </span><span class="o">=</span>~<span class="w"> </span><span class="s2">&quot;code&quot;</span><span class="w"> </span><span class="o">]]</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="o">(</span>
+<span class="o">[[</span><span class="w"> </span><span class="si">${</span><span class="nv">DNF_PACKAGES</span><span class="p">[@]</span><span class="si">}</span><span class="w"> </span><span class="o">=</span>~<span class="w"> </span><span class="s2">"code"</span><span class="w"> </span><span class="o">]]</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="o">(</span>
 <span class="w">  </span>sudo<span class="w"> </span>mv<span class="w"> </span>/tmp/repos.d/vscode.repo<span class="w"> </span>/etc/yum.repos.d/vscode.repo
 <span class="w">  </span>sudo<span class="w"> </span>rpm<span class="w"> </span>--import<span class="w"> </span>https://packages.microsoft.com/keys/microsoft.asc
 <span class="o">)</span>
 
-<span class="o">[[</span><span class="w"> </span><span class="si">${</span><span class="nv">DNF_PACKAGES</span><span class="p">[@]</span><span class="si">}</span><span class="w"> </span><span class="o">=</span>~<span class="w"> </span><span class="s2">&quot;anydesk&quot;</span><span class="w"> </span><span class="o">]]</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="o">(</span>
+<span class="o">[[</span><span class="w"> </span><span class="si">${</span><span class="nv">DNF_PACKAGES</span><span class="p">[@]</span><span class="si">}</span><span class="w"> </span><span class="o">=</span>~<span class="w"> </span><span class="s2">"anydesk"</span><span class="w"> </span><span class="o">]]</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="o">(</span>
 <span class="w">  </span>sudo<span class="w"> </span>mv<span class="w"> </span>/tmp/repos.d/anydesk.repo<span class="w"> </span>/etc/yum.repos.d/anydesk.repo
 <span class="w">  </span>sudo<span class="w"> </span>rpm<span class="w"> </span>--import<span class="w"> </span>https://keys.anydesk.com/repos/RPM-GPG-KEY
 <span class="o">)</span>
 
-<span class="o">[[</span><span class="w"> </span><span class="si">${</span><span class="nv">DNF_PACKAGES</span><span class="p">[@]</span><span class="si">}</span><span class="w"> </span><span class="o">=</span>~<span class="w"> </span><span class="s2">&quot;teamviewer&quot;</span><span class="w"> </span><span class="o">]]</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="o">(</span>
+<span class="o">[[</span><span class="w"> </span><span class="si">${</span><span class="nv">DNF_PACKAGES</span><span class="p">[@]</span><span class="si">}</span><span class="w"> </span><span class="o">=</span>~<span class="w"> </span><span class="s2">"teamviewer"</span><span class="w"> </span><span class="o">]]</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="o">(</span>
 <span class="w">  </span>sudo<span class="w"> </span>mv<span class="w"> </span>/tmp/repos.d/teamviewer.repo<span class="w"> </span>/etc/yum.repos.d/teamviewer.repo
 <span class="w">  </span>sudo<span class="w"> </span>rpm<span class="w"> </span>--import<span class="w"> </span>https://linux.teamviewer.com/pubkey/currentkey.asc
 <span class="o">)</span>
 
-<span class="o">[[</span><span class="w"> </span><span class="si">${</span><span class="nv">DNF_PACKAGES</span><span class="p">[@]</span><span class="si">}</span><span class="w"> </span><span class="o">=</span>~<span class="w"> </span><span class="s2">&quot;brave-browser&quot;</span><span class="w"> </span><span class="o">]]</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="o">(</span>
+<span class="o">[[</span><span class="w"> </span><span class="si">${</span><span class="nv">DNF_PACKAGES</span><span class="p">[@]</span><span class="si">}</span><span class="w"> </span><span class="o">=</span>~<span class="w"> </span><span class="s2">"brave-browser"</span><span class="w"> </span><span class="o">]]</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="o">(</span>
 <span class="w">  </span>sudo<span class="w"> </span>dnf<span class="w"> </span>config-manager<span class="w"> </span>--add-repo<span class="w"> </span>https://brave-browser-rpm-release.s3.brave.com/x86_64/
 <span class="w">  </span>sudo<span class="w"> </span>rpm<span class="w"> </span>--import<span class="w"> </span>https://brave-browser-rpm-release.s3.brave.com/brave-core.asc
 <span class="o">)</span>
 
-<span class="o">[[</span><span class="w"> </span><span class="si">${</span><span class="nv">DNF_PACKAGES</span><span class="p">[@]</span><span class="si">}</span><span class="w"> </span><span class="o">=</span>~<span class="w"> </span><span class="s2">&quot;signal-desktop&quot;</span><span class="w"> </span><span class="o">]]</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="o">(</span>
+<span class="o">[[</span><span class="w"> </span><span class="si">${</span><span class="nv">DNF_PACKAGES</span><span class="p">[@]</span><span class="si">}</span><span class="w"> </span><span class="o">=</span>~<span class="w"> </span><span class="s2">"signal-desktop"</span><span class="w"> </span><span class="o">]]</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="o">(</span>
 <span class="w">  </span>sudo<span class="w"> </span>dnf<span class="w"> </span>config-manager<span class="w"> </span>--add-repo<span class="w"> </span>https://download.opensuse.org/repositories/network:im:signal/Fedora_37/network:im:signal.repo
 <span class="w">  </span>sudo<span class="w"> </span>rpm<span class="w"> </span>--import<span class="w"> </span>https://download.opensuse.org/repositories/network:/im:/signal/Fedora_37/repodata/repomd.xml.key
 <span class="o">)</span>
@@ -1042,8 +1042,8 @@ sudo<span class="w"> </span>dnf<span class="w"> </span>install<span class="w"> <
 
 which<span class="w"> </span>ansible<span class="w"> </span><span class="p">&amp;</span>&gt;<span class="w"> </span>/dev/null<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>ansible-galaxy<span class="w"> </span>collection<span class="w"> </span>install<span class="w"> </span>community.general<span class="w"> </span>vyos.vyos
 
-<span class="c1"># install drawio (won&#39;t update automaticly!)</span>
-curl<span class="w"> </span>-s<span class="w"> </span>https://api.github.com/repos/jgraph/drawio-desktop/releases/latest<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>browser_download_url<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span><span class="s1">&#39;\.rpm&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>cut<span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;&quot;&#39;</span><span class="w"> </span>-f<span class="w"> </span><span class="m">4</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>wget<span class="w"> </span>-O<span class="w"> </span>/tmp/drawio.rpm<span class="w"> </span>-i<span class="w"> </span>-
+<span class="c1"># install drawio (won't update automaticly!)</span>
+curl<span class="w"> </span>-s<span class="w"> </span>https://api.github.com/repos/jgraph/drawio-desktop/releases/latest<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>browser_download_url<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span><span class="s1">'\.rpm'</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>cut<span class="w"> </span>-d<span class="w"> </span><span class="s1">'"'</span><span class="w"> </span>-f<span class="w"> </span><span class="m">4</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>wget<span class="w"> </span>-O<span class="w"> </span>/tmp/drawio.rpm<span class="w"> </span>-i<span class="w"> </span>-
 sudo<span class="w"> </span>yum<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>/tmp/drawio.rpm
 sudo<span class="w"> </span>rm<span class="w"> </span>/tmp/drawio.rpm
 
@@ -1052,14 +1052,14 @@ sudo<span class="w"> </span>wget<span class="w"> </span>-q<span class="w"> </spa
 sudo<span class="w"> </span>chmod<span class="w"> </span>+x<span class="w"> </span>/usr/local/bin/genpw
 
 <span class="c1"># start jetbrains-toolbox to install idea, pycharm and clion</span>
-curl<span class="w"> </span>-s<span class="w"> </span>-L<span class="w"> </span>-o-<span class="w"> </span><span class="k">$(</span>curl<span class="w"> </span>-s<span class="w"> </span><span class="s2">&quot;https://data.services.jetbrains.com/products?code=TBA&quot;</span><span class="w">  </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span>-r<span class="w"> </span><span class="s1">&#39;.[0].releases | .[0].downloads.linux.link&#39;</span><span class="k">)</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>tar<span class="w"> </span>xzC<span class="w"> </span>/tmp
+curl<span class="w"> </span>-s<span class="w"> </span>-L<span class="w"> </span>-o-<span class="w"> </span><span class="k">$(</span>curl<span class="w"> </span>-s<span class="w"> </span><span class="s2">"https://data.services.jetbrains.com/products?code=TBA"</span><span class="w">  </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span>-r<span class="w"> </span><span class="s1">'.[0].releases | .[0].downloads.linux.link'</span><span class="k">)</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>tar<span class="w"> </span>xzC<span class="w"> </span>/tmp
 /tmp/jetbrains-toolbox*/jetbrains-toolbox
 
 <span class="c1"># change ps1</span>
-<span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;PS1=&#39;\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ &#39;&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>sudo<span class="w"> </span>tee<span class="w"> </span>-a<span class="w"> </span>/<span class="o">{</span>root,home/<span class="si">${</span><span class="nv">USER</span><span class="si">}</span><span class="o">}</span>/.bashrc<span class="w"> </span><span class="p">&amp;</span>&gt;<span class="w"> </span>/dev/null
+<span class="nb">echo</span><span class="w"> </span><span class="s2">"PS1='\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '"</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>sudo<span class="w"> </span>tee<span class="w"> </span>-a<span class="w"> </span>/<span class="o">{</span>root,home/<span class="si">${</span><span class="nv">USER</span><span class="si">}</span><span class="o">}</span>/.bashrc<span class="w"> </span><span class="p">&amp;</span>&gt;<span class="w"> </span>/dev/null
 
 <span class="c1"># add your user to some groups for applications</span>
-<span class="o">[[</span><span class="w"> </span><span class="si">${</span><span class="nv">DNF_PACKAGES</span><span class="p">[@]</span><span class="si">}</span><span class="w"> </span><span class="o">=</span>~<span class="w"> </span><span class="s2">&quot;VirtualBox&quot;</span><span class="w"> </span><span class="o">]]</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>sudo<span class="w"> </span>usermod<span class="w"> </span>-aG<span class="w"> </span>vboxusers<span class="w"> </span><span class="si">${</span><span class="nv">USER</span><span class="si">}</span>
+<span class="o">[[</span><span class="w"> </span><span class="si">${</span><span class="nv">DNF_PACKAGES</span><span class="p">[@]</span><span class="si">}</span><span class="w"> </span><span class="o">=</span>~<span class="w"> </span><span class="s2">"VirtualBox"</span><span class="w"> </span><span class="o">]]</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>sudo<span class="w"> </span>usermod<span class="w"> </span>-aG<span class="w"> </span>vboxusers<span class="w"> </span><span class="si">${</span><span class="nv">USER</span><span class="si">}</span>
 sudo<span class="w"> </span>usermod<span class="w"> </span>-aG<span class="w"> </span>dialout<span class="w"> </span><span class="si">${</span><span class="nv">USER</span><span class="si">}</span>
 
 <span class="c1">###############################################</span>
@@ -1073,14 +1073,14 @@ xdg-mime<span class="w"> </span>default<span class="w"> </span>nemo.desktop<span
 
 <span class="c1"># install gnome shell extensions</span>
 <span class="nv">extensions</span><span class="o">=(</span>
-<span class="w">  </span><span class="c1"># &quot;https://extensions.gnome.org/extension/2890/tray-icons-reloaded/&quot;</span>
-<span class="w">  </span><span class="s2">&quot;https://extensions.gnome.org/extension/3843/just-perfection/&quot;</span>
-<span class="w">  </span><span class="s2">&quot;https://extensions.gnome.org/extension/615/appindicator-support/&quot;</span>
+<span class="w">  </span><span class="c1"># "https://extensions.gnome.org/extension/2890/tray-icons-reloaded/"</span>
+<span class="w">  </span><span class="s2">"https://extensions.gnome.org/extension/3843/just-perfection/"</span>
+<span class="w">  </span><span class="s2">"https://extensions.gnome.org/extension/615/appindicator-support/"</span>
 <span class="o">)</span>
-<span class="k">for</span><span class="w"> </span>extension<span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">extensions</span><span class="p">[@]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">;</span><span class="w"> </span><span class="k">do</span>
-<span class="w">  </span><span class="nv">extensionId</span><span class="o">=</span><span class="k">$(</span>curl<span class="w"> </span>-s<span class="w"> </span><span class="nv">$extension</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-oP<span class="w"> </span><span class="s1">&#39;data-uuid=&quot;\K[^&quot;]+&#39;</span><span class="k">)</span>
-<span class="w">  </span><span class="nv">versionTag</span><span class="o">=</span><span class="k">$(</span>curl<span class="w"> </span>-Lfs<span class="w"> </span><span class="s2">&quot;https://extensions.gnome.org/extension-query/?search=</span><span class="si">${</span><span class="nv">extensionId</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">&#39;.extensions[0] | .shell_version_map | map(.pk) | max&#39;</span><span class="k">)</span>
-<span class="w">  </span>wget<span class="w"> </span>-qO<span class="w"> </span>/tmp/<span class="si">${</span><span class="nv">extensionId</span><span class="si">}</span>.zip<span class="w"> </span><span class="s2">&quot;https://extensions.gnome.org/download-extension/</span><span class="si">${</span><span class="nv">extensionId</span><span class="si">}</span><span class="s2">.shell-extension.zip?version_tag=</span><span class="si">${</span><span class="nv">versionTag</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="k">for</span><span class="w"> </span>extension<span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">extensions</span><span class="p">[@]</span><span class="si">}</span><span class="s2">"</span><span class="p">;</span><span class="w"> </span><span class="k">do</span>
+<span class="w">  </span><span class="nv">extensionId</span><span class="o">=</span><span class="k">$(</span>curl<span class="w"> </span>-s<span class="w"> </span><span class="nv">$extension</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-oP<span class="w"> </span><span class="s1">'data-uuid="\K[^"]+'</span><span class="k">)</span>
+<span class="w">  </span><span class="nv">versionTag</span><span class="o">=</span><span class="k">$(</span>curl<span class="w"> </span>-Lfs<span class="w"> </span><span class="s2">"https://extensions.gnome.org/extension-query/?search=</span><span class="si">${</span><span class="nv">extensionId</span><span class="si">}</span><span class="s2">"</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span><span class="s1">'.extensions[0] | .shell_version_map | map(.pk) | max'</span><span class="k">)</span>
+<span class="w">  </span>wget<span class="w"> </span>-qO<span class="w"> </span>/tmp/<span class="si">${</span><span class="nv">extensionId</span><span class="si">}</span>.zip<span class="w"> </span><span class="s2">"https://extensions.gnome.org/download-extension/</span><span class="si">${</span><span class="nv">extensionId</span><span class="si">}</span><span class="s2">.shell-extension.zip?version_tag=</span><span class="si">${</span><span class="nv">versionTag</span><span class="si">}</span><span class="s2">"</span>
 <span class="w">  </span>gnome-extensions<span class="w"> </span>install<span class="w"> </span>--force<span class="w"> </span>/tmp/<span class="si">${</span><span class="nv">extensionId</span><span class="si">}</span>.zip
 <span class="w">  </span><span class="c1"># warning: requires user interaction!</span>
 <span class="w">  </span><span class="k">if</span><span class="w"> </span>!<span class="w"> </span>gnome-extensions<span class="w"> </span>list<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>--quiet<span class="w"> </span><span class="si">${</span><span class="nv">extensionId</span><span class="si">}</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
@@ -1091,7 +1091,7 @@ xdg-mime<span class="w"> </span>default<span class="w"> </span>nemo.desktop<span
 <span class="k">done</span>
 
 <span class="c1"># load schemas of installed extensions into gsettings schema database</span>
-find<span class="w"> </span>~/.local/share/gnome-shell/extensions/<span class="w"> </span>-type<span class="w"> </span>f<span class="w"> </span>-name<span class="w"> </span><span class="s1">&#39;*.gschema.xml&#39;</span><span class="w"> </span><span class="se">\</span>
+find<span class="w"> </span>~/.local/share/gnome-shell/extensions/<span class="w"> </span>-type<span class="w"> </span>f<span class="w"> </span>-name<span class="w"> </span><span class="s1">'*.gschema.xml'</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-exec<span class="w"> </span>sudo<span class="w"> </span>cp<span class="w"> </span><span class="o">{}</span><span class="w"> </span>/usr/share/glib-2.0/schemas/<span class="w"> </span><span class="se">\;</span>
 sudo<span class="w"> </span>glib-compile-schemas<span class="w"> </span>/usr/share/glib-2.0/schemas/
 
@@ -1105,31 +1105,31 @@ gsettings<span class="w"> </span><span class="nb">set</span><span class="w"> </s
 gsettings<span class="w"> </span><span class="nb">set</span><span class="w"> </span>org.gnome.shell.extensions.just-perfection<span class="w"> </span>window-menu-take-screenshot-button<span class="w"> </span><span class="nb">false</span>
 gsettings<span class="w"> </span><span class="nb">set</span><span class="w"> </span>org.gnome.shell.extensions.just-perfection<span class="w"> </span>startup-status<span class="w"> </span><span class="m">0</span>
 
-gsettings<span class="w"> </span><span class="nb">set</span><span class="w"> </span>org.gnome.desktop.wm.preferences<span class="w"> </span>button-layout<span class="w"> </span><span class="s1">&#39;appmenu:minimize,maximize,close&#39;</span>
+gsettings<span class="w"> </span><span class="nb">set</span><span class="w"> </span>org.gnome.desktop.wm.preferences<span class="w"> </span>button-layout<span class="w"> </span><span class="s1">'appmenu:minimize,maximize,close'</span>
 gsettings<span class="w"> </span><span class="nb">set</span><span class="w"> </span>org.gnome.desktop.interface<span class="w"> </span>show-battery-percentage<span class="w"> </span><span class="nb">true</span>
 gsettings<span class="w"> </span><span class="nb">set</span><span class="w"> </span>org.gnome.desktop.interface<span class="w"> </span>enable-hot-corners<span class="w"> </span><span class="nb">false</span>
 gsettings<span class="w"> </span><span class="nb">set</span><span class="w"> </span>org.gnome.shell.app-switcher<span class="w"> </span>current-workspace-only<span class="w"> </span><span class="nb">true</span>
 
 <span class="c1"># set background images for screensaver and desktop to static color (#150936)</span>
 <span class="nv">path</span><span class="o">=</span>~/Pictures/background.png
-convert<span class="w"> </span>-size<span class="w"> </span>100x100<span class="w"> </span><span class="s1">&#39;xc:#150936&#39;</span><span class="w"> </span><span class="si">${</span><span class="nv">path</span><span class="si">}</span>
-gsettings<span class="w"> </span><span class="nb">set</span><span class="w"> </span>org.gnome.desktop.background<span class="w"> </span>picture-uri-dark<span class="w"> </span><span class="s2">&quot;file://</span><span class="si">${</span><span class="nv">path</span><span class="si">}</span><span class="s2">&quot;</span>
-gsettings<span class="w"> </span><span class="nb">set</span><span class="w"> </span>org.gnome.desktop.background<span class="w"> </span>picture-uri<span class="w"> </span><span class="s2">&quot;file://</span><span class="si">${</span><span class="nv">path</span><span class="si">}</span><span class="s2">&quot;</span>
-gsettings<span class="w"> </span><span class="nb">set</span><span class="w"> </span>org.gnome.desktop.screensaver<span class="w"> </span>picture-uri<span class="w"> </span><span class="s2">&quot;file://</span><span class="si">${</span><span class="nv">path</span><span class="si">}</span><span class="s2">&quot;</span>
+convert<span class="w"> </span>-size<span class="w"> </span>100x100<span class="w"> </span><span class="s1">'xc:#150936'</span><span class="w"> </span><span class="si">${</span><span class="nv">path</span><span class="si">}</span>
+gsettings<span class="w"> </span><span class="nb">set</span><span class="w"> </span>org.gnome.desktop.background<span class="w"> </span>picture-uri-dark<span class="w"> </span><span class="s2">"file://</span><span class="si">${</span><span class="nv">path</span><span class="si">}</span><span class="s2">"</span>
+gsettings<span class="w"> </span><span class="nb">set</span><span class="w"> </span>org.gnome.desktop.background<span class="w"> </span>picture-uri<span class="w"> </span><span class="s2">"file://</span><span class="si">${</span><span class="nv">path</span><span class="si">}</span><span class="s2">"</span>
+gsettings<span class="w"> </span><span class="nb">set</span><span class="w"> </span>org.gnome.desktop.screensaver<span class="w"> </span>picture-uri<span class="w"> </span><span class="s2">"file://</span><span class="si">${</span><span class="nv">path</span><span class="si">}</span><span class="s2">"</span>
 
 <span class="c1"># adjust terminator configuration</span>
 gsettings<span class="w"> </span><span class="nb">set</span><span class="w"> </span>org.gnome.desktop.default-applications.terminal<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>terminator
 gsettings<span class="w"> </span><span class="nb">set</span><span class="w"> </span>org.cinnamon.desktop.default-applications.terminal<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>terminator<span class="w">  </span><span class="c1"># required for nemo (right click -&gt; open terminal) to work properly</span>
-gsettings<span class="w"> </span><span class="nb">set</span><span class="w"> </span>org.gnome.desktop.default-applications.terminal<span class="w"> </span>exec-arg<span class="w"> </span><span class="s1">&#39;&#39;</span>
+gsettings<span class="w"> </span><span class="nb">set</span><span class="w"> </span>org.gnome.desktop.default-applications.terminal<span class="w"> </span>exec-arg<span class="w"> </span><span class="s1">''</span>
 mkdir<span class="w"> </span>-p<span class="w"> </span>~/.config/terminator
 cat<span class="w"> </span><span class="s">&lt;&lt;_EOF &gt;&gt; ~/.config/terminator/config</span>
 <span class="s">[global_config]</span>
 <span class="s">[keybindings]</span>
 <span class="s">[profiles]</span>
 <span class="s">  [[default]]</span>
-<span class="s">    background_color = &quot;#241f31&quot;</span>
+<span class="s">    background_color = "#241f31"</span>
 <span class="s">    background_darkness = 0.95</span>
-<span class="s">    cursor_color = &quot;#aaaaaa&quot;</span>
+<span class="s">    cursor_color = "#aaaaaa"</span>
 <span class="s">    show_titlebar = False</span>
 <span class="s">    scrollbar_position = hidden</span>
 <span class="s">    scrollback_infinite = True</span>
@@ -1137,15 +1137,15 @@ cat<span class="w"> </span><span class="s">&lt;&lt;_EOF &gt;&gt; ~/.config/termi
 <span class="s">  [[default]]</span>
 <span class="s">    [[[window0]]]</span>
 <span class="s">      type = Window</span>
-<span class="s">      parent = &quot;&quot;</span>
+<span class="s">      parent = ""</span>
 <span class="s">    [[[child1]]]</span>
 <span class="s">      type = Terminal</span>
 <span class="s">      parent = window0</span>
 <span class="s">[plugins]</span>
 <span class="s">_EOF</span>
 
-gsettings<span class="w"> </span><span class="nb">set</span><span class="w"> </span>org.gnome.desktop.interface<span class="w"> </span>gtk-theme<span class="w"> </span><span class="s1">&#39;Adwaita-dark&#39;</span>
-gsettings<span class="w"> </span><span class="nb">set</span><span class="w"> </span>org.gnome.desktop.interface<span class="w"> </span>color-scheme<span class="w"> </span><span class="s1">&#39;prefer-dark&#39;</span>
+gsettings<span class="w"> </span><span class="nb">set</span><span class="w"> </span>org.gnome.desktop.interface<span class="w"> </span>gtk-theme<span class="w"> </span><span class="s1">'Adwaita-dark'</span>
+gsettings<span class="w"> </span><span class="nb">set</span><span class="w"> </span>org.gnome.desktop.interface<span class="w"> </span>color-scheme<span class="w"> </span><span class="s1">'prefer-dark'</span>
 
 gsettings<span class="w"> </span><span class="nb">set</span><span class="w"> </span>org.gnome.desktop.interface<span class="w"> </span>clock-show-weekday<span class="w"> </span><span class="nb">true</span>
 gsettings<span class="w"> </span><span class="nb">set</span><span class="w"> </span>org.gnome.desktop.interface<span class="w"> </span>clock-show-seconds<span class="w"> </span><span class="nb">true</span>
@@ -1156,30 +1156,30 @@ gsettings<span class="w"> </span><span class="nb">set</span><span class="w"> </s
 gsettings<span class="w"> </span><span class="nb">set</span><span class="w"> </span>org.gnome.desktop.peripherals.touchpad<span class="w"> </span>natural-scroll<span class="w"> </span><span class="nb">false</span>
 
 <span class="c1"># add keybinds, see https://askubuntu.com/questions/597395/how-to-set-custom-keyboard-shortcuts-from-terminal</span>
-gsettings<span class="w"> </span><span class="nb">set</span><span class="w"> </span>org.gnome.settings-daemon.plugins.media-keys<span class="w"> </span>custom-keybindings<span class="w"> </span><span class="s2">&quot;[&#39;/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/&#39;, &#39;/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1/&#39;]&quot;</span>
+gsettings<span class="w"> </span><span class="nb">set</span><span class="w"> </span>org.gnome.settings-daemon.plugins.media-keys<span class="w"> </span>custom-keybindings<span class="w"> </span><span class="s2">"['/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1/']"</span>
 
 <span class="c1"># disable help keybind</span>
-gsettings<span class="w"> </span><span class="nb">set</span><span class="w"> </span>org.gnome.settings-daemon.plugins.media-keys<span class="w"> </span><span class="nb">help</span><span class="w"> </span><span class="s2">&quot;[]&quot;</span>
+gsettings<span class="w"> </span><span class="nb">set</span><span class="w"> </span>org.gnome.settings-daemon.plugins.media-keys<span class="w"> </span><span class="nb">help</span><span class="w"> </span><span class="s2">"[]"</span>
 
 <span class="c1"># CTRL + ALT + T -&gt; CMD: terminator</span>
-gsettings<span class="w"> </span><span class="nb">set</span><span class="w"> </span>org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/<span class="w"> </span>name<span class="w"> </span><span class="s1">&#39;Terminal&#39;</span>
-gsettings<span class="w"> </span><span class="nb">set</span><span class="w"> </span>org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/<span class="w"> </span><span class="nb">command</span><span class="w"> </span><span class="s1">&#39;terminator&#39;</span>
-gsettings<span class="w"> </span><span class="nb">set</span><span class="w"> </span>org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/<span class="w"> </span>binding<span class="w"> </span><span class="s1">&#39;&lt;Control&gt;&lt;Alt&gt;t&#39;</span>
+gsettings<span class="w"> </span><span class="nb">set</span><span class="w"> </span>org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/<span class="w"> </span>name<span class="w"> </span><span class="s1">'Terminal'</span>
+gsettings<span class="w"> </span><span class="nb">set</span><span class="w"> </span>org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/<span class="w"> </span><span class="nb">command</span><span class="w"> </span><span class="s1">'terminator'</span>
+gsettings<span class="w"> </span><span class="nb">set</span><span class="w"> </span>org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/<span class="w"> </span>binding<span class="w"> </span><span class="s1">'&lt;Control&gt;&lt;Alt&gt;t'</span>
 
 <span class="c1"># CTRL + SHIFT + S -&gt; CMD: flameshot gui</span>
-gsettings<span class="w"> </span><span class="nb">set</span><span class="w"> </span>org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1/<span class="w"> </span>name<span class="w"> </span><span class="s1">&#39;Snapshot&#39;</span>
-gsettings<span class="w"> </span><span class="nb">set</span><span class="w"> </span>org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1/<span class="w"> </span><span class="nb">command</span><span class="w"> </span><span class="s1">&#39;flameshot gui&#39;</span>
-gsettings<span class="w"> </span><span class="nb">set</span><span class="w"> </span>org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1/<span class="w"> </span>binding<span class="w"> </span><span class="s1">&#39;&lt;Shift&gt;&lt;Control&gt;s&#39;</span>
+gsettings<span class="w"> </span><span class="nb">set</span><span class="w"> </span>org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1/<span class="w"> </span>name<span class="w"> </span><span class="s1">'Snapshot'</span>
+gsettings<span class="w"> </span><span class="nb">set</span><span class="w"> </span>org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1/<span class="w"> </span><span class="nb">command</span><span class="w"> </span><span class="s1">'flameshot gui'</span>
+gsettings<span class="w"> </span><span class="nb">set</span><span class="w"> </span>org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1/<span class="w"> </span>binding<span class="w"> </span><span class="s1">'&lt;Shift&gt;&lt;Control&gt;s'</span>
 
 <span class="c1"># Super + E -&gt; Launchers/Home folder</span>
-gsettings<span class="w"> </span><span class="nb">set</span><span class="w"> </span>org.gnome.settings-daemon.plugins.media-keys<span class="w"> </span>home<span class="w"> </span><span class="s2">&quot;[&#39;&lt;Super&gt;e&#39;]&quot;</span>
+gsettings<span class="w"> </span><span class="nb">set</span><span class="w"> </span>org.gnome.settings-daemon.plugins.media-keys<span class="w"> </span>home<span class="w"> </span><span class="s2">"['&lt;Super&gt;e']"</span>
 
 <span class="c1"># configure autostart</span>
 <span class="nv">paths</span><span class="o">=(</span>
-<span class="w">  </span><span class="s2">&quot;/usr/share/applications/syncthing-start.desktop&quot;</span>
-<span class="w">  </span><span class="s2">&quot;/usr/share/applications/signal-desktop.desktop&quot;</span>
-<span class="w">  </span><span class="s2">&quot;/var/lib/flatpak/app/org.ferdium.Ferdium/x86_64/stable/fbca90383214fa94cf7721471902e3ec7b8222dbe7e532b71a9b607c445af2ae/export/share/applications/org.ferdium.Ferdium.desktop&quot;</span>
-<span class="w">  </span><span class="s2">&quot;/var/lib/flatpak/app/im.riot.Riot/x86_64/stable/9bd0c958912a8187b019b3a11260da2e6c241b92a6e570fd0efc8b2f53186310/export/share/applications/im.riot.Riot.desktop&quot;</span>
+<span class="w">  </span><span class="s2">"/usr/share/applications/syncthing-start.desktop"</span>
+<span class="w">  </span><span class="s2">"/usr/share/applications/signal-desktop.desktop"</span>
+<span class="w">  </span><span class="s2">"/var/lib/flatpak/app/org.ferdium.Ferdium/x86_64/stable/fbca90383214fa94cf7721471902e3ec7b8222dbe7e532b71a9b607c445af2ae/export/share/applications/org.ferdium.Ferdium.desktop"</span>
+<span class="w">  </span><span class="s2">"/var/lib/flatpak/app/im.riot.Riot/x86_64/stable/9bd0c958912a8187b019b3a11260da2e6c241b92a6e570fd0efc8b2f53186310/export/share/applications/im.riot.Riot.desktop"</span>
 <span class="o">)</span>
 <span class="k">for</span><span class="w"> </span>path<span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="si">${</span><span class="nv">paths</span><span class="p">[@]</span><span class="si">}</span><span class="p">;</span><span class="w"> </span><span class="k">do</span>
 <span class="w">  </span>cp<span class="w"> </span><span class="si">${</span><span class="nv">path</span><span class="si">}</span><span class="w"> </span>~/.config/autostart/
@@ -1189,8 +1189,8 @@ chmod<span class="w"> </span>+x<span class="w"> </span>~/.config/autostart/*.des
 <span class="c1"># download profile picture for the user</span>
 curl<span class="w"> </span>-s<span class="w"> </span>-L<span class="w"> </span>-o<span class="w"> </span>~/Pictures/profile.png<span class="w"> </span>https://avatars.githubusercontent.com/u/26925347
 
-<span class="c1"># start &quot;gnome on xorg&quot; instead of wayland</span>
-sudo<span class="w"> </span>sed<span class="w"> </span>-i<span class="w"> </span><span class="s1">&#39;s/Session=gnome/Session=gnome-xorg/&#39;</span><span class="w"> </span>/var/lib/AccountsService/users/<span class="si">${</span><span class="nv">USER</span><span class="si">}</span>
+<span class="c1"># start "gnome on xorg" instead of wayland</span>
+sudo<span class="w"> </span>sed<span class="w"> </span>-i<span class="w"> </span><span class="s1">'s/Session=gnome/Session=gnome-xorg/'</span><span class="w"> </span>/var/lib/AccountsService/users/<span class="si">${</span><span class="nv">USER</span><span class="si">}</span>
 
 <span class="c1">##############################</span>
 <span class="c1">##                          ##</span>
@@ -1199,7 +1199,7 @@ sudo<span class="w"> </span>sed<span class="w"> </span>-i<span class="w"> </span
 <span class="c1">##############################</span>
 <span class="c1"># remove fedora logo from gdm</span>
 xhost<span class="w"> </span>+si:localuser:gdm
-sudo<span class="w"> </span>-u<span class="w"> </span>gdm<span class="w"> </span>gsettings<span class="w"> </span><span class="nb">set</span><span class="w"> </span>org.gnome.login-screen<span class="w"> </span>logo<span class="w"> </span><span class="s1">&#39;&#39;</span>
+sudo<span class="w"> </span>-u<span class="w"> </span>gdm<span class="w"> </span>gsettings<span class="w"> </span><span class="nb">set</span><span class="w"> </span>org.gnome.login-screen<span class="w"> </span>logo<span class="w"> </span><span class="s1">''</span>
 
 <span class="c1"># remove fedora logo from plymouth and regenerate initramfs</span>
 sudo<span class="w"> </span>cp<span class="w"> </span>/usr/share/plymouth/themes/spinner/watermark.png<span class="o">{</span>,.bak<span class="o">}</span>
@@ -1234,53 +1234,53 @@ Um die Installation der Maschinen zu automatisieren diente eine <a href="https:/
   <div class="highlight"><pre><span></span><code><span class="ch">#!/bin/bash</span>
 
 <span class="c1">## CONFIGURATION ###</span>
-<span class="nv">ADM_NAME</span><span class="o">=</span><span class="s1">&#39;admin&#39;</span>
+<span class="nv">ADM_NAME</span><span class="o">=</span><span class="s1">'admin'</span>
 <span class="nv">ADM_GID</span><span class="o">=</span><span class="m">997</span>
-<span class="nv">ADM_HOME</span><span class="o">=</span><span class="s1">&#39;/home/admin&#39;</span>
-<span class="nv">ADM_USERS</span><span class="o">=(</span><span class="s1">&#39;user&#39;</span><span class="o">)</span>
+<span class="nv">ADM_HOME</span><span class="o">=</span><span class="s1">'/home/admin'</span>
+<span class="nv">ADM_USERS</span><span class="o">=(</span><span class="s1">'user'</span><span class="o">)</span>
 
 <span class="nb">declare</span><span class="w"> </span>-A<span class="w"> </span><span class="nv">STACKS</span><span class="o">=(</span><span class="se">\</span>
-<span class="w">  </span><span class="o">[</span><span class="s2">&quot;main&quot;</span><span class="o">]=</span><span class="s2">&quot;172.30.100.0/24&quot;</span>
-<span class="w">  </span><span class="o">[</span><span class="s2">&quot;comms&quot;</span><span class="o">]=</span><span class="s2">&quot;172.30.101.0/24&quot;</span>
-<span class="w">  </span><span class="o">[</span><span class="s2">&quot;storage&quot;</span><span class="o">]=</span><span class="s2">&quot;172.30.102.0/24&quot;</span>
+<span class="w">  </span><span class="o">[</span><span class="s2">"main"</span><span class="o">]=</span><span class="s2">"172.30.100.0/24"</span>
+<span class="w">  </span><span class="o">[</span><span class="s2">"comms"</span><span class="o">]=</span><span class="s2">"172.30.101.0/24"</span>
+<span class="w">  </span><span class="o">[</span><span class="s2">"storage"</span><span class="o">]=</span><span class="s2">"172.30.102.0/24"</span>
 <span class="o">)</span>
 
 <span class="nb">declare</span><span class="w"> </span>-A<span class="w"> </span><span class="nv">HELPER</span><span class="o">=(</span><span class="se">\</span>
-<span class="w">  </span><span class="o">[</span><span class="s2">&quot;proxy&quot;</span><span class="o">]=</span><span class="s2">&quot;172.30.0.0/24&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span><span class="o">[</span><span class="s2">&quot;database&quot;</span><span class="o">]=</span><span class="s2">&quot;172.30.1.0/24&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span><span class="o">[</span><span class="s2">&quot;monitoring&quot;</span><span class="o">]=</span><span class="s2">&quot;172.30.2.0/24&quot;</span>
+<span class="w">  </span><span class="o">[</span><span class="s2">"proxy"</span><span class="o">]=</span><span class="s2">"172.30.0.0/24"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="o">[</span><span class="s2">"database"</span><span class="o">]=</span><span class="s2">"172.30.1.0/24"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span><span class="o">[</span><span class="s2">"monitoring"</span><span class="o">]=</span><span class="s2">"172.30.2.0/24"</span>
 <span class="o">)</span>
 <span class="c1">### END of CONFIGURATION ###</span>
 
 <span class="k">function</span><span class="w"> </span>create_compose<span class="o">()</span><span class="w"> </span><span class="o">{</span>
 <span class="w">  </span>cp<span class="w"> </span>resources/docker-compose.template.yml<span class="w"> </span><span class="si">${</span><span class="nv">1</span><span class="si">}</span>
 <span class="w">  </span><span class="c1"># stack network</span>
-<span class="w">  </span><span class="nb">echo</span><span class="w"> </span>-e<span class="w"> </span><span class="s2">&quot;    external:&quot;</span><span class="w"> </span>&gt;&gt;<span class="si">${</span><span class="nv">compose</span><span class="si">}</span>
-<span class="w">  </span><span class="nb">echo</span><span class="w"> </span>-e<span class="w"> </span><span class="s2">&quot;      name: </span><span class="si">${</span><span class="nv">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span>&gt;&gt;<span class="si">${</span><span class="nv">compose</span><span class="si">}</span>
+<span class="w">  </span><span class="nb">echo</span><span class="w"> </span>-e<span class="w"> </span><span class="s2">"    external:"</span><span class="w"> </span>&gt;&gt;<span class="si">${</span><span class="nv">compose</span><span class="si">}</span>
+<span class="w">  </span><span class="nb">echo</span><span class="w"> </span>-e<span class="w"> </span><span class="s2">"      name: </span><span class="si">${</span><span class="nv">name</span><span class="si">}</span><span class="s2">"</span><span class="w"> </span>&gt;&gt;<span class="si">${</span><span class="nv">compose</span><span class="si">}</span>
 
 <span class="w">  </span><span class="c1"># define helper networks</span>
 <span class="w">  </span><span class="k">for</span><span class="w"> </span>helper_name<span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="si">${</span><span class="p">!HELPER[@]</span><span class="si">}</span><span class="p">;</span><span class="w"> </span><span class="k">do</span>
-<span class="w">    </span><span class="nb">echo</span><span class="w"> </span>-e<span class="w"> </span><span class="s2">&quot;  </span><span class="si">${</span><span class="nv">helper_name</span><span class="si">}</span><span class="s2">:&quot;</span><span class="w"> </span>&gt;&gt;<span class="si">${</span><span class="nv">compose</span><span class="si">}</span>
-<span class="w">    </span><span class="nb">echo</span><span class="w"> </span>-e<span class="w"> </span><span class="s2">&quot;    external:&quot;</span><span class="w"> </span>&gt;&gt;<span class="si">${</span><span class="nv">compose</span><span class="si">}</span>
-<span class="w">    </span><span class="nb">echo</span><span class="w"> </span>-e<span class="w"> </span><span class="s2">&quot;      name: </span><span class="si">${</span><span class="nv">helper_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span>&gt;&gt;<span class="si">${</span><span class="nv">compose</span><span class="si">}</span>
+<span class="w">    </span><span class="nb">echo</span><span class="w"> </span>-e<span class="w"> </span><span class="s2">"  </span><span class="si">${</span><span class="nv">helper_name</span><span class="si">}</span><span class="s2">:"</span><span class="w"> </span>&gt;&gt;<span class="si">${</span><span class="nv">compose</span><span class="si">}</span>
+<span class="w">    </span><span class="nb">echo</span><span class="w"> </span>-e<span class="w"> </span><span class="s2">"    external:"</span><span class="w"> </span>&gt;&gt;<span class="si">${</span><span class="nv">compose</span><span class="si">}</span>
+<span class="w">    </span><span class="nb">echo</span><span class="w"> </span>-e<span class="w"> </span><span class="s2">"      name: </span><span class="si">${</span><span class="nv">helper_name</span><span class="si">}</span><span class="s2">"</span><span class="w"> </span>&gt;&gt;<span class="si">${</span><span class="nv">compose</span><span class="si">}</span>
 <span class="w">  </span><span class="k">done</span>
 <span class="o">}</span>
 
 <span class="c1"># require root privileges</span>
-<span class="k">if</span><span class="w"> </span><span class="o">[[</span><span class="w"> </span><span class="k">$(</span>/usr/bin/id<span class="w"> </span>-u<span class="k">)</span><span class="w"> </span>!<span class="o">=</span><span class="w"> </span><span class="s2">&quot;0&quot;</span><span class="w"> </span><span class="o">]]</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
-<span class="w">  </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Please run the script as root!&quot;</span>
+<span class="k">if</span><span class="w"> </span><span class="o">[[</span><span class="w"> </span><span class="k">$(</span>/usr/bin/id<span class="w"> </span>-u<span class="k">)</span><span class="w"> </span>!<span class="o">=</span><span class="w"> </span><span class="s2">"0"</span><span class="w"> </span><span class="o">]]</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
+<span class="w">  </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"Please run the script as root!"</span>
 <span class="w">  </span><span class="nb">exit</span><span class="w"> </span><span class="m">1</span>
 <span class="k">fi</span>
 
 <span class="k">if</span><span class="w"> </span><span class="o">[[</span><span class="w"> </span><span class="si">${</span><span class="nv">RERUN</span><span class="si">}</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="o">]]</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
-<span class="w">  </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;You already ran the script, if you really want to run the script again set &#39;RERUN=0&#39;. (This might break your system!)&quot;</span>
+<span class="w">  </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"You already ran the script, if you really want to run the script again set 'RERUN=0'. (This might break your system!)"</span>
 <span class="w">  </span><span class="nb">exit</span><span class="w"> </span><span class="m">1</span>
 <span class="k">fi</span>
 
 <span class="c1"># add rerun=1 variable to prevent postinstall to be executed multiple times</span>
-sed<span class="w"> </span>-i<span class="w"> </span><span class="s1">&#39;2 i\RERUN=1&#39;</span><span class="w"> </span><span class="si">${</span><span class="nv">0</span><span class="si">}</span>
+sed<span class="w"> </span>-i<span class="w"> </span><span class="s1">'2 i\RERUN=1'</span><span class="w"> </span><span class="si">${</span><span class="nv">0</span><span class="si">}</span>
 
-<span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;&gt;&gt;&gt; Installing Software&quot;</span>
+<span class="nb">echo</span><span class="w"> </span><span class="s2">"&gt;&gt;&gt; Installing Software"</span>
 apt-get<span class="w"> </span>update
 apt-get<span class="w"> </span>install<span class="w"> </span>sudo<span class="w"> </span>curl<span class="w"> </span>wget<span class="w"> </span>borgbackup
 
@@ -1291,35 +1291,35 @@ apt-get<span class="w"> </span>install<span class="w"> </span>sudo<span class="w
 
 <span class="c1"># install docker-compose if not already installed</span>
 <span class="k">if</span><span class="w"> </span><span class="o">[[</span><span class="w"> </span>-z<span class="w"> </span><span class="k">$(</span>which<span class="w"> </span>docker-compose<span class="k">)</span><span class="w"> </span><span class="o">]]</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
-<span class="w">  </span>curl<span class="w"> </span>-L<span class="w"> </span><span class="s2">&quot;https://github.com/docker/compose/releases/latest/download/docker-compose-</span><span class="k">$(</span>uname<span class="w"> </span>-s<span class="k">)</span><span class="s2">-</span><span class="k">$(</span>uname<span class="w"> </span>-m<span class="k">)</span><span class="s2">&quot;</span><span class="w"> </span>-o<span class="w"> </span>/usr/local/bin/docker-compose
+<span class="w">  </span>curl<span class="w"> </span>-L<span class="w"> </span><span class="s2">"https://github.com/docker/compose/releases/latest/download/docker-compose-</span><span class="k">$(</span>uname<span class="w"> </span>-s<span class="k">)</span><span class="s2">-</span><span class="k">$(</span>uname<span class="w"> </span>-m<span class="k">)</span><span class="s2">"</span><span class="w"> </span>-o<span class="w"> </span>/usr/local/bin/docker-compose
 <span class="w">  </span>chmod<span class="w"> </span>+x<span class="w"> </span>/usr/local/bin/docker-compose
 <span class="k">fi</span>
 
 <span class="c1"># remove trailing slash from ADM_HOME</span>
-<span class="o">[[</span><span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">ADM_HOME</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span><span class="o">==</span><span class="w"> </span>*/<span class="w"> </span><span class="o">]]</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nv">ADM_HOME</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">ADM_HOME</span><span class="p">:</span><span class="k">:-</span><span class="nv">1</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="o">[[</span><span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">ADM_HOME</span><span class="si">}</span><span class="s2">"</span><span class="w"> </span><span class="o">==</span><span class="w"> </span>*/<span class="w"> </span><span class="o">]]</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nv">ADM_HOME</span><span class="o">=</span><span class="s2">"</span><span class="si">${</span><span class="nv">ADM_HOME</span><span class="p">:</span><span class="k">:-</span><span class="nv">1</span><span class="si">}</span><span class="s2">"</span>
 
 <span class="c1"># create admin group, add members to group and set permissions</span>
-<span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;&gt;&gt;&gt; Creating Admin Setup&quot;</span>
+<span class="nb">echo</span><span class="w"> </span><span class="s2">"&gt;&gt;&gt; Creating Admin Setup"</span>
 /usr/sbin/groupadd<span class="w"> </span>-g<span class="w"> </span><span class="si">${</span><span class="nv">ADM_GID</span><span class="si">}</span><span class="w"> </span><span class="si">${</span><span class="nv">ADM_NAME</span><span class="si">}</span>
 mkdir<span class="w"> </span><span class="si">${</span><span class="nv">ADM_HOME</span><span class="si">}</span>
 chown<span class="w"> </span>-R<span class="w"> </span>root:<span class="si">${</span><span class="nv">ADM_NAME</span><span class="si">}</span><span class="w"> </span><span class="si">${</span><span class="nv">ADM_HOME</span><span class="si">}</span>
 chmod<span class="w"> </span>-R<span class="w"> </span><span class="m">775</span><span class="w"> </span><span class="si">${</span><span class="nv">ADM_HOME</span><span class="si">}</span>
 <span class="k">for</span><span class="w"> </span>user<span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="si">${</span><span class="nv">ADM_USERS</span><span class="p">[@]</span><span class="si">}</span><span class="p">;</span><span class="w"> </span><span class="k">do</span>
 <span class="w">  </span><span class="c1"># check if user exists</span>
-<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="o">[</span><span class="w"> </span>!<span class="w"> </span><span class="k">$(</span>sed<span class="w"> </span>-n<span class="w"> </span><span class="s2">&quot;/^</span><span class="si">${</span><span class="nv">user</span><span class="si">}</span><span class="s2">/p&quot;</span><span class="w"> </span>/etc/passwd<span class="k">)</span><span class="w"> </span><span class="o">]</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="o">[</span><span class="w"> </span>!<span class="w"> </span><span class="k">$(</span>sed<span class="w"> </span>-n<span class="w"> </span><span class="s2">"/^</span><span class="si">${</span><span class="nv">user</span><span class="si">}</span><span class="s2">/p"</span><span class="w"> </span>/etc/passwd<span class="k">)</span><span class="w"> </span><span class="o">]</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
 <span class="w">    </span>/usr/sbin/useradd<span class="w"> </span>--create-home<span class="w"> </span>--shell<span class="o">=</span>/bin/bash<span class="w"> </span><span class="si">${</span><span class="nv">user</span><span class="si">}</span>
 <span class="w">  </span><span class="k">fi</span>
 <span class="w">  </span>/usr/sbin/usermod<span class="w"> </span>--append<span class="w"> </span>--groups<span class="o">=</span>sudo,<span class="si">${</span><span class="nv">ADM_NAME</span><span class="si">}</span><span class="w"> </span><span class="si">${</span><span class="nv">user</span><span class="si">}</span>
 
 <span class="w">  </span><span class="c1"># add aliases</span>
-<span class="w">  </span><span class="nb">echo</span><span class="w"> </span>-e<span class="w"> </span><span class="s1">&#39;\nalias dc=&quot;sudo docker-compose &quot;&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>tee<span class="w"> </span>-a<span class="w"> </span>/home/<span class="si">${</span><span class="nv">user</span><span class="si">}</span>/.bashrc<span class="w"> </span>&gt;<span class="w"> </span>/dev/null
-<span class="w">  </span><span class="nb">echo</span><span class="w"> </span>-e<span class="w"> </span><span class="s1">&#39;alias ctop=&quot;sudo ctop&quot;\n&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>tee<span class="w"> </span>-a<span class="w"> </span>/home/<span class="si">${</span><span class="nv">user</span><span class="si">}</span>/.bashrc<span class="w"> </span>&gt;<span class="w"> </span>/dev/null
+<span class="w">  </span><span class="nb">echo</span><span class="w"> </span>-e<span class="w"> </span><span class="s1">'\nalias dc="sudo docker-compose "'</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>tee<span class="w"> </span>-a<span class="w"> </span>/home/<span class="si">${</span><span class="nv">user</span><span class="si">}</span>/.bashrc<span class="w"> </span>&gt;<span class="w"> </span>/dev/null
+<span class="w">  </span><span class="nb">echo</span><span class="w"> </span>-e<span class="w"> </span><span class="s1">'alias ctop="sudo ctop"\n'</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>tee<span class="w"> </span>-a<span class="w"> </span>/home/<span class="si">${</span><span class="nv">user</span><span class="si">}</span>/.bashrc<span class="w"> </span>&gt;<span class="w"> </span>/dev/null
 
 <span class="w">  </span><span class="c1"># check if exist</span>
-<span class="w">  </span><span class="o">[</span><span class="w"> </span>!<span class="w"> </span>-h<span class="w"> </span><span class="s2">&quot;/home/{user}/admin&quot;</span><span class="w"> </span><span class="o">]</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>ln<span class="w"> </span>-s<span class="w"> </span><span class="si">${</span><span class="nv">ADM_HOME</span><span class="si">}</span><span class="w"> </span>/home/<span class="si">${</span><span class="nv">user</span><span class="si">}</span>/admin
+<span class="w">  </span><span class="o">[</span><span class="w"> </span>!<span class="w"> </span>-h<span class="w"> </span><span class="s2">"/home/{user}/admin"</span><span class="w"> </span><span class="o">]</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>ln<span class="w"> </span>-s<span class="w"> </span><span class="si">${</span><span class="nv">ADM_HOME</span><span class="si">}</span><span class="w"> </span>/home/<span class="si">${</span><span class="nv">user</span><span class="si">}</span>/admin
 <span class="k">done</span>
 
-<span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;&gt;&gt;&gt; Creating Docker Stacks&quot;</span>
+<span class="nb">echo</span><span class="w"> </span><span class="s2">"&gt;&gt;&gt; Creating Docker Stacks"</span>
 <span class="c1"># create helper networks</span>
 <span class="k">for</span><span class="w"> </span>name<span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="si">${</span><span class="p">!HELPER[@]</span><span class="si">}</span><span class="p">;</span><span class="w"> </span><span class="k">do</span>
 <span class="w">  </span>docker<span class="w"> </span>network<span class="w"> </span>inspect<span class="w"> </span><span class="si">${</span><span class="nv">name</span><span class="si">}</span><span class="w"> </span>&gt;/dev/null<span class="w"> </span><span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span><span class="w"> </span><span class="o">||</span><span class="w"> </span>docker<span class="w"> </span>network<span class="w"> </span>create<span class="w"> </span>--subnet<span class="w"> </span><span class="si">${</span><span class="nv">HELPER</span><span class="p">[</span><span class="si">${</span><span class="nv">name</span><span class="si">}</span><span class="p">]</span><span class="si">}</span><span class="w"> </span><span class="si">${</span><span class="nv">name</span><span class="si">}</span>
@@ -1328,13 +1328,13 @@ chmod<span class="w"> </span>-R<span class="w"> </span><span class="m">775</span
 <span class="c1"># create stack logic</span>
 mkdir<span class="w"> </span>-p<span class="w"> </span><span class="si">${</span><span class="nv">ADM_HOME</span><span class="si">}</span>/<span class="o">{</span>services,images,tools,docs<span class="o">}</span>/
 <span class="k">for</span><span class="w"> </span>name<span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="si">${</span><span class="p">!STACKS[@]</span><span class="si">}</span><span class="p">;</span><span class="w"> </span><span class="k">do</span>
-<span class="w">  </span>mkdir<span class="w"> </span>-p<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">ADM_HOME</span><span class="si">}</span><span class="s2">/{services,images}/</span><span class="si">${</span><span class="nv">name</span><span class="si">}</span><span class="s2">/&quot;</span><span class="w"> </span><span class="s2">&quot;/srv/</span><span class="si">${</span><span class="nv">name</span><span class="si">}</span><span class="s2">/&quot;</span>
+<span class="w">  </span>mkdir<span class="w"> </span>-p<span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">ADM_HOME</span><span class="si">}</span><span class="s2">/{services,images}/</span><span class="si">${</span><span class="nv">name</span><span class="si">}</span><span class="s2">/"</span><span class="w"> </span><span class="s2">"/srv/</span><span class="si">${</span><span class="nv">name</span><span class="si">}</span><span class="s2">/"</span>
 
 <span class="w">  </span><span class="c1"># create stack network</span>
 <span class="w">  </span>docker<span class="w"> </span>network<span class="w"> </span>inspect<span class="w"> </span><span class="si">${</span><span class="nv">name</span><span class="si">}</span><span class="w"> </span>&gt;/dev/null<span class="w"> </span><span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span><span class="w"> </span><span class="o">||</span><span class="w"> </span>docker<span class="w"> </span>network<span class="w"> </span>create<span class="w"> </span>--subnet<span class="w"> </span><span class="si">${</span><span class="nv">STACKS</span><span class="p">[</span><span class="si">${</span><span class="nv">name</span><span class="si">}</span><span class="p">]</span><span class="si">}</span><span class="w"> </span><span class="si">${</span><span class="nv">name</span><span class="si">}</span>
 
 <span class="w">  </span><span class="c1"># create docker-compose.yml</span>
-<span class="w">  </span><span class="o">[</span><span class="w"> </span>!<span class="w"> </span>-f<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">ADM_HOME</span><span class="si">}</span><span class="s2">/services/</span><span class="si">${</span><span class="nv">name</span><span class="si">}</span><span class="s2">/docker-compose.yml&quot;</span><span class="w"> </span><span class="o">]</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>create_compose<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">ADM_HOME</span><span class="si">}</span><span class="s2">/services/</span><span class="si">${</span><span class="nv">name</span><span class="si">}</span><span class="s2">/docker-compose.yml&quot;</span>
+<span class="w">  </span><span class="o">[</span><span class="w"> </span>!<span class="w"> </span>-f<span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">ADM_HOME</span><span class="si">}</span><span class="s2">/services/</span><span class="si">${</span><span class="nv">name</span><span class="si">}</span><span class="s2">/docker-compose.yml"</span><span class="w"> </span><span class="o">]</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>create_compose<span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">ADM_HOME</span><span class="si">}</span><span class="s2">/services/</span><span class="si">${</span><span class="nv">name</span><span class="si">}</span><span class="s2">/docker-compose.yml"</span>
 <span class="k">done</span>
 
 <span class="c1"># adjust permissions</span>
@@ -1504,7 +1504,7 @@ d-i<span class="w"> </span>passwd/root-login<span class="w"> </span>boolean<span
 <span class="c1"># To create a normal user account.</span>
 d-i<span class="w"> </span>passwd/user-fullname<span class="w"> </span>string<span class="w"> </span>Ansible
 d-i<span class="w"> </span>passwd/username<span class="w"> </span>string<span class="w"> </span>ansible
-<span class="c1"># Normal user&#39;s password, either in clear text</span>
+<span class="c1"># Normal user's password, either in clear text</span>
 <span class="c1">#d-i passwd/user-password password insecure</span>
 <span class="c1">#d-i passwd/user-password-again password insecure</span>
 <span class="c1"># or encrypted using a crypt(3) hash.</span>
@@ -1541,7 +1541,7 @@ d-i<span class="w"> </span>clock-setup/ntp<span class="w"> </span>boolean<span c
 <span class="c1"># and not e.g. /dev/discs/disc0/disc).</span>
 <span class="c1"># For example, to use the first SCSI/SATA hard disk:</span>
 <span class="c1">#d-i partman-auto/disk string /dev/sda</span>
-<span class="c1"># In addition, you&#39;ll need to specify the method to use.</span>
+<span class="c1"># In addition, you'll need to specify the method to use.</span>
 <span class="c1"># The presently available methods are:</span>
 <span class="c1"># - regular: use the usual partition types for your architecture</span>
 <span class="c1"># - lvm:     use LVM to partition the disk</span>
@@ -1552,7 +1552,7 @@ d-i<span class="w"> </span>partman-auto-lvm/new_vg_name<span class="w"> </span>s
 
 <span class="c1"># You can define the amount of space that will be used for the LVM volume</span>
 <span class="c1"># group. It can either be a size with its unit (eg. 20 GB), a percentage of</span>
-<span class="c1"># free space or the &#39;max&#39; keyword.</span>
+<span class="c1"># free space or the 'max' keyword.</span>
 d-i<span class="w"> </span>partman-auto-lvm/guided_size<span class="w"> </span>string<span class="w"> </span>max
 
 <span class="c1"># If one of the disks that are going to be automatically partitioned</span>
@@ -1597,7 +1597,7 @@ d-i<span class="w"> </span>partman-auto/choose_recipe<span class="w"> </span><sp
 <span class="c1">#              .</span>
 
 <span class="c1"># The full recipe format is documented in the file partman-auto-recipe.txt</span>
-<span class="c1"># included in the &#39;debian-installer&#39; package or available from D-I source</span>
+<span class="c1"># included in the 'debian-installer' package or available from D-I source</span>
 <span class="c1"># repository. This also documents how to specify settings such as file</span>
 <span class="c1"># system labels, volume group names and which physical devices to include</span>
 <span class="c1"># in a volume group.</span>
@@ -1613,7 +1613,7 @@ d-i<span class="w"> </span>partman-auto/choose_recipe<span class="w"> </span><sp
 <span class="c1">#               .                                              \</span>
 <span class="c1">#</span>
 <span class="c1"># The fragment above is for the amd64 architecture; the details may be</span>
-<span class="c1"># different on other architectures. The &#39;partman-auto&#39; package in the</span>
+<span class="c1"># different on other architectures. The 'partman-auto' package in the</span>
 <span class="c1"># D-I source repository may have an example you can follow.</span>
 
 <span class="c1"># This makes partman automatically partition without confirmation, provided</span>
@@ -1623,7 +1623,7 @@ d-i<span class="w"> </span>partman/choose_partition<span class="w"> </span><span
 d-i<span class="w"> </span>partman/confirm<span class="w"> </span>boolean<span class="w"> </span><span class="nb">true</span>
 d-i<span class="w"> </span>partman/confirm_nooverwrite<span class="w"> </span>boolean<span class="w"> </span><span class="nb">true</span>
 
-<span class="c1"># Force UEFI booting (&#39;BIOS compatibility&#39; will be lost). Default: false.</span>
+<span class="c1"># Force UEFI booting ('BIOS compatibility' will be lost). Default: false.</span>
 <span class="c1">#d-i partman-efi/non_efi_system boolean true</span>
 <span class="c1"># Ensure the partition table is GPT - this is required for EFI</span>
 <span class="c1">#d-i partman-partitioning/choose_label string gpt</span>
@@ -1633,7 +1633,7 @@ d-i<span class="w"> </span>partman/confirm_nooverwrite<span class="w"> </span>bo
 <span class="c1">#d-i partman-auto-crypto/erase_disks boolean false</span>
 
 <span class="c1">## Partitioning using RAID</span>
-<span class="c1"># The method should be set to &quot;raid&quot;.</span>
+<span class="c1"># The method should be set to "raid".</span>
 <span class="c1">#d-i partman-auto/method string raid</span>
 <span class="c1"># Specify the disks to be partitioned. They will all get the same layout,</span>
 <span class="c1"># so this will only work if the disks are the same size.</span>
@@ -1655,7 +1655,7 @@ d-i<span class="w"> </span>partman/confirm_nooverwrite<span class="w"> </span>bo
 <span class="c1"># Last you need to specify how the previously defined partitions will be</span>
 <span class="c1"># used in the RAID setup. Remember to use the correct partition numbers</span>
 <span class="c1"># for logical partitions. RAID levels 0, 1, 5, 6 and 10 are supported;</span>
-<span class="c1"># devices are separated using &quot;#&quot;.</span>
+<span class="c1"># devices are separated using "#".</span>
 <span class="c1"># Parameters are:</span>
 <span class="c1"># &lt;raidtype&gt; &lt;devcount&gt; &lt;sparecount&gt; &lt;fstype&gt; &lt;mountpoint&gt; \</span>
 <span class="c1">#          &lt;devices&gt; &lt;sparedevices&gt;</span>
@@ -1672,7 +1672,7 @@ d-i<span class="w"> </span>partman/confirm_nooverwrite<span class="w"> </span>bo
 <span class="c1">#    .</span>
 
 <span class="c1"># For additional information see the file partman-auto-raid-recipe.txt</span>
-<span class="c1"># included in the &#39;debian-installer&#39; package or available from D-I source</span>
+<span class="c1"># included in the 'debian-installer' package or available from D-I source</span>
 <span class="c1"># repository.</span>
 
 <span class="c1"># This makes partman automatically partition without confirmation.</span>
@@ -1683,8 +1683,8 @@ d-i<span class="w"> </span>partman/confirm<span class="w"> </span>boolean<span c
 d-i<span class="w"> </span>partman/confirm_nooverwrite<span class="w"> </span>boolean<span class="w"> </span><span class="nb">true</span>
 
 <span class="c1">## Controlling how partitions are mounted</span>
-<span class="c1"># The default is to mount by UUID, but you can also choose &quot;traditional&quot; to</span>
-<span class="c1"># use traditional device names, or &quot;label&quot; to try filesystem labels before</span>
+<span class="c1"># The default is to mount by UUID, but you can also choose "traditional" to</span>
+<span class="c1"># use traditional device names, or "label" to try filesystem labels before</span>
 <span class="c1"># falling back to UUIDs.</span>
 <span class="c1">#d-i partman/mount_style select uuid</span>
 
@@ -1694,7 +1694,7 @@ d-i<span class="w"> </span>partman/confirm_nooverwrite<span class="w"> </span>bo
 <span class="c1"># experienced users.</span>
 <span class="c1">#d-i base-installer/install-recommends boolean false</span>
 
-<span class="c1"># The kernel image (meta) package to be installed; &quot;none&quot; can be used if no</span>
+<span class="c1"># The kernel image (meta) package to be installed; "none" can be used if no</span>
 <span class="c1"># kernel is to be installed.</span>
 <span class="c1">#d-i base-installer/kernel/image string linux-image-686</span>
 
@@ -1702,7 +1702,7 @@ d-i<span class="w"> </span>partman/confirm_nooverwrite<span class="w"> </span>bo
 <span class="c1"># You can choose to install non-free and contrib software.</span>
 <span class="c1">#d-i apt-setup/non-free boolean true</span>
 <span class="c1">#d-i apt-setup/contrib boolean true</span>
-<span class="c1"># Uncomment this if you don&#39;t want to use a network mirror.</span>
+<span class="c1"># Uncomment this if you don't want to use a network mirror.</span>
 <span class="c1">#d-i apt-setup/use_mirror boolean false</span>
 <span class="c1"># Select which update services to use; define the mirrors to be used.</span>
 <span class="c1"># Values shown below are the normal defaults.</span>
@@ -1724,9 +1724,9 @@ d-i<span class="w"> </span>apt-setup/local1/source<span class="w"> </span>boolea
 <span class="c1"># apt will complain about the unauthenticated repository and so the</span>
 <span class="c1"># sources.list line will be left commented out.</span>
 <span class="c1">#d-i apt-setup/local0/key string http://local.server/key</span>
-<span class="c1"># If the provided key file ends in &quot;.asc&quot; the key file needs to be an</span>
-<span class="c1"># ASCII-armoured PGP key, if it ends in &quot;.gpg&quot; it needs to use the</span>
-<span class="c1"># &quot;GPG key public keyring&quot; format, the &quot;keybox database&quot; format is</span>
+<span class="c1"># If the provided key file ends in ".asc" the key file needs to be an</span>
+<span class="c1"># ASCII-armoured PGP key, if it ends in ".gpg" it needs to use the</span>
+<span class="c1"># "GPG key public keyring" format, the "keybox database" format is</span>
 <span class="c1"># currently not supported.</span>
 
 <span class="c1"># By default the installer requires that repositories be authenticated</span>
@@ -1812,7 +1812,7 @@ d-i<span class="w"> </span>finish-install/reboot_in_progress<span class="w"> </s
 
 <span class="c1">### Preseeding other packages</span>
 <span class="c1"># Depending on what software you choose to install, or if things go wrong</span>
-<span class="c1"># during the installation process, it&#39;s possible that other questions may</span>
+<span class="c1"># during the installation process, it's possible that other questions may</span>
 <span class="c1"># be asked. You can preseed those too, of course. To get a list of every</span>
 <span class="c1"># possible question that could be asked during an install, do an</span>
 <span class="c1"># installation, and then run these commands:</span>
@@ -1825,8 +1825,8 @@ d-i<span class="w"> </span>finish-install/reboot_in_progress<span class="w"> </s
 <span class="c1"># d-i preseeding is inherently not secure. Nothing in the installer checks</span>
 <span class="c1"># for attempts at buffer overflows or other exploits of the values of a</span>
 <span class="c1"># preconfiguration file like this one. Only use preconfiguration files from</span>
-<span class="c1"># trusted locations! To drive that home, and because it&#39;s generally useful,</span>
-<span class="c1"># here&#39;s a way to run any shell command you&#39;d like inside the installer,</span>
+<span class="c1"># trusted locations! To drive that home, and because it's generally useful,</span>
+<span class="c1"># here's a way to run any shell command you'd like inside the installer,</span>
 <span class="c1"># automatically.</span>
 
 <span class="c1"># This first command is run as early as possible, just after</span>
@@ -1836,19 +1836,19 @@ d-i<span class="w"> </span>finish-install/reboot_in_progress<span class="w"> </s
 <span class="c1"># useful to apply dynamic partitioner preseeding that depends on the state</span>
 <span class="c1"># of the disks (which may not be visible when preseed/early_command runs).</span>
 <span class="c1">#d-i partman/early_command \</span>
-<span class="c1">#       string debconf-set partman-auto/disk &quot;$(list-devices disk | head -n1)&quot;</span>
+<span class="c1">#       string debconf-set partman-auto/disk "$(list-devices disk | head -n1)"</span>
 <span class="c1"># This command is run just before the install finishes, but when there is</span>
 <span class="c1"># still a usable /target directory. You can chroot to /target and use it</span>
 <span class="c1"># directly, or use the apt-install and in-target commands to easily install</span>
 <span class="c1"># packages and run commands in the target system.</span>
 <span class="c1">#d-i preseed/late_command string apt-install zsh; in-target chsh -s /bin/zsh</span>
 
-d-i<span class="w"> </span>preseed/late_command<span class="w"> </span>string<span class="w"> </span><span class="k">in</span>-target<span class="w"> </span>sed<span class="w"> </span>-i<span class="w"> </span><span class="s2">&quot;/^deb cdrom:/s/^/# /&quot;</span><span class="w"> </span>/etc/apt/sources.list<span class="p">;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">                                </span><span class="k">in</span>-target<span class="w"> </span>sed<span class="w"> </span>-i<span class="w"> </span>-e<span class="w"> </span><span class="s2">&quot;/#PermitRootLogin.* /{ s|#|| ; s|prohibit-password|no| }&quot;</span><span class="w"> </span>/etc/ssh/sshd_config<span class="p">;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">                                </span><span class="k">in</span>-target<span class="w"> </span>sed<span class="w"> </span>-i<span class="w"> </span>-e<span class="w"> </span><span class="s2">&quot;/#PasswordAuthentication.* /{ s|#|| ; s|yes|no| }&quot;</span><span class="w"> </span>/etc/ssh/sshd_config<span class="p">;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">                                </span><span class="k">in</span>-target<span class="w"> </span>mkdir<span class="w"> </span>-p<span class="w"> </span>/home/ansible/.ssh/<span class="p">;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">                                </span><span class="k">in</span>-target<span class="w"> </span>chown<span class="w"> </span>-R<span class="w"> </span>ansible:ansible<span class="w"> </span>/home/ansible/.ssh<span class="p">;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">                                </span><span class="k">in</span>-target<span class="w"> </span>sh<span class="w"> </span>-c<span class="w"> </span><span class="s1">&#39;echo &quot;ssh-rsa &lt;-cut-&gt; ansible@WS1&quot; &gt;&gt; /home/ansible/.ssh/authorized_keys&#39;</span><span class="p">;</span>
+d-i<span class="w"> </span>preseed/late_command<span class="w"> </span>string<span class="w"> </span>in-target<span class="w"> </span>sed<span class="w"> </span>-i<span class="w"> </span><span class="s2">"/^deb cdrom:/s/^/# /"</span><span class="w"> </span>/etc/apt/sources.list<span class="p">;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">                                </span>in-target<span class="w"> </span>sed<span class="w"> </span>-i<span class="w"> </span>-e<span class="w"> </span><span class="s2">"/#PermitRootLogin.* /{ s|#|| ; s|prohibit-password|no| }"</span><span class="w"> </span>/etc/ssh/sshd_config<span class="p">;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">                                </span>in-target<span class="w"> </span>sed<span class="w"> </span>-i<span class="w"> </span>-e<span class="w"> </span><span class="s2">"/#PasswordAuthentication.* /{ s|#|| ; s|yes|no| }"</span><span class="w"> </span>/etc/ssh/sshd_config<span class="p">;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">                                </span>in-target<span class="w"> </span>mkdir<span class="w"> </span>-p<span class="w"> </span>/home/ansible/.ssh/<span class="p">;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">                                </span>in-target<span class="w"> </span>chown<span class="w"> </span>-R<span class="w"> </span>ansible:ansible<span class="w"> </span>/home/ansible/.ssh<span class="p">;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">                                </span>in-target<span class="w"> </span>sh<span class="w"> </span>-c<span class="w"> </span><span class="s1">'echo "ssh-rsa &lt;-cut-&gt; ansible@WS1" &gt;&gt; /home/ansible/.ssh/authorized_keys'</span><span class="p">;</span>
 </code></pre></div>
 </details>
 

@@ -1116,15 +1116,15 @@ Konfiguration des Bootstrap Images zu erweitern. Dazu wurde die Flake wie folgt 
 <span class="gi">+++ b/flake.nix</span>
 <span class="gu">@@ -59,6 +59,13 @@</span>
 <span class="w"> </span>                  sbc.bootstrap.initialBootstrapImage = true;
-<span class="w"> </span>                  sbc.version = &quot;0.3&quot;;
+<span class="w"> </span>                  sbc.version = "0.3";
 <span class="w"> </span>                  nixpkgs.hostPlatform.system = system;
 <span class="gi">+</span>
-<span class="gi">+                  nix.settings.experimental-features = [&quot;nix-command&quot; &quot;flakes&quot;];</span>
+<span class="gi">+                  nix.settings.experimental-features = ["nix-command" "flakes"];</span>
 <span class="gi">+                  services.openssh = {</span>
 <span class="gi">+                    enable = true;</span>
-<span class="gi">+                    settings.PermitRootLogin = &quot;yes&quot;;</span>
+<span class="gi">+                    settings.PermitRootLogin = "yes";</span>
 <span class="gi">+                  };</span>
-<span class="gi">+                  users.users.root.password = lib.mkForce &quot;root&quot;;</span>
+<span class="gi">+                  users.users.root.password = lib.mkForce "root";</span>
 <span class="w"> </span>                }
 <span class="w"> </span>              ]
 <span class="w"> </span>              ++ (lib.optionals (device ? extraModules) device.extraModules)
@@ -1145,23 +1145,23 @@ zstd<span class="w"> </span>-d<span class="w"> </span>--stdout<span class="w"> <
 
 <span class="w"> </span>  armTrustedFirmwareMT7988 =
 <span class="w"> </span>    (buildArmTrustedFirmware rec {
-<span class="gd">-      extraMakeFlags = [&quot;USE_MKIMAGE=1&quot; &quot;DRAM_USE_COMB=1&quot; &quot;BOOT_DEVICE=sdmmc&quot; &quot;bl2&quot; &quot;bl31&quot;];</span>
-<span class="gi">+      extraMakeFlags = [&quot;USE_MKIMAGE=1&quot; &quot;DRAM_USE_COMB=1&quot; &quot;DDR4_4BG_MODE=1&quot; &quot;BOOT_DEVICE=sdmmc&quot; &quot;bl2&quot; &quot;bl31&quot;];</span>
-<span class="w"> </span>      platform = &quot;mt7988&quot;;
-<span class="w"> </span>      extraMeta.platforms = [&quot;aarch64-linux&quot;];
-<span class="w"> </span>      filesToInstall = [&quot;build/${platform}/release/bl2.img&quot; &quot;build/${platform}/release/bl31.bin&quot;];
+<span class="gd">-      extraMakeFlags = ["USE_MKIMAGE=1" "DRAM_USE_COMB=1" "BOOT_DEVICE=sdmmc" "bl2" "bl31"];</span>
+<span class="gi">+      extraMakeFlags = ["USE_MKIMAGE=1" "DRAM_USE_COMB=1" "DDR4_4BG_MODE=1" "BOOT_DEVICE=sdmmc" "bl2" "bl31"];</span>
+<span class="w"> </span>      platform = "mt7988";
+<span class="w"> </span>      extraMeta.platforms = ["aarch64-linux"];
+<span class="w"> </span>      filesToInstall = ["build/${platform}/release/bl2.img" "build/${platform}/release/bl31.bin"];
 <span class="gu">@@ -61,9 +61,9 @@</span>
 <span class="w"> </span>      src = fetchFromGitHub {
-<span class="w"> </span>        owner = &quot;mtk-openwrt&quot;;
-<span class="w"> </span>        repo = &quot;arm-trusted-firmware&quot;;
+<span class="w"> </span>        owner = "mtk-openwrt";
+<span class="w"> </span>        repo = "arm-trusted-firmware";
 <span class="gd">-        # mtksoc HEAD 2025-03-12</span>
-<span class="gd">-        rev = &quot;e090770684e775711a624e68e0b28112227a4c38&quot;;</span>
-<span class="gd">-        hash = &quot;sha256-VI5OB2nWdXUjkSuUXl/0yQN+/aJp9Jkt+hy7DlL+PMg=&quot;;</span>
+<span class="gd">-        rev = "e090770684e775711a624e68e0b28112227a4c38";</span>
+<span class="gd">-        hash = "sha256-VI5OB2nWdXUjkSuUXl/0yQN+/aJp9Jkt+hy7DlL+PMg=";</span>
 <span class="gi">+        # mtksoc HEAD 2025-07-11</span>
-<span class="gi">+        rev = &quot;78a0dfd927bb00ce973a1f8eb4079df0f755887a&quot;;</span>
-<span class="gi">+        hash = &quot;sha256-m9ApkBVf0I11rNg68vxofGRJ+BcnlM6C+Zrn8TfMvbY=&quot;;</span>
+<span class="gi">+        rev = "78a0dfd927bb00ce973a1f8eb4079df0f755887a";</span>
+<span class="gi">+        hash = "sha256-m9ApkBVf0I11rNg68vxofGRJ+BcnlM6C+Zrn8TfMvbY=";</span>
 <span class="w"> </span>      };
-<span class="w"> </span>      version = &quot;2.12.0-mtk&quot;;
+<span class="w"> </span>      version = "2.12.0-mtk";
 <span class="w"> </span>      nativeBuildInputs = oldAttrs.nativeBuildInputs ++ [dtc ubootTools which python3];
 </code></pre></div></p>
 <!--
@@ -1234,35 +1234,35 @@ NAT Funktionalitätdurchgeführt.</p>
 
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
   networking<span class="o">.</span>ifstate<span class="o">.</span>settings<span class="o">.</span><span class="ss">interfaces</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s2">&quot;br-lan&quot;</span> <span class="o">=</span> <span class="p">{</span>
-      <span class="ss">addresses</span> <span class="o">=</span> <span class="p">[</span> <span class="s2">&quot;192.168.178.1/24&quot;</span> <span class="p">];</span>
+    <span class="s2">"br-lan"</span> <span class="o">=</span> <span class="p">{</span>
+      <span class="ss">addresses</span> <span class="o">=</span> <span class="p">[</span> <span class="s2">"192.168.178.1/24"</span> <span class="p">];</span>
       <span class="ss">link</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="ss">kind</span> <span class="o">=</span> <span class="s2">&quot;bridge&quot;</span><span class="p">;</span>
-        <span class="ss">state</span> <span class="o">=</span> <span class="s2">&quot;up&quot;</span><span class="p">;</span>
+        <span class="ss">kind</span> <span class="o">=</span> <span class="s2">"bridge"</span><span class="p">;</span>
+        <span class="ss">state</span> <span class="o">=</span> <span class="s2">"up"</span><span class="p">;</span>
       <span class="p">};</span>
     <span class="p">};</span>
     <span class="ss">lan1</span> <span class="o">=</span> <span class="p">{</span>
       <span class="ss">link</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="ss">state</span> <span class="o">=</span> <span class="s2">&quot;up&quot;</span><span class="p">;</span>
-        <span class="ss">kind</span> <span class="o">=</span> <span class="s2">&quot;dsa&quot;</span><span class="p">;</span>
-        <span class="ss">link</span> <span class="o">=</span> <span class="s2">&quot;end0&quot;</span><span class="p">;</span>
-        <span class="ss">master</span> <span class="o">=</span> <span class="s2">&quot;br-lan&quot;</span><span class="p">;</span>
+        <span class="ss">state</span> <span class="o">=</span> <span class="s2">"up"</span><span class="p">;</span>
+        <span class="ss">kind</span> <span class="o">=</span> <span class="s2">"dsa"</span><span class="p">;</span>
+        <span class="ss">link</span> <span class="o">=</span> <span class="s2">"end0"</span><span class="p">;</span>
+        <span class="ss">master</span> <span class="o">=</span> <span class="s2">"br-lan"</span><span class="p">;</span>
       <span class="p">};</span>
     <span class="p">};</span>
     <span class="ss">lan2</span> <span class="o">=</span> <span class="p">{</span>
       <span class="ss">link</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="ss">state</span> <span class="o">=</span> <span class="s2">&quot;up&quot;</span><span class="p">;</span>
-        <span class="ss">kind</span> <span class="o">=</span> <span class="s2">&quot;dsa&quot;</span><span class="p">;</span>
-        <span class="ss">link</span> <span class="o">=</span> <span class="s2">&quot;end0&quot;</span><span class="p">;</span>
-        <span class="ss">master</span> <span class="o">=</span> <span class="s2">&quot;br-lan&quot;</span><span class="p">;</span>
+        <span class="ss">state</span> <span class="o">=</span> <span class="s2">"up"</span><span class="p">;</span>
+        <span class="ss">kind</span> <span class="o">=</span> <span class="s2">"dsa"</span><span class="p">;</span>
+        <span class="ss">link</span> <span class="o">=</span> <span class="s2">"end0"</span><span class="p">;</span>
+        <span class="ss">master</span> <span class="o">=</span> <span class="s2">"br-lan"</span><span class="p">;</span>
       <span class="p">};</span>
     <span class="p">};</span>
     <span class="ss">lan3</span> <span class="o">=</span> <span class="p">{</span>
       <span class="ss">link</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="ss">state</span> <span class="o">=</span> <span class="s2">&quot;up&quot;</span><span class="p">;</span>
-        <span class="ss">kind</span> <span class="o">=</span> <span class="s2">&quot;dsa&quot;</span><span class="p">;</span>
-        <span class="ss">link</span> <span class="o">=</span> <span class="s2">&quot;end0&quot;</span><span class="p">;</span>
-        <span class="ss">master</span> <span class="o">=</span> <span class="s2">&quot;br-lan&quot;</span><span class="p">;</span>
+        <span class="ss">state</span> <span class="o">=</span> <span class="s2">"up"</span><span class="p">;</span>
+        <span class="ss">kind</span> <span class="o">=</span> <span class="s2">"dsa"</span><span class="p">;</span>
+        <span class="ss">link</span> <span class="o">=</span> <span class="s2">"end0"</span><span class="p">;</span>
+        <span class="ss">master</span> <span class="o">=</span> <span class="s2">"br-lan"</span><span class="p">;</span>
       <span class="p">};</span>
     <span class="p">};</span>
   <span class="p">};</span>

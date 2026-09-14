@@ -886,7 +886,7 @@ and flashed it onto an usb stick.</p>
 <p class="admonition-title">Info</p>
 <p>The Raspberry Pi may need a firmware upgrade to support booting from USB
 (see <a href="https://nixos.wiki/wiki/NixOS_on_ARM/Raspberry_Pi_4#USB_boot">https://nixos.wiki/wiki/NixOS_on_ARM/Raspberry_Pi_4#USB_boot</a>).
-<div class="highlight"><pre><span></span><code>nix-shell<span class="w"> </span>-p<span class="w"> </span>raspberrypi-eeprom<span class="w"> </span>--run<span class="w"> </span><span class="s1">&#39;rpi-eeprom-update -d -a&#39;</span>
+<div class="highlight"><pre><span></span><code>nix-shell<span class="w"> </span>-p<span class="w"> </span>raspberrypi-eeprom<span class="w"> </span>--run<span class="w"> </span><span class="s1">'rpi-eeprom-update -d -a'</span>
 </code></pre></div></p>
 </div>
 <p>The guide at <a href="https://www.thenegation.com/posts/nixos-rpi4-luks/">https://www.thenegation.com/posts/nixos-rpi4-luks/</a> was followed for the most part,
@@ -906,7 +906,7 @@ cryptsetup<span class="w"> </span>luksOpen<span class="w"> </span>/dev/mmcblk0p2
 
 pvcreate<span class="w"> </span>/dev/mapper/cryptroot
 vgcreate<span class="w"> </span>vg0<span class="w"> </span>/dev/mapper/cryptroot
-lvcreate<span class="w"> </span>-l<span class="w"> </span><span class="s1">&#39;100%FREE&#39;</span><span class="w"> </span>-n<span class="w"> </span>root<span class="w"> </span>vg0
+lvcreate<span class="w"> </span>-l<span class="w"> </span><span class="s1">'100%FREE'</span><span class="w"> </span>-n<span class="w"> </span>root<span class="w"> </span>vg0
 
 mkfs.fat<span class="w"> </span>/dev/mmcblk0p1
 mkfs.ext4<span class="w"> </span>-L<span class="w"> </span>root<span class="w"> </span>/dev/vg0/root
@@ -933,7 +933,7 @@ cat<span class="w"> </span><span class="s">&lt;&lt;_EOF &gt; /mnt/etc/nixos/conf
 <span class="s">    };</span>
 
 <span class="s">    initrd.luks.devices.luksroot = {</span>
-<span class="s">      device = &quot;/dev/disk/by-uuid/$(sudo blkid /dev/mmcblk0p2 | sed -E &#39;s/.*\sUUID=&quot;([a-f0-9-]+)&quot;.*/\1/&#39;)&quot;;</span>
+<span class="s">      device = "/dev/disk/by-uuid/$(sudo blkid /dev/mmcblk0p2 | sed -E 's/.*\sUUID="([a-f0-9-]+)".*/\1/')";</span>
 <span class="s">      preLVM = true;</span>
 <span class="s">      allowDiscards = true;</span>
 <span class="s">    };</span>
@@ -941,7 +941,7 @@ cat<span class="w"> </span><span class="s">&lt;&lt;_EOF &gt; /mnt/etc/nixos/conf
 
 <span class="s">  services.openssh.enable = true;</span>
 
-<span class="s">  system.stateVersion = &quot;26.05&quot;;</span>
+<span class="s">  system.stateVersion = "26.05";</span>
 <span class="s">}</span>
 <span class="s">_EOF</span>
 
@@ -954,10 +954,10 @@ so I used UART (GPIO 14 for TXD and GPIO 15 for RXD, see <a href="https://pinout
 <div class="highlight"><pre><span></span><code><span class="c1"># flake.nix</span>
 <span class="p">{</span>
   <span class="ss">inputs</span> <span class="o">=</span> <span class="p">{</span>
-    nixpkgs<span class="o">.</span><span class="ss">url</span> <span class="o">=</span> <span class="s2">&quot;github:nixos/nixpkgs/nixos-26.05&quot;</span><span class="p">;</span>
+    nixpkgs<span class="o">.</span><span class="ss">url</span> <span class="o">=</span> <span class="s2">"github:nixos/nixpkgs/nixos-26.05"</span><span class="p">;</span>
     <span class="ss">nixos-hardware</span> <span class="o">=</span> <span class="p">{</span>
-      <span class="ss">url</span> <span class="o">=</span> <span class="s2">&quot;github:NixOS/nixos-hardware&quot;</span><span class="p">;</span>
-      inputs<span class="o">.</span>nixpkgs<span class="o">.</span><span class="ss">follows</span> <span class="o">=</span> <span class="s2">&quot;nixpkgs&quot;</span><span class="p">;</span>
+      <span class="ss">url</span> <span class="o">=</span> <span class="s2">"github:NixOS/nixos-hardware"</span><span class="p">;</span>
+      inputs<span class="o">.</span>nixpkgs<span class="o">.</span><span class="ss">follows</span> <span class="o">=</span> <span class="s2">"nixpkgs"</span><span class="p">;</span>
     <span class="p">};</span>
   <span class="p">};</span>
   <span class="ss">outputs</span> <span class="o">=</span>
@@ -969,13 +969,13 @@ so I used UART (GPIO 14 for TXD and GPIO 15 for RXD, see <a href="https://pinout
     <span class="k">let</span>
       <span class="k">inherit</span> <span class="p">(</span>inputs<span class="o">.</span>nixpkgs<span class="p">)</span> lib<span class="p">;</span>
       <span class="ss">defaultSystems</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="s2">&quot;x86_64-linux&quot;</span>
-        <span class="s2">&quot;x86_64-darwin&quot;</span>
-        <span class="s2">&quot;aarch64-linux&quot;</span>
-        <span class="s2">&quot;aarch64-darwin&quot;</span>
+        <span class="s2">"x86_64-linux"</span>
+        <span class="s2">"x86_64-darwin"</span>
+        <span class="s2">"aarch64-linux"</span>
+        <span class="s2">"aarch64-darwin"</span>
       <span class="p">];</span>
       <span class="ss">eachDefaultSystem</span> <span class="o">=</span> lib<span class="o">.</span>genAttrs defaultSystems<span class="p">;</span>
-      <span class="ss">system</span> <span class="o">=</span> <span class="s2">&quot;aarch64-linux&quot;</span><span class="p">;</span>
+      <span class="ss">system</span> <span class="o">=</span> <span class="s2">"aarch64-linux"</span><span class="p">;</span>
     <span class="k">in</span>
     <span class="p">{</span>
       nixosConfigurations<span class="o">.</span><span class="ss">rpi</span> <span class="o">=</span> nixpkgs<span class="o">.</span>lib<span class="o">.</span>nixosSystem <span class="p">{</span>

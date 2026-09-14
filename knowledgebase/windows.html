@@ -875,7 +875,7 @@ del part override
    <div class="highlight"><pre><span></span><code>REM create efi system partition
 create partition EFI size=200
 REM format partition as fat32
-format quick fs=fat32 label=&quot;System&quot;
+format quick fs=fat32 label="System"
 </code></pre></div>
    If more disk space is required to create the fat32 system (16 MB is not enough!), the C: partition can be reduced in size:
    <div class="highlight"><pre><span></span><code>REM select C:\ (replace n with the id of the root partition (probally the largest one))

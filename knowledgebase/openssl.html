@@ -1068,7 +1068,7 @@ openssl<span class="w"> </span>x509<span class="w"> </span>-sha512<span class="w
 </code></pre></div>
 <p>You can also add subjectAltNames:
 <div class="highlight"><pre><span></span><code>openssl<span class="w"> </span>x509<span class="w"> </span>-sha512<span class="w"> </span>-req<span class="w"> </span>-in<span class="w"> </span>server.csr<span class="w"> </span>-days<span class="w"> </span><span class="m">1</span><span class="w"> </span>-CA<span class="w"> </span>ca.pem<span class="w"> </span>-CAkey<span class="w"> </span>ca.key<span class="w"> </span>-out<span class="w"> </span>server.crt<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-extfile<span class="w"> </span>&lt;<span class="o">(</span><span class="nb">echo</span><span class="w"> </span><span class="s1">&#39;subjectAltName = DNS:example.com&#39;</span><span class="o">)</span>
+<span class="w">  </span>-extfile<span class="w"> </span>&lt;<span class="o">(</span><span class="nb">echo</span><span class="w"> </span><span class="s1">'subjectAltName = DNS:example.com'</span><span class="o">)</span>
 </code></pre></div></p>
 </li>
 </ol>

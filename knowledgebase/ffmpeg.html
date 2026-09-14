@@ -884,10 +884,10 @@
 
 ffmpeg<span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-i<span class="w"> </span>red.mp4<span class="w"> </span>-i<span class="w"> </span>green.mp4<span class="w"> </span>-i<span class="w"> </span>blue.mp4<span class="w"> </span>-i<span class="w"> </span>yellow.mp4<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-filter_complex<span class="w"> </span><span class="s2">&quot; \</span>
+<span class="w">  </span>-filter_complex<span class="w"> </span><span class="s2">" \</span>
 <span class="s2">    [0:v][1:v][2:v][3:v]xstack=inputs=4:layout=0_0|w0_0|0_h0|w0_h0[out] \</span>
-<span class="s2">  &quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-map<span class="w"> </span><span class="s2">&quot;[out]&quot;</span><span class="w"> </span>-c:v<span class="w"> </span>libx264<span class="w"> </span>-crf<span class="w"> </span><span class="m">23</span><span class="w"> </span>-preset<span class="w"> </span>veryfast<span class="w"> </span>output.mp4
+<span class="s2">  "</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-map<span class="w"> </span><span class="s2">"[out]"</span><span class="w"> </span>-c:v<span class="w"> </span>libx264<span class="w"> </span>-crf<span class="w"> </span><span class="m">23</span><span class="w"> </span>-preset<span class="w"> </span>veryfast<span class="w"> </span>output.mp4
 </code></pre></div>
 
 

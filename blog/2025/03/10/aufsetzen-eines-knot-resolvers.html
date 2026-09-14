@@ -999,28 +999,28 @@ leistungsfähiger und bietet erweiterte Debugging- und Routing-Möglichkeiten.</
       <span class="ss">no-hosts</span> <span class="o">=</span> <span class="no">true</span><span class="p">;</span>
       <span class="ss">no-resolv</span> <span class="o">=</span> <span class="no">true</span><span class="p">;</span>
       <span class="ss">server</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="s2">&quot;1.1.1.1&quot;</span>
-        <span class="s2">&quot;1.0.0.1&quot;</span>
-        <span class="s2">&quot;8.8.8.8&quot;</span>
-        <span class="s2">&quot;8.8.4.4&quot;</span>
-        <span class="s2">&quot;2606:4700:4700::1111&quot;</span>
-        <span class="s2">&quot;2606:4700:4700::1001&quot;</span>
-        <span class="s2">&quot;2001:4860:4860::8888&quot;</span>
-        <span class="s2">&quot;2001:4860:4860::8844&quot;</span>
+        <span class="s2">"1.1.1.1"</span>
+        <span class="s2">"1.0.0.1"</span>
+        <span class="s2">"8.8.8.8"</span>
+        <span class="s2">"8.8.4.4"</span>
+        <span class="s2">"2606:4700:4700::1111"</span>
+        <span class="s2">"2606:4700:4700::1001"</span>
+        <span class="s2">"2001:4860:4860::8888"</span>
+        <span class="s2">"2001:4860:4860::8844"</span>
 
-        <span class="s2">&quot;/example.net/10.20.40.2&quot;</span>
-        <span class="s2">&quot;/example.org/10.20.40.2&quot;</span>
-        <span class="s2">&quot;/example.net/10.20.40.3&quot;</span>
-        <span class="s2">&quot;/example.org/10.20.40.3&quot;</span>
-        <span class="s2">&quot;/example.de/10.20.35.1&quot;</span>
+        <span class="s2">"/example.net/10.20.40.2"</span>
+        <span class="s2">"/example.org/10.20.40.2"</span>
+        <span class="s2">"/example.net/10.20.40.3"</span>
+        <span class="s2">"/example.org/10.20.40.3"</span>
+        <span class="s2">"/example.de/10.20.35.1"</span>
       <span class="p">];</span>
       <span class="ss">address</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="s2">&quot;/notebook.example.com/10.20.30.100&quot;</span>
+        <span class="s2">"/notebook.example.com/10.20.30.100"</span>
       <span class="p">];</span>
       <span class="c1"># block known ads</span>
-      <span class="s2">&quot;conf-file&quot;</span> <span class="o">=</span> <span class="nb">builtins</span><span class="o">.</span>fetchurl <span class="p">{</span>
-        <span class="ss">url</span> <span class="o">=</span> <span class="s2">&quot;https://raw.githubusercontent.com/notracking/hosts-blocklists/master/dnsmasq/dnsmasq.blacklist.txt&quot;</span><span class="p">;</span>
-        <span class="ss">sha256</span> <span class="o">=</span> <span class="s2">&quot;sha256:1v2jmwv0887i3civmh06s6bzrbkvr78m3icdr8dhy4aq75km6k1k&quot;</span><span class="p">;</span>
+      <span class="s2">"conf-file"</span> <span class="o">=</span> <span class="nb">builtins</span><span class="o">.</span>fetchurl <span class="p">{</span>
+        <span class="ss">url</span> <span class="o">=</span> <span class="s2">"https://raw.githubusercontent.com/notracking/hosts-blocklists/master/dnsmasq/dnsmasq.blacklist.txt"</span><span class="p">;</span>
+        <span class="ss">sha256</span> <span class="o">=</span> <span class="s2">"sha256:1v2jmwv0887i3civmh06s6bzrbkvr78m3icdr8dhy4aq75km6k1k"</span><span class="p">;</span>
       <span class="p">};</span>
     <span class="p">};</span>
   <span class="p">};</span>
@@ -1029,93 +1029,93 @@ leistungsfähiger und bietet erweiterte Debugging- und Routing-Möglichkeiten.</
 <h3 id="dns-over-tls">DNS over TLS<a class="headerlink" href="#dns-over-tls" title="Permanent link">&para;</a></h3>
 <p>Folgende Regeln implementieren DoT
 <div class="highlight"><pre><span></span><code><span class="nv">policy</span><span class="p">.</span><span class="nf">add</span><span class="p">(</span><span class="nv">policy</span><span class="p">.</span><span class="nf">all</span><span class="p">(</span><span class="nv">policy</span><span class="p">.</span><span class="nf">TLS_FORWARD</span><span class="p">({</span>
-<span class="w">  </span><span class="p">{</span><span class="s1">&#39;1.1.1.1&#39;</span><span class="p">,</span><span class="w"> </span><span class="nv">hostname</span><span class="o">=</span><span class="s1">&#39;one.one.one.one&#39;</span><span class="p">},</span>
-<span class="w">  </span><span class="p">{</span><span class="s1">&#39;1.0.0.1&#39;</span><span class="p">,</span><span class="w"> </span><span class="nv">hostname</span><span class="o">=</span><span class="s1">&#39;one.one.one.one&#39;</span><span class="p">},</span>
-<span class="w">  </span><span class="p">{</span><span class="s1">&#39;2606:4700:4700::1111&#39;</span><span class="p">,</span><span class="w"> </span><span class="nv">hostname</span><span class="o">=</span><span class="s1">&#39;one.one.one.one&#39;</span><span class="p">},</span>
-<span class="w">  </span><span class="p">{</span><span class="s1">&#39;2606:4700:4700::1001&#39;</span><span class="p">,</span><span class="w"> </span><span class="nv">hostname</span><span class="o">=</span><span class="s1">&#39;one.one.one.one&#39;</span><span class="p">},</span>
+<span class="w">  </span><span class="p">{</span><span class="s1">'1.1.1.1'</span><span class="p">,</span><span class="w"> </span><span class="nv">hostname</span><span class="o">=</span><span class="s1">'one.one.one.one'</span><span class="p">},</span>
+<span class="w">  </span><span class="p">{</span><span class="s1">'1.0.0.1'</span><span class="p">,</span><span class="w"> </span><span class="nv">hostname</span><span class="o">=</span><span class="s1">'one.one.one.one'</span><span class="p">},</span>
+<span class="w">  </span><span class="p">{</span><span class="s1">'2606:4700:4700::1111'</span><span class="p">,</span><span class="w"> </span><span class="nv">hostname</span><span class="o">=</span><span class="s1">'one.one.one.one'</span><span class="p">},</span>
+<span class="w">  </span><span class="p">{</span><span class="s1">'2606:4700:4700::1001'</span><span class="p">,</span><span class="w"> </span><span class="nv">hostname</span><span class="o">=</span><span class="s1">'one.one.one.one'</span><span class="p">},</span>
 
-<span class="w">  </span><span class="p">{</span><span class="s1">&#39;8.8.8.8&#39;</span><span class="p">,</span><span class="w"> </span><span class="nv">hostname</span><span class="o">=</span><span class="s1">&#39;dns.google&#39;</span><span class="p">},</span>
-<span class="w">  </span><span class="p">{</span><span class="s1">&#39;8.8.4.4&#39;</span><span class="p">,</span><span class="w"> </span><span class="nv">hostname</span><span class="o">=</span><span class="s1">&#39;dns.google&#39;</span><span class="p">},</span>
-<span class="w">  </span><span class="p">{</span><span class="s1">&#39;2001:4860:4860::8888&#39;</span><span class="p">,</span><span class="w"> </span><span class="nv">hostname</span><span class="o">=</span><span class="s1">&#39;dns.google&#39;</span><span class="p">},</span>
-<span class="w">  </span><span class="p">{</span><span class="s1">&#39;2001:4860:4860::8844&#39;</span><span class="p">,</span><span class="w"> </span><span class="nv">hostname</span><span class="o">=</span><span class="s1">&#39;dns.google&#39;</span><span class="p">},</span>
+<span class="w">  </span><span class="p">{</span><span class="s1">'8.8.8.8'</span><span class="p">,</span><span class="w"> </span><span class="nv">hostname</span><span class="o">=</span><span class="s1">'dns.google'</span><span class="p">},</span>
+<span class="w">  </span><span class="p">{</span><span class="s1">'8.8.4.4'</span><span class="p">,</span><span class="w"> </span><span class="nv">hostname</span><span class="o">=</span><span class="s1">'dns.google'</span><span class="p">},</span>
+<span class="w">  </span><span class="p">{</span><span class="s1">'2001:4860:4860::8888'</span><span class="p">,</span><span class="w"> </span><span class="nv">hostname</span><span class="o">=</span><span class="s1">'dns.google'</span><span class="p">},</span>
+<span class="w">  </span><span class="p">{</span><span class="s1">'2001:4860:4860::8844'</span><span class="p">,</span><span class="w"> </span><span class="nv">hostname</span><span class="o">=</span><span class="s1">'dns.google'</span><span class="p">},</span>
 <span class="p">})))</span>
 </code></pre></div>
 Hierfür muss knot-resolver ausgehenden Traffic über Port tcp/853 senden dürfen.</p>
 <h3 id="adblocking">AdBlocking<a class="headerlink" href="#adblocking" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><span class="k">let</span>
   <span class="ss">adblock-rpz</span> <span class="o">=</span> <span class="nb">builtins</span><span class="o">.</span>fetchurl <span class="p">{</span>
-    <span class="ss">url</span> <span class="o">=</span> <span class="s2">&quot;https://raw.githubusercontent.com/hagezi/dns-blocklists/main/rpz/multi.txt&quot;</span><span class="p">;</span>
-    <span class="ss">sha256</span> <span class="o">=</span> <span class="s2">&quot;sha256:1qvac9rkypdqc3mrz33mpqhzk1vhcj00dqbjhs43vd009nxm2pal&quot;</span><span class="p">;</span>
+    <span class="ss">url</span> <span class="o">=</span> <span class="s2">"https://raw.githubusercontent.com/hagezi/dns-blocklists/main/rpz/multi.txt"</span><span class="p">;</span>
+    <span class="ss">sha256</span> <span class="o">=</span> <span class="s2">"sha256:1qvac9rkypdqc3mrz33mpqhzk1vhcj00dqbjhs43vd009nxm2pal"</span><span class="p">;</span>
   <span class="p">};</span>
-<span class="k">in</span> <span class="s s-Multiline">&#39;&#39;</span>
-<span class="s s-Multiline">  policy.add(policy.rpz(policy.DENY_MSG(&#39;Blocked Ads&#39;), &#39;${adblock-rpz}&#39;, false))</span>
-<span class="s s-Multiline">&#39;&#39;</span><span class="p">;</span>
+<span class="k">in</span> <span class="s s-Multiline">''</span>
+<span class="s s-Multiline">  policy.add(policy.rpz(policy.DENY_MSG('Blocked Ads'), '${adblock-rpz}', false))</span>
+<span class="s s-Multiline">''</span><span class="p">;</span>
 </code></pre></div>
 <h3 id="uberschreiben-einzelner-adressen">Überschreiben einzelner Adressen<a class="headerlink" href="#uberschreiben-einzelner-adressen" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><span class="nv">policy</span><span class="p">.</span><span class="nf">add</span><span class="p">(</span><span class="nv">policy</span><span class="p">.</span><span class="nf">domains</span><span class="p">(</span><span class="nv">policy</span><span class="p">.</span><span class="nf">ANSWER</span><span class="p">(</span>
-<span class="w">  </span><span class="p">{</span><span class="w"> </span><span class="p">[</span><span class="nv">kres</span><span class="p">.</span><span class="py">type</span><span class="p">.</span><span class="py">A</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nv">rdata</span><span class="o">=</span><span class="nv">kres</span><span class="p">.</span><span class="nf">str2ip</span><span class="p">(</span><span class="s1">&#39;10.20.30.100&#39;</span><span class="p">)</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="p">}</span>
-<span class="p">),</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nf">todname</span><span class="p">(</span><span class="s1">&#39;notebook.example.com&#39;</span><span class="p">)</span><span class="w"> </span><span class="p">}))</span>
+<span class="w">  </span><span class="p">{</span><span class="w"> </span><span class="p">[</span><span class="nv">kres</span><span class="p">.</span><span class="py">type</span><span class="p">.</span><span class="py">A</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nv">rdata</span><span class="o">=</span><span class="nv">kres</span><span class="p">.</span><span class="nf">str2ip</span><span class="p">(</span><span class="s1">'10.20.30.100'</span><span class="p">)</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="p">}</span>
+<span class="p">),</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nf">todname</span><span class="p">(</span><span class="s1">'notebook.example.com'</span><span class="p">)</span><span class="w"> </span><span class="p">}))</span>
 </code></pre></div>
 <h3 id="weiterleiten-von-dns-anfragen-an-anderen-nameserver">Weiterleiten von DNS Anfragen an anderen Nameserver<a class="headerlink" href="#weiterleiten-von-dns-anfragen-an-anderen-nameserver" title="Permanent link">&para;</a></h3>
 <p>Nach möglichkeit sollte immer <code>policy.FORWARD</code> verwendet werden, um DNSSEC zu validieren:
-<div class="highlight"><pre><span></span><code><span class="nv">policy</span><span class="p">.</span><span class="nf">add</span><span class="p">(</span><span class="nv">policy</span><span class="p">.</span><span class="nf">suffix</span><span class="p">(</span><span class="nv">policy</span><span class="p">.</span><span class="nf">FORWARD</span><span class="p">({</span><span class="s1">&#39;10.20.40.2&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;10.20.40.3&#39;</span><span class="p">}),</span><span class="w"> </span><span class="nv">policy</span><span class="p">.</span><span class="nf">todnames</span><span class="p">({</span><span class="s1">&#39;example.net&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;example.org&#39;</span><span class="p">})))</span>
-<span class="nv">policy</span><span class="p">.</span><span class="nf">add</span><span class="p">(</span><span class="nv">policy</span><span class="p">.</span><span class="nf">suffix</span><span class="p">(</span><span class="nv">policy</span><span class="p">.</span><span class="nf">STUB</span><span class="p">(</span><span class="s1">&#39;10.20.35.1&#39;</span><span class="p">),</span><span class="w"> </span><span class="p">{</span><span class="nf">todname</span><span class="p">(</span><span class="s1">&#39;example.de&#39;</span><span class="p">)}))</span>
+<div class="highlight"><pre><span></span><code><span class="nv">policy</span><span class="p">.</span><span class="nf">add</span><span class="p">(</span><span class="nv">policy</span><span class="p">.</span><span class="nf">suffix</span><span class="p">(</span><span class="nv">policy</span><span class="p">.</span><span class="nf">FORWARD</span><span class="p">({</span><span class="s1">'10.20.40.2'</span><span class="p">,</span><span class="w"> </span><span class="s1">'10.20.40.3'</span><span class="p">}),</span><span class="w"> </span><span class="nv">policy</span><span class="p">.</span><span class="nf">todnames</span><span class="p">({</span><span class="s1">'example.net'</span><span class="p">,</span><span class="w"> </span><span class="s1">'example.org'</span><span class="p">})))</span>
+<span class="nv">policy</span><span class="p">.</span><span class="nf">add</span><span class="p">(</span><span class="nv">policy</span><span class="p">.</span><span class="nf">suffix</span><span class="p">(</span><span class="nv">policy</span><span class="p">.</span><span class="nf">STUB</span><span class="p">(</span><span class="s1">'10.20.35.1'</span><span class="p">),</span><span class="w"> </span><span class="p">{</span><span class="nf">todname</span><span class="p">(</span><span class="s1">'example.de'</span><span class="p">)}))</span>
 </code></pre></div></p>
 <h3 id="zusammengefasst-als-nix-konfiguration">Zusammengefasst als Nix Konfiguration<a class="headerlink" href="#zusammengefasst-als-nix-konfiguration" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
   services<span class="o">.</span><span class="ss">kresd</span> <span class="o">=</span> <span class="p">{</span>
     <span class="ss">enable</span> <span class="o">=</span> <span class="no">true</span><span class="p">;</span>
     <span class="ss">listenPlain</span> <span class="o">=</span> <span class="p">[</span>
-      <span class="s2">&quot;127.0.0.1:53&quot;</span>
-      <span class="s2">&quot;[::1]:53&quot;</span>
-      <span class="s2">&quot;10.20.30.1:53&quot;</span>
+      <span class="s2">"127.0.0.1:53"</span>
+      <span class="s2">"[::1]:53"</span>
+      <span class="s2">"10.20.30.1:53"</span>
     <span class="p">];</span>
     <span class="ss">listenTLS</span> <span class="o">=</span> <span class="p">[</span>
       <span class="c1"># internal DoT listener</span>
-      <span class="s2">&quot;10.20.30.1:853&quot;</span>
+      <span class="s2">"10.20.30.1:853"</span>
     <span class="p">];</span>
     <span class="ss">extraConfig</span> <span class="o">=</span>
       <span class="k">let</span>
         <span class="ss">adblock-rpz</span> <span class="o">=</span> <span class="nb">builtins</span><span class="o">.</span>fetchurl <span class="p">{</span>
-          <span class="ss">url</span> <span class="o">=</span> <span class="s2">&quot;https://raw.githubusercontent.com/hagezi/dns-blocklists/main/rpz/multi.txt&quot;</span><span class="p">;</span>
-          <span class="ss">sha256</span> <span class="o">=</span> <span class="s2">&quot;sha256:1qvac9rkypdqc3mrz33mpqhzk1vhcj00dqbjhs43vd009nxm2pal&quot;</span><span class="p">;</span>
+          <span class="ss">url</span> <span class="o">=</span> <span class="s2">"https://raw.githubusercontent.com/hagezi/dns-blocklists/main/rpz/multi.txt"</span><span class="p">;</span>
+          <span class="ss">sha256</span> <span class="o">=</span> <span class="s2">"sha256:1qvac9rkypdqc3mrz33mpqhzk1vhcj00dqbjhs43vd009nxm2pal"</span><span class="p">;</span>
         <span class="p">};</span>
       <span class="k">in</span>
-      <span class="s s-Multiline">&#39;&#39;</span>
+      <span class="s s-Multiline">''</span>
 <span class="s s-Multiline">        -- certificates for internal DoT listener, will be aquired via acme (out of scope for this blog entry)</span>
-<span class="s s-Multiline">        net.tls(&quot;/var/lib/acme/router.example.com/fullchain.pem&quot;, &quot;/var/lib/acme/router.example.com/key.pem&quot;)</span>
+<span class="s s-Multiline">        net.tls("/var/lib/acme/router.example.com/fullchain.pem", "/var/lib/acme/router.example.com/key.pem")</span>
 
 <span class="s s-Multiline">        -- handle internal domains</span>
-<span class="s s-Multiline">        policy.add(policy.suffix(policy.FLAGS({&#39;NO_CACHE&#39;}), policy.todnames({</span>
-<span class="s s-Multiline">          &#39;example.net&#39;,</span>
-<span class="s s-Multiline">          &#39;example.org&#39;,</span>
-<span class="s s-Multiline">          &#39;example.de&#39;,</span>
+<span class="s s-Multiline">        policy.add(policy.suffix(policy.FLAGS({'NO_CACHE'}), policy.todnames({</span>
+<span class="s s-Multiline">          'example.net',</span>
+<span class="s s-Multiline">          'example.org',</span>
+<span class="s s-Multiline">          'example.de',</span>
 <span class="s s-Multiline">        })))</span>
-<span class="s s-Multiline">        policy.add(policy.suffix(policy.FORWARD({&#39;10.20.40.2&#39;, &#39;10.20.40.3&#39;}), policy.todnames({&#39;example.net&#39;, &#39;example.org&#39;})))</span>
+<span class="s s-Multiline">        policy.add(policy.suffix(policy.FORWARD({'10.20.40.2', '10.20.40.3'}), policy.todnames({'example.net', 'example.org'})))</span>
 <span class="s s-Multiline">        -- zone not signed using dnssec yet</span>
-<span class="s s-Multiline">        policy.add(policy.suffix(policy.STUB(&#39;10.20.35.1&#39;), {todname(&#39;example.de&#39;)}))</span>
+<span class="s s-Multiline">        policy.add(policy.suffix(policy.STUB('10.20.35.1'), {todname('example.de')}))</span>
 
 <span class="s s-Multiline">        -- rewrite internal hosts</span>
 <span class="s s-Multiline">        policy.add(policy.domains(policy.ANSWER(</span>
-<span class="s s-Multiline">          { [kres.type.A] = { rdata=kres.str2ip(&#39;10.20.30.100&#39;) } }</span>
-<span class="s s-Multiline">        ), { todname(&#39;notebook.example.com&#39;) }))</span>
+<span class="s s-Multiline">          { [kres.type.A] = { rdata=kres.str2ip('10.20.30.100') } }</span>
+<span class="s s-Multiline">        ), { todname('notebook.example.com') }))</span>
 
 <span class="s s-Multiline">        -- block known ads using rpz</span>
-<span class="s s-Multiline">        policy.add(policy.rpz(policy.DENY_MSG(&#39;Blocked Ads&#39;), &#39;${adblock-rpz}&#39;, false))</span>
+<span class="s s-Multiline">        policy.add(policy.rpz(policy.DENY_MSG('Blocked Ads'), '${adblock-rpz}', false))</span>
 
 <span class="s s-Multiline">        -- forward everything else to the public dns servers over dns over tls</span>
 <span class="s s-Multiline">        policy.add(policy.all(policy.TLS_FORWARD({</span>
-<span class="s s-Multiline">          {&#39;1.1.1.1&#39;, hostname=&#39;one.one.one.one&#39;},</span>
-<span class="s s-Multiline">          {&#39;1.0.0.1&#39;, hostname=&#39;one.one.one.one&#39;},</span>
-<span class="s s-Multiline">          {&#39;2606:4700:4700::1111&#39;, hostname=&#39;one.one.one.one&#39;},</span>
-<span class="s s-Multiline">          {&#39;2606:4700:4700::1001&#39;, hostname=&#39;one.one.one.one&#39;},</span>
+<span class="s s-Multiline">          {'1.1.1.1', hostname='one.one.one.one'},</span>
+<span class="s s-Multiline">          {'1.0.0.1', hostname='one.one.one.one'},</span>
+<span class="s s-Multiline">          {'2606:4700:4700::1111', hostname='one.one.one.one'},</span>
+<span class="s s-Multiline">          {'2606:4700:4700::1001', hostname='one.one.one.one'},</span>
 
-<span class="s s-Multiline">          {&#39;8.8.8.8&#39;, hostname=&#39;dns.google&#39;},</span>
-<span class="s s-Multiline">          {&#39;8.8.4.4&#39;, hostname=&#39;dns.google&#39;},</span>
-<span class="s s-Multiline">          {&#39;2001:4860:4860::8888&#39;, hostname=&#39;dns.google&#39;},</span>
-<span class="s s-Multiline">          {&#39;2001:4860:4860::8844&#39;, hostname=&#39;dns.google&#39;},</span>
+<span class="s s-Multiline">          {'8.8.8.8', hostname='dns.google'},</span>
+<span class="s s-Multiline">          {'8.8.4.4', hostname='dns.google'},</span>
+<span class="s s-Multiline">          {'2001:4860:4860::8888', hostname='dns.google'},</span>
+<span class="s s-Multiline">          {'2001:4860:4860::8844', hostname='dns.google'},</span>
 <span class="s s-Multiline">        })))</span>
-<span class="s s-Multiline">      &#39;&#39;</span><span class="p">;</span>
+<span class="s s-Multiline">      ''</span><span class="p">;</span>
   <span class="p">};</span>
 <span class="p">}</span>
 </code></pre></div>
@@ -1126,7 +1126,7 @@ Wirkung erzielten. Folgende Regeln können hinzugefügt werden um die Anfragen z
 </code></pre></div>
 Da diese Regel das Debugging für alle Anfragen aktiviert, und sehr viele Logeinträge
 produziert, ist es sinnvoller, das Logging auf eine bestimmte Zone zu beschränken:
-<div class="highlight"><pre><span></span><code><span class="nv">policy</span><span class="p">.</span><span class="nf">add</span><span class="p">(</span><span class="nv">policy</span><span class="p">.</span><span class="nf">suffix</span><span class="p">(</span><span class="nv">policy</span><span class="p">.</span><span class="py">DEBUG_ALWAYS</span><span class="p">,</span><span class="w"> </span><span class="nv">policy</span><span class="p">.</span><span class="nf">todnames</span><span class="p">({</span><span class="s1">&#39;example.net&#39;</span><span class="p">})))</span>
+<div class="highlight"><pre><span></span><code><span class="nv">policy</span><span class="p">.</span><span class="nf">add</span><span class="p">(</span><span class="nv">policy</span><span class="p">.</span><span class="nf">suffix</span><span class="p">(</span><span class="nv">policy</span><span class="p">.</span><span class="py">DEBUG_ALWAYS</span><span class="p">,</span><span class="w"> </span><span class="nv">policy</span><span class="p">.</span><span class="nf">todnames</span><span class="p">({</span><span class="s1">'example.net'</span><span class="p">})))</span>
 </code></pre></div></p>
 <h2 id="besondere-stolperfall-policytodnames-vs-todnames">Besondere Stolperfall: <code>policy.todnames</code> vs. <code>todnames</code><a class="headerlink" href="#besondere-stolperfall-policytodnames-vs-todnames" title="Permanent link">&para;</a></h2>
 <p>Einige Funktionen erwarten, dass alle Domainnamen als Tabelle übergeben werden, während

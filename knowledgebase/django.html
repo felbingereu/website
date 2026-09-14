@@ -888,38 +888,38 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">os</span><span class="w"> </span><span class="kn">import</span> <span class="n">environ</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">string</span><span class="w"> </span><span class="kn">import</span> <span class="n">punctuation</span><span class="p">,</span> <span class="n">digits</span><span class="p">,</span> <span class="n">ascii_letters</span>
 
-<span class="n">SECRET_KEY</span> <span class="o">=</span> <span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;SECRET_KEY&#39;</span><span class="p">,</span> <span class="nb">repr</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span>
+<span class="n">SECRET_KEY</span> <span class="o">=</span> <span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'SECRET_KEY'</span><span class="p">,</span> <span class="nb">repr</span><span class="p">(</span><span class="s1">''</span><span class="o">.</span><span class="n">join</span><span class="p">([</span>
   <span class="n">random</span><span class="o">.</span><span class="n">SystemRandom</span><span class="p">()</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">ascii_letters</span> <span class="o">+</span> <span class="n">digits</span> <span class="o">+</span> <span class="n">punctuation</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span>
     <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="mi">80</span><span class="p">)</span>
   <span class="p">)])</span>
 <span class="p">))</span>
 </code></pre></div></li>
 <li>Make <code>DEBUG</code> and <code>ALLOWED_HOSTS</code> dynamic
-  <div class="highlight"><pre><span></span><code><span class="n">DEBUG</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;DEBUG&#39;</span><span class="p">,</span> <span class="s1">&#39;0&#39;</span><span class="p">)))</span>
-<span class="n">ALLOWED_HOSTS</span> <span class="o">=</span> <span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;ALLOWED_HOSTS&#39;</span><span class="p">,</span> <span class="s1">&#39;127.0.0.1&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+  <div class="highlight"><pre><span></span><code><span class="n">DEBUG</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'DEBUG'</span><span class="p">,</span> <span class="s1">'0'</span><span class="p">)))</span>
+<span class="n">ALLOWED_HOSTS</span> <span class="o">=</span> <span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'ALLOWED_HOSTS'</span><span class="p">,</span> <span class="s1">'127.0.0.1'</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">' '</span><span class="p">)</span>
 </code></pre></div></li>
 <li>Adjust database configuration (PostgreSQL / MariaDB)</li>
 <li>Adjust paths to templates and static files
   <div class="highlight"><pre><span></span><code><span class="c1">#TEMPLATES = [{</span>
-<span class="c1">#    &#39;DIRS&#39;: [BASE_DIR.joinpath(&#39;templates&#39;),],             # &lt;--- This line</span>
+<span class="c1">#    'DIRS': [BASE_DIR.joinpath('templates'),],             # &lt;--- This line</span>
 
-<span class="n">STATIC_ROOT</span> <span class="o">=</span> <span class="n">BASE_DIR</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="s1">&#39;static&#39;</span><span class="p">)</span>
+<span class="n">STATIC_ROOT</span> <span class="o">=</span> <span class="n">BASE_DIR</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="s1">'static'</span><span class="p">)</span>
 </code></pre></div></li>
 <li>Add django translations and set timezone
   <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">django.utils.translation</span><span class="w"> </span><span class="kn">import</span> <span class="n">gettext_lazy</span> <span class="k">as</span> <span class="n">_</span>
 
 <span class="n">MIDDLEWARE</span> <span class="o">=</span> <span class="p">[</span>
-  <span class="s1">&#39;django.middleware.security.SecurityMiddleware&#39;</span><span class="p">,</span>
-  <span class="s1">&#39;django.contrib.sessions.middleware.SessionMiddleware&#39;</span><span class="p">,</span>
-  <span class="s1">&#39;django.middleware.locale.LocaleMiddleware&#39;</span><span class="p">,</span>              <span class="c1"># &lt;--- this line</span>
-  <span class="s1">&#39;django.middleware.common.CommonMiddleware&#39;</span><span class="p">,</span>
+  <span class="s1">'django.middleware.security.SecurityMiddleware'</span><span class="p">,</span>
+  <span class="s1">'django.contrib.sessions.middleware.SessionMiddleware'</span><span class="p">,</span>
+  <span class="s1">'django.middleware.locale.LocaleMiddleware'</span><span class="p">,</span>              <span class="c1"># &lt;--- this line</span>
+  <span class="s1">'django.middleware.common.CommonMiddleware'</span><span class="p">,</span>
 
 <span class="n">LANGUAGES</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="p">(</span><span class="s1">&#39;en&#39;</span><span class="p">,</span> <span class="n">_</span><span class="p">(</span><span class="s1">&#39;English&#39;</span><span class="p">)),</span>
-    <span class="p">(</span><span class="s1">&#39;de&#39;</span><span class="p">,</span> <span class="n">_</span><span class="p">(</span><span class="s1">&#39;German&#39;</span><span class="p">)),</span>
+    <span class="p">(</span><span class="s1">'en'</span><span class="p">,</span> <span class="n">_</span><span class="p">(</span><span class="s1">'English'</span><span class="p">)),</span>
+    <span class="p">(</span><span class="s1">'de'</span><span class="p">,</span> <span class="n">_</span><span class="p">(</span><span class="s1">'German'</span><span class="p">)),</span>
 <span class="p">]</span>
 
-<span class="n">TIME_ZONE</span> <span class="o">=</span> <span class="s1">&#39;Europe/Berlin&#39;</span>
+<span class="n">TIME_ZONE</span> <span class="o">=</span> <span class="s1">'Europe/Berlin'</span>
 
 <span class="n">USE_L10N</span> <span class="o">=</span> <span class="kc">True</span>
 <span class="n">USE_I18N</span> <span class="o">=</span> <span class="kc">True</span>
@@ -927,7 +927,7 @@
   Replace static list in <code>app/urls.py</code> with <code>i18n_patterns()</code>
   <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">django.conf.urls.i18n</span><span class="w"> </span><span class="kn">import</span> <span class="n">i18n_patterns</span>
 <span class="n">urlpatterns</span> <span class="o">=</span> <span class="n">i18n_patterns</span><span class="p">(</span>
-    <span class="n">path</span><span class="p">(</span><span class="s1">&#39;admin/&#39;</span><span class="p">,</span> <span class="n">admin</span><span class="o">.</span><span class="n">site</span><span class="o">.</span><span class="n">urls</span><span class="p">),</span>
+    <span class="n">path</span><span class="p">(</span><span class="s1">'admin/'</span><span class="p">,</span> <span class="n">admin</span><span class="o">.</span><span class="n">site</span><span class="o">.</span><span class="n">urls</span><span class="p">),</span>
 <span class="p">)</span>
 </code></pre></div></li>
 <li>Rename admin Site
@@ -935,8 +935,8 @@
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">django.utils.translation</span><span class="w"> </span><span class="kn">import</span> <span class="n">gettext</span> <span class="k">as</span> <span class="n">_</span>
 
-<span class="n">admin</span><span class="o">.</span><span class="n">site</span><span class="o">.</span><span class="n">site_header</span> <span class="o">=</span> <span class="n">admin</span><span class="o">.</span><span class="n">site</span><span class="o">.</span><span class="n">site_title</span> <span class="o">=</span> <span class="n">_</span><span class="p">(</span><span class="s1">&#39;Your project&#39;</span><span class="p">)</span>
-<span class="n">admin</span><span class="o">.</span><span class="n">site</span><span class="o">.</span><span class="n">index_title</span> <span class="o">=</span> <span class="n">_</span><span class="p">(</span><span class="s1">&#39;Welcome to your project&#39;</span><span class="p">)</span>
+<span class="n">admin</span><span class="o">.</span><span class="n">site</span><span class="o">.</span><span class="n">site_header</span> <span class="o">=</span> <span class="n">admin</span><span class="o">.</span><span class="n">site</span><span class="o">.</span><span class="n">site_title</span> <span class="o">=</span> <span class="n">_</span><span class="p">(</span><span class="s1">'Your project'</span><span class="p">)</span>
+<span class="n">admin</span><span class="o">.</span><span class="n">site</span><span class="o">.</span><span class="n">index_title</span> <span class="o">=</span> <span class="n">_</span><span class="p">(</span><span class="s1">'Welcome to your project'</span><span class="p">)</span>
 </code></pre></div></li>
 </ul>
 </li>
@@ -944,7 +944,7 @@
 <li>Create app using <code>python3 manage.py startapp base</code></li>
 <li>Load base app in <code>app/settings.py</code>:
   <div class="highlight"><pre><span></span><code><span class="n">INSTALLED_APPS</span> <span class="o">+=</span> <span class="p">[</span>
-  <span class="s1">&#39;base.apps.BaseConfig&#39;</span><span class="p">,</span>
+  <span class="s1">'base.apps.BaseConfig'</span><span class="p">,</span>
 <span class="p">]</span>
 </code></pre></div></li>
 <li>Add view, url routing and static files for <code>manifest.json</code>
@@ -953,22 +953,22 @@
 
 <span class="k">def</span><span class="w"> </span><span class="nf">manifest</span><span class="p">(</span><span class="n">request</span><span class="p">:</span> <span class="n">HttpRequest</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">JsonResponse</span><span class="p">:</span>
     <span class="k">return</span> <span class="n">JsonResponse</span><span class="p">({</span>
-        <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;short_name&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;icons&#39;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="s1">'name'</span><span class="p">:</span> <span class="s1">''</span><span class="p">,</span>
+        <span class="s1">'short_name'</span><span class="p">:</span> <span class="s1">''</span><span class="p">,</span>
+        <span class="s1">'icons'</span><span class="p">:</span> <span class="p">[</span>
             <span class="p">{</span>
-                <span class="s1">&#39;src&#39;</span><span class="p">:</span> <span class="s1">&#39;img/android-chrome-192x192.png&#39;</span><span class="p">,</span>
-                <span class="s1">&#39;sizes&#39;</span><span class="p">:</span> <span class="s1">&#39;192x192&#39;</span><span class="p">,</span>
-                <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;image/png&#39;</span>
+                <span class="s1">'src'</span><span class="p">:</span> <span class="s1">'img/android-chrome-192x192.png'</span><span class="p">,</span>
+                <span class="s1">'sizes'</span><span class="p">:</span> <span class="s1">'192x192'</span><span class="p">,</span>
+                <span class="s1">'type'</span><span class="p">:</span> <span class="s1">'image/png'</span>
             <span class="p">},</span> <span class="p">{</span>
-                <span class="s1">&#39;src&#39;</span><span class="p">:</span> <span class="s1">&#39;img/android-chrome-512x512.png&#39;</span><span class="p">,</span>
-                <span class="s1">&#39;sizes&#39;</span><span class="p">:</span> <span class="s1">&#39;512x512&#39;</span><span class="p">,</span>
-                <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;image/png&#39;</span>
+                <span class="s1">'src'</span><span class="p">:</span> <span class="s1">'img/android-chrome-512x512.png'</span><span class="p">,</span>
+                <span class="s1">'sizes'</span><span class="p">:</span> <span class="s1">'512x512'</span><span class="p">,</span>
+                <span class="s1">'type'</span><span class="p">:</span> <span class="s1">'image/png'</span>
             <span class="p">}</span>
         <span class="p">],</span>
-        <span class="s1">&#39;theme_color&#39;</span><span class="p">:</span> <span class="s1">&#39;#ffffff&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;background_color&#39;</span><span class="p">:</span> <span class="s1">&#39;#ffffff&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;display&#39;</span><span class="p">:</span> <span class="s1">&#39;standalone&#39;</span>
+        <span class="s1">'theme_color'</span><span class="p">:</span> <span class="s1">'#ffffff'</span><span class="p">,</span>
+        <span class="s1">'background_color'</span><span class="p">:</span> <span class="s1">'#ffffff'</span><span class="p">,</span>
+        <span class="s1">'display'</span><span class="p">:</span> <span class="s1">'standalone'</span>
     <span class="p">})</span>
 </code></pre></div></li>
 </ul>
@@ -998,7 +998,7 @@
 <span class="n">admin</span><span class="o">.</span><span class="n">site</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">User</span><span class="p">)</span>
 </code></pre></div>
 <div class="highlight"><pre><span></span><code><span class="c1"># app/settings.py</span>
-<span class="n">AUTH_USER_MODEL</span> <span class="o">=</span> <span class="s2">&quot;base.User&quot;</span>
+<span class="n">AUTH_USER_MODEL</span> <span class="o">=</span> <span class="s2">"base.User"</span>
 </code></pre></div>
 
 

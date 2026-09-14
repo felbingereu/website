@@ -862,7 +862,7 @@ mysqld_safe --skip-grant-tables --skip-networking
 
 # use another terminal to update the password
 mysql -u root
-MariaDB&gt; UPDATE mysql.user SET password=PASSWORD(&quot;new_password&quot;) where user=&#39;root&#39;;
+MariaDB&gt; UPDATE mysql.user SET password=PASSWORD("new_password") where user='root';
 MariaDB&gt; FLUSH PRIVILEGES;
 MariaDB&gt; EXIT;
 

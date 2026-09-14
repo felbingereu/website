@@ -978,7 +978,7 @@ Missionen – vollständig heruntergeladen.</p>
 <p><div class="highlight"><pre><span></span><code>apt-get<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>curl<span class="w"> </span>jq<span class="w"> </span>nano<span class="w"> </span>git
 
 <span class="c1"># siehe https://linuxgsm.com/servers/dayzserver/</span>
-adduser<span class="w"> </span>--disabled-password<span class="w"> </span>--gecos<span class="w"> </span><span class="s2">&quot;&quot;</span><span class="w"> </span>dayzserver
+adduser<span class="w"> </span>--disabled-password<span class="w"> </span>--gecos<span class="w"> </span><span class="s2">""</span><span class="w"> </span>dayzserver
 su<span class="w"> </span>-<span class="w"> </span>dayzserver<span class="w"> </span><span class="c1"># run cmds seprate</span>
 curl<span class="w"> </span>-Lo<span class="w"> </span>linuxgsm.sh<span class="w"> </span>https://linuxgsm.sh<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>chmod<span class="w"> </span>+x<span class="w"> </span>linuxgsm.sh<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>bash<span class="w"> </span>linuxgsm.sh<span class="w"> </span>dayzserver
 mkdir<span class="w"> </span>-p<span class="w"> </span>~dayzserver/lgsm/config-lgsm/dayzserver/
@@ -1003,11 +1003,11 @@ su<span class="w"> </span>-<span class="w"> </span>dayzserver
 <p>Die Konfiguration des Servers erfolgt in der Datei <code>~dayzserver/serverfiles/cfg/dayzserver.server.cfg</code>. Ich
 passte zunächst folgende Einstellungen direkt per sed an:
 <div class="highlight"><pre><span></span><code>sed<span class="w"> </span>-i<span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-e<span class="w"> </span><span class="s1">&#39;s|hostname.*|hostname = &quot;felbinger.eu&quot;;|g&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-e<span class="w"> </span><span class="s1">&#39;s|passwordAdmin.*|passwordAdmin = &quot;&#39;</span>r4nd0m-s3cr3t<span class="s1">&#39;&quot;;|g&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-e<span class="w"> </span><span class="s1">&#39;s|maxPlayers.*|maxPlayers = 10;|g&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-e<span class="w"> </span><span class="s1">&#39;s|disable3rdPerson.*|disable3rdPerson = 1;|g&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">  </span>-e<span class="w"> </span><span class="s1">&#39;s|disableCrosshair.*|disableCrosshair = 1;|g&#39;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-e<span class="w"> </span><span class="s1">'s|hostname.*|hostname = "felbinger.eu";|g'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-e<span class="w"> </span><span class="s1">'s|passwordAdmin.*|passwordAdmin = "'</span>r4nd0m-s3cr3t<span class="s1">'";|g'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-e<span class="w"> </span><span class="s1">'s|maxPlayers.*|maxPlayers = 10;|g'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-e<span class="w"> </span><span class="s1">'s|disable3rdPerson.*|disable3rdPerson = 1;|g'</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>-e<span class="w"> </span><span class="s1">'s|disableCrosshair.*|disableCrosshair = 1;|g'</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>~dayzserver/serverfiles/cfg/dayzserver.server.cfg
 </code></pre></div></p>
 <p>Nun kann der Server mit dem Befehl <code>./dayzserver start</code> gestartet wurde. Die Konsole des DayZ Servers steht in
@@ -1053,7 +1053,7 @@ cp<span class="w"> </span>~dayzserver/serverfiles/@VPPAdminTools/keys/VPP.bikey<
 <p>Zuletzt wurden die Mods dauerhaft in die Serverkonfiguration eingebunden. Dafür ergänzte ich zunächst die
 <code>dayzserver.cfg</code> im LGSM-Konfigurationsverzeichnis um den entsprechenden mods-Eintrag:
 <div class="highlight"><pre><span></span><code>cat<span class="w"> </span><span class="s">&lt;&lt;_EOF &gt;&gt; ~dayzserver/lgsm/config-lgsm/dayzserver/dayzserver.cfg</span>
-<span class="s">mods=&quot;@CF\;@VPPAdminTools&quot;</span>
+<span class="s">mods="@CF\;@VPPAdminTools"</span>
 <span class="s">_EOF</span>
 </code></pre></div></p>
 <p>Nach einem Neustart des Servers sollte nun automatisch im Profilverzeichnis unter
@@ -1064,10 +1064,10 @@ Profilverzeichnis manuell über die Startparameter zu setzen. In diesem Fall mus
 ich allerdings auch die Mods direkt über den -mod-Parameter angeben, da die zuvor
 gesetzte mods-Variable nicht mehr ausgewertet wurde:</p>
 <div class="highlight"><pre><span></span><code>cat<span class="w"> </span><span class="s">&lt;&lt;_EOF &gt;&gt; ~dayzserver/lgsm/config-lgsm/dayzserver/dayzserver.cfg</span>
-<span class="s">startparameters=&quot;-ip=${ip} -port=${port} -config=${servercfgfullpath} -profiles=profiles -mod=@CF\;@VPPAdminTools -servermod=${servermods} -bepath=${bepath} -limitFPS=60 -dologs -adminlog -freezeCheck&quot;</span>
+<span class="s">startparameters="-ip=${ip} -port=${port} -config=${servercfgfullpath} -profiles=profiles -mod=@CF\;@VPPAdminTools -servermod=${servermods} -bepath=${bepath} -limitFPS=60 -dologs -adminlog -freezeCheck"</span>
 <span class="s">_EOF</span>
 <span class="c1"># mods variable is no longer in use</span>
-sed<span class="w"> </span>-i<span class="w"> </span><span class="s1">&#39;/mods.*/d&#39;</span><span class="w"> </span>~dayzserver/lgsm/config-lgsm/dayzserver/dayzserver.cfg
+sed<span class="w"> </span>-i<span class="w"> </span><span class="s1">'/mods.*/d'</span><span class="w"> </span>~dayzserver/lgsm/config-lgsm/dayzserver/dayzserver.cfg
 </code></pre></div>
 <p>Nachdem ich mit <code>mkdir ~dayzserver/serverfiles/profiles</code> das Verzeichnis erstellt hatte und den Server neu
 startete, wurden die Konfigurationsdateien für das VPP-Admin-Tool wie erwartet generiert. Um einen Spieler
@@ -1098,7 +1098,7 @@ verschob die Missionsdatei und passte die Serverkonfiguration an:
 <div class="highlight"><pre><span></span><code>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/johnmclane666/Deerisle-Stable
 mv<span class="w"> </span>Deerisle-Stable/V5.9/empty.deerisle<span class="w"> </span>~dayzserver/serverfiles/mpmissions
 rm<span class="w"> </span>-r<span class="w"> </span>Deerisle-Stable
-sed<span class="w"> </span>-i<span class="w"> </span><span class="s1">&#39;s/template.*/template = &quot;empty.deerisle&quot;;/&#39;</span><span class="w"> </span>~dayzserver/serverfiles/cfg/dayzserver.server.cfg
+sed<span class="w"> </span>-i<span class="w"> </span><span class="s1">'s/template.*/template = "empty.deerisle";/'</span><span class="w"> </span>~dayzserver/serverfiles/cfg/dayzserver.server.cfg
 </code></pre></div></p>
 <p>Damit war die DeerIsle-Mission auf dem Server einsatzbereit.</p>
 <h2 id="spawn-loadout">Spawn-Loadout<a class="headerlink" href="#spawn-loadout" title="Permanent link">&para;</a></h2>
@@ -1110,57 +1110,57 @@ Dazu wurde die unten stehende C-Funktion in der Datei <code>~dayzserver/serverfi
 
 <span class="w">    </span><span class="c1">// Military Uniform and Boots</span>
 <span class="w">    </span><span class="n">EntityAI</span><span class="w"> </span><span class="n">boots</span><span class="p">,</span><span class="w"> </span><span class="n">knife</span><span class="p">;</span>
-<span class="w">    </span><span class="n">player</span><span class="p">.</span><span class="n">GetInventory</span><span class="p">().</span><span class="n">CreateInInventory</span><span class="p">(</span><span class="s">&quot;TTsKOJacket_Camo&quot;</span><span class="p">);</span>
-<span class="w">    </span><span class="n">player</span><span class="p">.</span><span class="n">GetInventory</span><span class="p">().</span><span class="n">CreateInInventory</span><span class="p">(</span><span class="s">&quot;TTSKOPants&quot;</span><span class="p">);</span>
-<span class="w">    </span><span class="n">player</span><span class="p">.</span><span class="n">GetInventory</span><span class="p">().</span><span class="n">CreateInInventory</span><span class="p">(</span><span class="s">&quot;TacticalGloves_Green&quot;</span><span class="p">);</span>
-<span class="w">    </span><span class="n">boots</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">player</span><span class="p">.</span><span class="n">GetInventory</span><span class="p">().</span><span class="n">CreateInInventory</span><span class="p">(</span><span class="s">&quot;MilitaryBoots_Brown&quot;</span><span class="p">);</span>
-<span class="w">    </span><span class="n">knife</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">boots</span><span class="p">.</span><span class="n">GetInventory</span><span class="p">().</span><span class="n">CreateInInventory</span><span class="p">(</span><span class="s">&quot;CombatKnife&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">player</span><span class="p">.</span><span class="n">GetInventory</span><span class="p">().</span><span class="n">CreateInInventory</span><span class="p">(</span><span class="s">"TTsKOJacket_Camo"</span><span class="p">);</span>
+<span class="w">    </span><span class="n">player</span><span class="p">.</span><span class="n">GetInventory</span><span class="p">().</span><span class="n">CreateInInventory</span><span class="p">(</span><span class="s">"TTSKOPants"</span><span class="p">);</span>
+<span class="w">    </span><span class="n">player</span><span class="p">.</span><span class="n">GetInventory</span><span class="p">().</span><span class="n">CreateInInventory</span><span class="p">(</span><span class="s">"TacticalGloves_Green"</span><span class="p">);</span>
+<span class="w">    </span><span class="n">boots</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">player</span><span class="p">.</span><span class="n">GetInventory</span><span class="p">().</span><span class="n">CreateInInventory</span><span class="p">(</span><span class="s">"MilitaryBoots_Brown"</span><span class="p">);</span>
+<span class="w">    </span><span class="n">knife</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">boots</span><span class="p">.</span><span class="n">GetInventory</span><span class="p">().</span><span class="n">CreateInInventory</span><span class="p">(</span><span class="s">"CombatKnife"</span><span class="p">);</span>
 <span class="w">    </span><span class="n">player</span><span class="p">.</span><span class="n">SetQuickBarEntityShortcut</span><span class="p">(</span><span class="n">knife</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">);</span><span class="w"> </span><span class="c1">// Add to quick bar</span>
 
 <span class="w">    </span><span class="c1">// Tactial helmet with nvg and flashlight</span>
 <span class="w">    </span><span class="c1">//EntityAI helmet, helmetAttachment;</span>
-<span class="w">    </span><span class="c1">//helmet = player.GetInventory().CreateInInventory(&quot;Mich2001Helmet&quot;);</span>
-<span class="w">    </span><span class="c1">//helmetAttachment = helmet.GetInventory().CreateAttachment(&quot;UniversalLight&quot;);</span>
-<span class="w">    </span><span class="c1">//helmetAttachment.GetInventory().CreateAttachment(&quot;Battery9V&quot;);</span>
-<span class="w">    </span><span class="c1">//helmetAttachment = helmet.GetInventory().CreateAttachment(&quot;NVGoggles&quot;);</span>
-<span class="w">    </span><span class="c1">//helmetAttachment.GetInventory().CreateAttachment(&quot;Battery9V&quot;);</span>
+<span class="w">    </span><span class="c1">//helmet = player.GetInventory().CreateInInventory("Mich2001Helmet");</span>
+<span class="w">    </span><span class="c1">//helmetAttachment = helmet.GetInventory().CreateAttachment("UniversalLight");</span>
+<span class="w">    </span><span class="c1">//helmetAttachment.GetInventory().CreateAttachment("Battery9V");</span>
+<span class="w">    </span><span class="c1">//helmetAttachment = helmet.GetInventory().CreateAttachment("NVGoggles");</span>
+<span class="w">    </span><span class="c1">//helmetAttachment.GetInventory().CreateAttachment("Battery9V");</span>
 
 <span class="w">    </span><span class="c1">// Belt with knife and fully equipped pistol</span>
 <span class="w">    </span><span class="n">EntityAI</span><span class="w"> </span><span class="n">belt</span><span class="p">,</span><span class="w"> </span><span class="n">beltHolster</span><span class="p">,</span><span class="w"> </span><span class="n">beltPistol</span><span class="p">,</span><span class="w"> </span><span class="n">beltPistolAttachment</span><span class="p">;</span>
-<span class="w">    </span><span class="n">belt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">player</span><span class="p">.</span><span class="n">GetInventory</span><span class="p">().</span><span class="n">CreateInInventory</span><span class="p">(</span><span class="s">&quot;MilitaryBelt&quot;</span><span class="p">);</span>
-<span class="w">    </span><span class="n">belt</span><span class="p">.</span><span class="n">GetInventory</span><span class="p">().</span><span class="n">CreateInInventory</span><span class="p">(</span><span class="s">&quot;Canteen&quot;</span><span class="p">);</span>
-<span class="w">    </span><span class="c1">//beltHolster = belt.GetInventory().CreateInInventory(&quot;NylonKnifeSheath&quot;);</span>
-<span class="w">    </span><span class="c1">//beltHolster.GetInventory().CreateInInventory(&quot;CombatKnife&quot;);</span>
-<span class="w">    </span><span class="n">beltHolster</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">belt</span><span class="p">.</span><span class="n">GetInventory</span><span class="p">().</span><span class="n">CreateInInventory</span><span class="p">(</span><span class="s">&quot;PlateCarrierHolster&quot;</span><span class="p">);</span>
-<span class="w">    </span><span class="n">beltPistol</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">beltHolster</span><span class="p">.</span><span class="n">GetInventory</span><span class="p">().</span><span class="n">CreateInInventory</span><span class="p">(</span><span class="s">&quot;Glock19&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">belt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">player</span><span class="p">.</span><span class="n">GetInventory</span><span class="p">().</span><span class="n">CreateInInventory</span><span class="p">(</span><span class="s">"MilitaryBelt"</span><span class="p">);</span>
+<span class="w">    </span><span class="n">belt</span><span class="p">.</span><span class="n">GetInventory</span><span class="p">().</span><span class="n">CreateInInventory</span><span class="p">(</span><span class="s">"Canteen"</span><span class="p">);</span>
+<span class="w">    </span><span class="c1">//beltHolster = belt.GetInventory().CreateInInventory("NylonKnifeSheath");</span>
+<span class="w">    </span><span class="c1">//beltHolster.GetInventory().CreateInInventory("CombatKnife");</span>
+<span class="w">    </span><span class="n">beltHolster</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">belt</span><span class="p">.</span><span class="n">GetInventory</span><span class="p">().</span><span class="n">CreateInInventory</span><span class="p">(</span><span class="s">"PlateCarrierHolster"</span><span class="p">);</span>
+<span class="w">    </span><span class="n">beltPistol</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">beltHolster</span><span class="p">.</span><span class="n">GetInventory</span><span class="p">().</span><span class="n">CreateInInventory</span><span class="p">(</span><span class="s">"Glock19"</span><span class="p">);</span>
 <span class="w">    </span><span class="n">player</span><span class="p">.</span><span class="n">SetQuickBarEntityShortcut</span><span class="p">(</span><span class="n">beltPistol</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span><span class="w"> </span><span class="c1">// Add to quick bar</span>
-<span class="w">    </span><span class="n">beltPistol</span><span class="p">.</span><span class="n">GetInventory</span><span class="p">().</span><span class="n">CreateAttachment</span><span class="p">(</span><span class="s">&quot;Mag_Glock_15Rnd&quot;</span><span class="p">);</span>
-<span class="w">    </span><span class="c1">//beltPistol.GetInventory().CreateAttachment(&quot;PistolSuppressor&quot;);</span>
-<span class="w">    </span><span class="c1">//beltPistolAttachment = beltPistolAttachment.GetInventory().CreateAttachment(&quot;FNP45_MRDSOptic&quot;);</span>
-<span class="w">    </span><span class="c1">//beltPistolAttachment.GetInventory().CreateAttachment(&quot;Battery9V&quot;);</span>
-<span class="w">    </span><span class="c1">//beltPistolAttachment = beltPistolAttachment.GetInventory().CreateAttachment(&quot;TLRLight&quot;);</span>
-<span class="w">    </span><span class="c1">//beltPistolAttachment.GetInventory().CreateAttachment(&quot;Battery9V&quot;);</span>
-<span class="w">    </span><span class="n">player</span><span class="p">.</span><span class="n">GetInventory</span><span class="p">().</span><span class="n">CreateInInventory</span><span class="p">(</span><span class="s">&quot;Mag_Glock_15Rnd&quot;</span><span class="p">);</span>
-<span class="w">    </span><span class="n">player</span><span class="p">.</span><span class="n">GetInventory</span><span class="p">().</span><span class="n">CreateInInventory</span><span class="p">(</span><span class="s">&quot;Ammo_9x19&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">beltPistol</span><span class="p">.</span><span class="n">GetInventory</span><span class="p">().</span><span class="n">CreateAttachment</span><span class="p">(</span><span class="s">"Mag_Glock_15Rnd"</span><span class="p">);</span>
+<span class="w">    </span><span class="c1">//beltPistol.GetInventory().CreateAttachment("PistolSuppressor");</span>
+<span class="w">    </span><span class="c1">//beltPistolAttachment = beltPistolAttachment.GetInventory().CreateAttachment("FNP45_MRDSOptic");</span>
+<span class="w">    </span><span class="c1">//beltPistolAttachment.GetInventory().CreateAttachment("Battery9V");</span>
+<span class="w">    </span><span class="c1">//beltPistolAttachment = beltPistolAttachment.GetInventory().CreateAttachment("TLRLight");</span>
+<span class="w">    </span><span class="c1">//beltPistolAttachment.GetInventory().CreateAttachment("Battery9V");</span>
+<span class="w">    </span><span class="n">player</span><span class="p">.</span><span class="n">GetInventory</span><span class="p">().</span><span class="n">CreateInInventory</span><span class="p">(</span><span class="s">"Mag_Glock_15Rnd"</span><span class="p">);</span>
+<span class="w">    </span><span class="n">player</span><span class="p">.</span><span class="n">GetInventory</span><span class="p">().</span><span class="n">CreateInInventory</span><span class="p">(</span><span class="s">"Ammo_9x19"</span><span class="p">);</span>
 
 <span class="w">    </span><span class="c1">// Plate carrier</span>
 <span class="w">    </span><span class="c1">//EntityAI vest, pouches, vestHolster, vestPistol;</span>
-<span class="w">    </span><span class="c1">//vest = player.GetInventory().CreateInInventory(&quot;PlateCarrierVest&quot;);</span>
-<span class="w">    </span><span class="c1">//vestHolster = vest.GetInventory().CreateAttachment(&quot;PlateCarrierHolster&quot;);</span>
-<span class="w">    </span><span class="c1">//vestPistol = vestHolster.GetInventory().CreateInInventory(&quot;Magnum&quot;);</span>
+<span class="w">    </span><span class="c1">//vest = player.GetInventory().CreateInInventory("PlateCarrierVest");</span>
+<span class="w">    </span><span class="c1">//vestHolster = vest.GetInventory().CreateAttachment("PlateCarrierHolster");</span>
+<span class="w">    </span><span class="c1">//vestPistol = vestHolster.GetInventory().CreateInInventory("Magnum");</span>
 <span class="w">    </span><span class="c1">//player.SetQuickBarEntityShortcut(vestPistol, 2); // Add to quick bar</span>
-<span class="w">    </span><span class="c1">//pouches = vest.GetInventory().CreateAttachment(&quot;PlateCarrierPouches&quot;);</span>
-<span class="w">    </span><span class="c1">//pouches.GetInventory().CreateInInventory(&quot;Ammo_357&quot;);</span>
+<span class="w">    </span><span class="c1">//pouches = vest.GetInventory().CreateAttachment("PlateCarrierPouches");</span>
+<span class="w">    </span><span class="c1">//pouches.GetInventory().CreateInInventory("Ammo_357");</span>
 
-<span class="w">    </span><span class="n">player</span><span class="p">.</span><span class="n">GetInventory</span><span class="p">().</span><span class="n">CreateInInventory</span><span class="p">(</span><span class="s">&quot;BandageDressing&quot;</span><span class="p">);</span>
-<span class="w">    </span><span class="n">player</span><span class="p">.</span><span class="n">GetInventory</span><span class="p">().</span><span class="n">CreateInInventory</span><span class="p">(</span><span class="s">&quot;BandageDressing&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">player</span><span class="p">.</span><span class="n">GetInventory</span><span class="p">().</span><span class="n">CreateInInventory</span><span class="p">(</span><span class="s">"BandageDressing"</span><span class="p">);</span>
+<span class="w">    </span><span class="n">player</span><span class="p">.</span><span class="n">GetInventory</span><span class="p">().</span><span class="n">CreateInInventory</span><span class="p">(</span><span class="s">"BandageDressing"</span><span class="p">);</span>
 
 <span class="w">    </span><span class="n">EntityAI</span><span class="w"> </span><span class="n">itemEnt</span><span class="p">;</span>
 <span class="w">    </span><span class="n">string</span><span class="w"> </span><span class="n">chemlightArray</span><span class="p">[]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-<span class="w">      </span><span class="s">&quot;Chemlight_White&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="s">&quot;Chemlight_Yellow&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="s">&quot;Chemlight_Green&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="s">&quot;Chemlight_Red&quot;</span>
+<span class="w">      </span><span class="s">"Chemlight_White"</span><span class="p">,</span>
+<span class="w">      </span><span class="s">"Chemlight_Yellow"</span><span class="p">,</span>
+<span class="w">      </span><span class="s">"Chemlight_Green"</span><span class="p">,</span>
+<span class="w">      </span><span class="s">"Chemlight_Red"</span>
 <span class="w">    </span><span class="p">};</span>
 <span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">rndIndex</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Math</span><span class="p">.</span><span class="n">RandomInt</span><span class="p">(</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="w"> </span><span class="p">);</span>
 <span class="w">    </span><span class="n">itemEnt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">player</span><span class="p">.</span><span class="n">GetInventory</span><span class="p">().</span><span class="n">CreateInInventory</span><span class="p">(</span><span class="w"> </span><span class="n">chemlightArray</span><span class="p">[</span><span class="n">rndIndex</span><span class="p">]</span><span class="w"> </span><span class="p">);</span>
@@ -1168,11 +1168,11 @@ Dazu wurde die unten stehende C-Funktion in der Datei <code>~dayzserver/serverfi
 
 <span class="w">    </span><span class="kt">float</span><span class="w"> </span><span class="n">rand</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Math</span><span class="p">.</span><span class="n">RandomFloatInclusive</span><span class="p">(</span><span class="w"> </span><span class="mf">0.0</span><span class="p">,</span><span class="w"> </span><span class="mf">1.0</span><span class="w"> </span><span class="p">);</span>
 <span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">rand</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mf">0.35</span><span class="w"> </span><span class="p">)</span>
-<span class="w">      </span><span class="n">itemEnt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">player</span><span class="p">.</span><span class="n">GetInventory</span><span class="p">().</span><span class="n">CreateInInventory</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;Apple&quot;</span><span class="w"> </span><span class="p">);</span>
+<span class="w">      </span><span class="n">itemEnt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">player</span><span class="p">.</span><span class="n">GetInventory</span><span class="p">().</span><span class="n">CreateInInventory</span><span class="p">(</span><span class="w"> </span><span class="s">"Apple"</span><span class="w"> </span><span class="p">);</span>
 <span class="w">    </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">rand</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mf">0.65</span><span class="w"> </span><span class="p">)</span>
-<span class="w">      </span><span class="n">itemEnt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">player</span><span class="p">.</span><span class="n">GetInventory</span><span class="p">().</span><span class="n">CreateInInventory</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;Pear&quot;</span><span class="w"> </span><span class="p">);</span>
+<span class="w">      </span><span class="n">itemEnt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">player</span><span class="p">.</span><span class="n">GetInventory</span><span class="p">().</span><span class="n">CreateInInventory</span><span class="p">(</span><span class="w"> </span><span class="s">"Pear"</span><span class="w"> </span><span class="p">);</span>
 <span class="w">    </span><span class="k">else</span>
-<span class="w">      </span><span class="n">itemEnt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">player</span><span class="p">.</span><span class="n">GetInventory</span><span class="p">().</span><span class="n">CreateInInventory</span><span class="p">(</span><span class="w"> </span><span class="s">&quot;Plum&quot;</span><span class="w"> </span><span class="p">);</span>
+<span class="w">      </span><span class="n">itemEnt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">player</span><span class="p">.</span><span class="n">GetInventory</span><span class="p">().</span><span class="n">CreateInInventory</span><span class="p">(</span><span class="w"> </span><span class="s">"Plum"</span><span class="w"> </span><span class="p">);</span>
 <span class="w">    </span><span class="n">SetRandomHealth</span><span class="p">(</span><span class="w"> </span><span class="n">itemEnt</span><span class="w"> </span><span class="p">);</span>
 <span class="w">  </span><span class="p">}</span>
 </code></pre></div>

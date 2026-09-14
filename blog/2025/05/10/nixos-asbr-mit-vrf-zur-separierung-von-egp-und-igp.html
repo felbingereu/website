@@ -997,12 +997,12 @@ Nachdem die Konfiguration angewandt wurde, kann wie folgt überprüft werden,
 ob die Route wie gewünscht abgelehnt wird.
 
 Von Upstream Provider C empfangene Routen anzeigen:
-<div class="highlight"><pre><span></span><code>[root@asbr:~]# vtysh -c &#39;show ip bgp vrf public neighbors 172.20.20.1 received-routes&#39;
+<div class="highlight"><pre><span></span><code>[root@asbr:~]# vtysh -c 'show ip bgp vrf public neighbors 172.20.20.1 received-routes'
 BGP table version is 2, local router ID is 12.34.56.78, vrf id 7
 Default local pref 100, local AS OWN_ASN
 Status codes:  s suppressed, d damped, h history, u unsorted, * valid, &gt; best, = multipath,
               i internal, r RIB-failure, S Stale, R Removed
-Nexthop codes: @NNN nexthop&#39;s vrf id, &lt; announce-nh-self
+Nexthop codes: @NNN nexthop's vrf id, &lt; announce-nh-self
 Origin codes:  i - IGP, e - EGP, ? - incomplete
 RPKI validation codes: V valid, I invalid, N Not found
 
@@ -1014,7 +1014,7 @@ Total number of prefixes 1 (1 filtered)
 
 Die Default-Route wird gefiltert und erscheint daher nicht in den akzeptierten Routen,
 die in die RIB übernommen werden:
-<div class="highlight"><pre><span></span><code>[root@asbr:~]# vtysh -c &#39;show ip bgp vrf public neighbors 172.20.20.1 routes&#39;
+<div class="highlight"><pre><span></span><code>[root@asbr:~]# vtysh -c 'show ip bgp vrf public neighbors 172.20.20.1 routes'
 </code></pre></div>
 </details>
 
@@ -1034,7 +1034,7 @@ Routen in FIB für VRF public anzeigen:
 </code></pre></div>
 <br>
 Routen in RIB für VRF public anzeigen:
-<div class="highlight"><pre><span></span><code>[root@asbr:~]# vtysh -c &#39;show ip route vrf public&#39;
+<div class="highlight"><pre><span></span><code>[root@asbr:~]# vtysh -c 'show ip route vrf public'
 Codes: K - kernel route, C - connected, L - local, S - static,
     R - RIP, O - OSPF, I - IS-IS, B - BGP, E - EIGRP, N - NHRP,
     T - Table, v - VNC, V - VNC-Direct, A - Babel, D - SHARP,
@@ -1101,24 +1101,24 @@ wurde zunächst die IPv6-BGP-Sitzung deaktiviert. Im Anschluss wurden die notwen
 (0.0.0.0/0 ohne Bogon-Präfixe) generiert und statisch in der FIB der VRF public definiert:</p>
 <div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">netaddr</span><span class="w"> </span><span class="kn">import</span> <span class="n">IPSet</span>
 
-<span class="n">result</span> <span class="o">=</span> <span class="n">IPSet</span><span class="p">([</span><span class="s2">&quot;0.0.0.0/0&quot;</span><span class="p">])</span> <span class="o">-</span> <span class="n">IPSet</span><span class="p">([</span>
-  <span class="s2">&quot;0.0.0.0/8&quot;</span><span class="p">,</span>
-  <span class="s2">&quot;10.0.0.0/8&quot;</span><span class="p">,</span>
-  <span class="s2">&quot;100.64.0.0/10&quot;</span><span class="p">,</span>
-  <span class="s2">&quot;127.0.0.0/8&quot;</span><span class="p">,</span>
-  <span class="s2">&quot;169.254.0.0/16&quot;</span><span class="p">,</span>
-  <span class="s2">&quot;172.16.0.0/12&quot;</span><span class="p">,</span>
-  <span class="s2">&quot;192.0.0.0/24&quot;</span><span class="p">,</span>
-  <span class="s2">&quot;192.0.2.0/24&quot;</span><span class="p">,</span>
-  <span class="s2">&quot;192.168.0.0/16&quot;</span><span class="p">,</span>
-  <span class="s2">&quot;198.18.0.0/15&quot;</span><span class="p">,</span>
-  <span class="s2">&quot;198.51.100.0/24&quot;</span><span class="p">,</span>
-  <span class="s2">&quot;203.0.113.0/24&quot;</span><span class="p">,</span>
-  <span class="s2">&quot;224.0.0.0/4&quot;</span><span class="p">,</span>
-  <span class="s2">&quot;240.0.0.0/4&quot;</span><span class="p">,</span>
-  <span class="s2">&quot;255.255.255.255/32&quot;</span><span class="p">,</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">IPSet</span><span class="p">([</span><span class="s2">"0.0.0.0/0"</span><span class="p">])</span> <span class="o">-</span> <span class="n">IPSet</span><span class="p">([</span>
+  <span class="s2">"0.0.0.0/8"</span><span class="p">,</span>
+  <span class="s2">"10.0.0.0/8"</span><span class="p">,</span>
+  <span class="s2">"100.64.0.0/10"</span><span class="p">,</span>
+  <span class="s2">"127.0.0.0/8"</span><span class="p">,</span>
+  <span class="s2">"169.254.0.0/16"</span><span class="p">,</span>
+  <span class="s2">"172.16.0.0/12"</span><span class="p">,</span>
+  <span class="s2">"192.0.0.0/24"</span><span class="p">,</span>
+  <span class="s2">"192.0.2.0/24"</span><span class="p">,</span>
+  <span class="s2">"192.168.0.0/16"</span><span class="p">,</span>
+  <span class="s2">"198.18.0.0/15"</span><span class="p">,</span>
+  <span class="s2">"198.51.100.0/24"</span><span class="p">,</span>
+  <span class="s2">"203.0.113.0/24"</span><span class="p">,</span>
+  <span class="s2">"224.0.0.0/4"</span><span class="p">,</span>
+  <span class="s2">"240.0.0.0/4"</span><span class="p">,</span>
+  <span class="s2">"255.255.255.255/32"</span><span class="p">,</span>
 <span class="p">])</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">cidr</span><span class="p">)</span> <span class="k">for</span> <span class="n">cidr</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">iter_cidrs</span><span class="p">()]))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">'</span><span class="se">\n</span><span class="s1">'</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">cidr</span><span class="p">)</span> <span class="k">for</span> <span class="n">cidr</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">iter_cidrs</span><span class="p">()]))</span>
 </code></pre></div>
 <p>Anschließend funktionierte auch die Kommunikation zwischen Client und Internet:</p>
 <p><div class="highlight"><pre><span></span><code>[root@client:~]# ping -c 1 1.1.1.1

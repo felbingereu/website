@@ -881,10 +881,10 @@ it is a good idea to set up the dropbear ssh server. This allows you to enter
 a password for decryption via ssh, instead of using the Proxmox vnc console,
 where copy/paste cannot be used.</p>
 <div class="highlight"><pre><span></span><code>apt<span class="w"> </span>install<span class="w"> </span>dropbear-initramfs
-<span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;ssh-ed25519 ...&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>tee<span class="w"> </span>-a<span class="w"> </span>/etc/dropbear-initramfs/authorized_keys
+<span class="nb">echo</span><span class="w"> </span><span class="s2">"ssh-ed25519 ..."</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>tee<span class="w"> </span>-a<span class="w"> </span>/etc/dropbear-initramfs/authorized_keys
 
 <span class="c1"># adjust dropbear config</span>
-sed<span class="w"> </span>-i<span class="w"> </span><span class="s1">&#39;s|#\(DROPBEAR_OPTIONS\).*|\1=&quot;-I 60 -R -F -E -j -k -p 2222 -s -c /bin/cryptroot-unlock&quot;|&#39;</span><span class="w"> </span>/etc/dropbear-initramfs/config
+sed<span class="w"> </span>-i<span class="w"> </span><span class="s1">'s|#\(DROPBEAR_OPTIONS\).*|\1="-I 60 -R -F -E -j -k -p 2222 -s -c /bin/cryptroot-unlock"|'</span><span class="w"> </span>/etc/dropbear-initramfs/config
 
 <span class="c1"># enable networking in initramfs</span>
 <span class="c1"># format: ip=&lt;client-ip&gt;:&lt;server-ip&gt;:&lt;gw-ip&gt;:&lt;netmask&gt;:&lt;hostname&gt;:&lt;device&gt;:&lt;autoconf&gt;:&lt;dns-server-0-ip&gt;:&lt;dns-server-1-ip&gt;:&lt;ntp0-ip&gt;</span>
