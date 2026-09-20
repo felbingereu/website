@@ -11,6 +11,8 @@ draft: True
 # Server- und Netzwerkinfrastruktur mit NixOS
 <!-- REVIEWERS: Julian K, Jan G, Felix E? -->
 
+<!-- DNS Auf HELPWAVE PVE: hedgedoc.test1234567.de / keycloak.test1234567.de ; aktuell firewall bei hetzner zu ... -->
+
 Seit 2019 beschäftige ich mich mit der Administration Linux-basierter Serversysteme. Angefangen
 hat alles mit eigenen Projekten. Mit der Zeit übernahm ich jedoch auch die Betreuung von Systemen
 für Freunde und Bekannte, darunter beispielsweise für den YouTuber The Morpheus Tutorials.
@@ -36,8 +38,65 @@ auf einem System vorgenommen werden sollen, sondern welcher Zielzustand erreicht
 Mit einem sogenannten rebuild wird diese Konfiguration anschließend angewandt und das System
 in den definierten Zustand versetzt.
 
-<!-- Wieso empfinde ich NixOS für Server- und Netzwerkinfrastruktur als geeignet -->
-<!-- Wie ist die Nix Syntax aufgebaut, steile Lernkurve! -->
+<!-- more -->
+
+Für Server- und Netzwerkinfrastruktur eignet sich NixOS durch die Möglichkeit, die gesamte Konfiguration versioniert und nachvollziehbar
+zu verwalten. Die Konfigurationsdateien können in Git abgelegt werden, was die Zusammenarbeit stark vereinfacht. Änderungen lassen sich
+dadurch dokumentieren und vor der Anwendung beispielsweise über Pull Requests prüfen und reviewen. Gleichzeitig können mehrere Systeme
+konsistent konfiguriert werden, wodurch Konfigurationsabweichungen und manuelle Fehler reduziert werden.
+
+Ein weiterer Vorteil ist die Reproduzierbarkeit. Systeme können auf Grundlage derselben Konfiguration für verschiedene Anwendungsfälle (z. B.
+Test-, Staging- und Produktionsumgebungen) aufgebaut werden. Das vereinfacht Wartung, Migration und Wiederherstellung. Durch die Verwaltung
+verschiedener Systemgenerationen ist es außerdem möglich, bei fehlerhaften Änderungen auf eine zuvor funktionierende Konfiguration zurückzurollen.
+
+Für Netzwerkinfrastrukturen ist besonders interessant, dass sich Firewall-Regeln, Routing, VLANs, VPNs und Netzwerkdienste zentral definieren
+lassen. Dadurch kann die Infrastruktur in weiten Teilen wie Software behandelt werden. Referenzen zwischen den einzelnen Systemen innerhalb der
+Codebasis schaffen zudem eine zentrale und konsistente Informationsquelle (Single Source of Truth).
+
+NixOS bringt jedoch eine deutlich höhere Lernkurve mit sich, da sich sowohl die Nix-Sprache als auch das deklarative Modell grundlegend von der
+klassischen Administration anderer Linux-Distributionen unterscheiden.
+
+<!--
+## Nix Syntax
+In diesem Kapitel werden einige Eigenschaften der Nix Syntax erläutert. Es dient primär als Nachschlagewerk für die später genutzten Konfigurationen.
+```nix
+# Einzeiliger Kommentar
+
+/*
+  Mehrzeiliger Kommentar
+*/
+
+{
+  # Datentypen
+  enable = false;
+  port = 8000;
+  domain = "hedgedoc";
+  message = ''
+    Dieser Text kann
+    über mehrere Zeilen gehen.
+  '';
+
+  # String-Interpolation
+  fqdn = "${hostname}.example.com";
+  ignore = ''
+    keine ''${String-Interpolation}
+    in dieser variable.
+  '';
+
+  # Listen
+  webPorts = [ 80 443 ]; # kein Komma!
+  sshPorts = [ 22 ];
+  allPorts = webPorts ++ sshPorts;
+
+  # Attrs
+  server = {
+    hostname = "server01";
+    role = "webserver";
+    sshPort = 22;
+  };
+
+}
+```
 
 ```nix
 {
@@ -57,6 +116,7 @@ in den definierten Zustand versetzt.
   };
 }
 ```
+-->
 
 ## Installation
 Für die ersten Schritte mit NixOS auf einem Server empfiehlt sich die Installation über
@@ -111,9 +171,15 @@ Für die spätere Nutzung sind bereits jetzt zwei weitere Möglichkeiten erwähn
    Linux Kernel implementierte Funktion (kexec) verwendet, die ein neues Kernel-Image lädt und in dieses startet.
 
 ### Partitionierung
-Nachdem NixOS gestartet wurde, muss die Festplatte, auf der es installiert werden soll, partitioniert werden. [github:nix-community/disko](https://github.com/nix-community/disko) ermöglicht die Konfiguration von Partitionierung und Formatierung deklarativ in Nix. Diverse Konfigurationsbeispiele, wie die Verwendung von LUKS oder ZFS, können dem Repository entnommen werden: <https://github.com/nix-community/disko/tree/master/example>
+Nachdem NixOS gestartet wurde, muss die Festplatte, auf der es installiert werden soll, partitioniert werden.
+[github:nix-community/disko](https://github.com/nix-community/disko) ermöglicht die Konfiguration von Partitionierung
+und Formatierung deklarativ in Nix. Diverse Konfigurationsbeispiele, wie die Verwendung von LUKS oder ZFS, können dem
+Repository entnommen werden: <https://github.com/nix-community/disko/tree/master/example>
 
-Um die ersten Schritte übersichtlich zu halten, werden zunächst lediglich eine EFI-Systempartition sowie ein unverschlüsseltes ext4-Root-Dateisystem eingerichtet. Im weiteren Verlauf des Artikels werden neben der Verwendung von LUKS und ZFS auch verschiedene Möglichkeiten zum Entsperren verschlüsselter Systeme behandelt, darunter die TPM-Integration mittels systemd-cryptenroll sowie das Remote-Entsperren per SSH aus der Initrd-Umgebung.
+Um die ersten Schritte übersichtlich zu halten, werden zunächst lediglich eine EFI-Systempartition sowie ein
+unverschlüsseltes ext4-Root-Dateisystem eingerichtet. Im weiteren Verlauf des Artikels werden neben der Verwendung
+von LUKS und ZFS auch verschiedene Möglichkeiten zum Entsperren verschlüsselter Systeme behandelt, darunter die
+TPM-Integration mittels systemd-cryptenroll sowie das Remote-Entsperren per SSH aus der Initrd-Umgebung.
 
 ```nix
 # /tmp/disk-config.nix
@@ -169,9 +235,49 @@ mount /dev/sda1 /mnt/boot
 ```
 
 ### Minimalkonfiguration
-<!-- TODO think about really using this tool, since partition is probally done using disko -->
+Anschließend werden mit folgendem Befehl einige Konfigurationsoptionen generiert, welche im weiteren Verlauf genutzt werden
 ```sh
 nixos-generate-config --root /mnt
+```
+Die Erzeugte configuration.nix beinhaltet beispielsweise die Konfiguration des Bootloaders, welche dafür sorgt, dass das System nach der Installation gestartet werden kann.
+Des Weiteren wird `system.stateVersion` konfiguriert, welches die nixpkgs Version mit der das System installiert wurde enthält, um das Verhalten bestimmter systembezogener
+Dienste und Standardwerte bei späteren Aktualisierungen kompatibel zu halten.
+
+```nix
+# configuration.nix
+{
+  boot.loader = {
+    systemd-boot.enable = true;
+    efi.canTouchEfiVariables = true;
+  };
+
+  system.stateVersion = "26.05";
+}
+```
+Die generierte hardware-configuration.nix kann um die fileSystems Optionen reduziert werden, falls das System mit Disko aufgesetzt wurde.
+```sh
+mv /tmp/disk-config.nix /mnt/etc/nixos/disk-config.nix
+```
+Die in der Initrd verfügbaren Kernelmodule können sich je nach System deutlich unterscheiden. Daher sollte immer die generierte Konfiguration inspiziert werden.
+```nix
+# hardware-configuration.nix
+{ lib, modulesPath, ... }:
+{
+  imports = [
+    (modulesPath + "/profiles/qemu-guest.nix")
+  ];
+
+  boot.initrd.availableKernelModules = [
+    "ata_piix"
+    "uhci_hcd"
+    "virtio_pci"
+    "virtio_scsi"
+    "sd_mod"
+    "sr_mod"
+  ];
+
+  nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
+}
 ```
 
 ```nix
@@ -186,18 +292,13 @@ nixos-generate-config --root /mnt
       hostname = nixpkgs.lib.nixosSystem {
         modules = [
           ./configuration.nix
+          ./hardware-configuration.nix
           disko.nixosModules.disko
           ./disk-config.nix
         ];
       };
     };
   };
-}
-```
-```nix
-# configuration.nix
-{
-  # TODO
 }
 ```
 
@@ -733,6 +834,7 @@ Wie auch beim Netzwerk unterstützt NixOS verschiedene Firewallimplementierungen
 - PostgreSQL Datenbnak
 - HedgeDoc uploaded media files
 
+## LUKS encrypted root
 
 ## System: CI/CD
 <!-- aufbau git mit ci/cd pipeline for gitops, ggf. integration von gradient build server-->
