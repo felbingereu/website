@@ -9,9 +9,9 @@ draft: True
 ---
 
 # Server- und Netzwerkinfrastruktur mit NixOS
-<!-- REVIEWERS: Julian K, Jan G, Felix E? -->
+<!-- REVIEWERS: Julian K, Jan G, Felix E -->
 
-<!-- DNS Auf HELPWAVE PVE: hedgedoc.test1234567.de / keycloak.test1234567.de ; aktuell firewall bei hetzner zu ... -->
+<!-- DNS Auf HELPWAVE PVE: hedgedoc.test1234567.de / keycloak.test1234567.de -->
 
 Seit 2019 beschäftige ich mich mit der Administration Linux-basierter Serversysteme. Angefangen
 hat alles mit eigenen Projekten. Mit der Zeit übernahm ich jedoch auch die Betreuung von Systemen
@@ -251,6 +251,13 @@ Dienste und Standardwerte bei späteren Aktualisierungen kompatibel zu halten.
     efi.canTouchEfiVariables = true;
   };
 
+  console.keyMap = "de";
+
+  services.openssh = {
+    enable = true;
+    settings.PermitRootLogin = "yes";
+  };
+
   system.stateVersion = "26.05";
 }
 ```
@@ -333,7 +340,7 @@ von IfState und der Fokus dieses Artikels auf Server- und Netzwerkinfrasturkur (
         interfaces.ens18 = {
           addresses = [
             "192.168.0.100/24"
-            "fd00:ef47:ab81:f69d:1234:56ff:fe78:9abc/64"
+            "fd08:ef47:ab81:f69d:1034:56ff:fe78:9abc/64"
           ];
           link = {
             state = "up";
@@ -455,6 +462,7 @@ Das ACME Modul in NixOS unterstützt derzeit die Challenges ACME-HTTP-01 und ACM
     };
     nginx.virtualHosts."hedgedoc.example.com".enableACME = true;
   };
+  security.acme.acceptTerms = true;
 }
 ```
 Durch den Standardmäßig auf true gesetzten forceSSL Parameter werden anschließend sämtliche Requests von HTTP auf HTTPS geupgraded.
@@ -482,6 +490,7 @@ Für einen produktiven Betrieb ist eine separate Datenbank wie PostgreSQL jedoch
     };
     nginx.virtualHosts."hedgedoc.example.com".enableACME = true;
   };
+  security.acme.acceptTerms = true;
 }
 ```
 Ähnlich wie zuvor nginx verwendet auch hedgedoc den Unix-Domain-Socket für die Kommunikation mit der PostgreSQL Datenbank. Die zuvor verwendete SQLite Datenbank (/var/lib/hedgedoc/db.sqlite) wird nicht mehr benötigt und kann nun gelöscht werden.
@@ -561,6 +570,7 @@ Für die meisten Anwendungen müssen einzelne Regeln des CRS deaktiviert oder an
         '';
       };
   };
+  security.acme.acceptTerms = true;
 }
 ```
 
@@ -659,15 +669,20 @@ keine SQLite Datenbank, sondern erfordert von Anfang an die Konfiguration einer 
           modsecurity_rules_file ${modsecurity_conf};
         '';
       };
-    keycloak = {
+    keycloak = let
+      hostname = "keycloak.example.com";
+    in {
       enable = true;
       settings = {
-        hostname = "keycloak.example.com";
-        http-enabled = true;
+        inherit hostname;
+        proxy-headers = "forwarded";
       };
       database.host = "/run/postgresql";
+        sslCertificateKey = "/var/lib/acme/${hostname}/key.pem";
+        sslCertificate = "/var/lib/acme/${hostname}/fullchain.pem";
     };
   };
+  security.acme.acceptTerms = true;
 }
 ```
 <!-- TODO  richtige konfiguration von keycloak herausfinden, das war kompliziert, ggf. muss hierfür tls nach wie vor eingebunden werden (meine das war damals so, und ist auch so im modul) -->
@@ -799,6 +814,7 @@ Jedoch bietet HedgeDoc nicht die Möglichkeit das Secret direkt aus einer von so
       database.host = "/run/postgresql";
     };
   };
+  security.acme.acceptTerms = true;
 }
 ```
 
@@ -815,25 +831,360 @@ Start des Dienstes in einem geschützten, temporären Verzeichnis abgelegt. Hedg
 Auslesen von Secrets aus Dateien, weshalb dies in diesem Fall nicht angewandt werden kann.
 
 ## Systemhärtung
-Die Systemhärtung beschreibt die effords damit das System sicher ist
+Unter Systemhärtung versteht man alle Maßnahmen, die darauf abzielen, die Angriffsfläche eines Systems zu reduzieren und dessen
+Sicherheit zu erhöhen. Dazu gehören beispielsweise das Deaktivieren nicht benötigter Dienste, die Einschränkung von Zugriffsrechten,
+eine gezielte Konfiguration von Netzwerkfunktionen sowie die Absicherung administrativer Zugänge.
 
-### Proc FS um zugriff auf hedgedoc environ für unpriviligierte nutzer zu verhindern (wenn überhaupt möglich -> mal testen)
-### Kernel
+Die folgenden Kapitel beschreiben ausgewählte technische Härtungsmaßnahmen unter NixOS. Sie sind als Beispiele und Anregungen
+zu verstehen und stellen keine allgemeingültige Konfiguration für jedes System dar.
+
+Der wichtigste Hinweis lautet daher: Systemhärtung ist immer systemspezifisch. Die erforderlichen Einstellungen hängen von der
+jeweiligen Aufgabe, der Netzwerkumgebung und dem individuellen Bedrohungsmodell ab. Ein System, das als Router eingesetzt wird,
+benötigt beispielsweise IP-Forwarding. Wird diese Funktion aus Sicherheitsgründen deaktiviert, kann es seine eigentliche Aufgabe
+nicht erfüllen. Ein SSH-Jump-Host kann wiederum Agent-Forwarding oder andere spezielle SSH-Funktionen benötigen, die auf einem
+gewöhnlichen Server möglicherweise bewusst abgeschaltet werden sollten.
+
+Eine sinnvolle Härtung besteht deshalb nicht darin, möglichst viele Funktionen pauschal zu deaktivieren. Entscheidend ist vielmehr,
+nur die tatsächlich benötigten Dienste und Berechtigungen zu aktivieren, ihre Verwendung gezielt einzuschränken und die Konfiguration
+regelmäßig zu überprüfen. Sicherheit, Funktionalität und Wartbarkeit müssen dabei stets gemeinsam betrachtet werden.
+
+### Benutzer
+Bisher erfolgte der Zugriff auf den Server über den Benutzer root, dessen Anmeldung per SSH ausdrücklich erlaubt war. Da root über
+uneingeschränkte Rechte verfügt, werden alle ausgeführten Befehle unmittelbar mit den höchstmöglichen Privilegien ausgeführt. Für
+viele administrative Aufgaben ist das jedoch nicht erforderlich. Ein Fehler bei der Eingabe oder Ausführung eines Befehls kann
+dadurch weitreichende Auswirkungen auf das gesamte System haben.
+Insbesondere in Umgebungen mit mehreren Administratoren ist die Verwendung personalisierter Benutzerkonten empfehlenswert.
+Dadurch lassen sich Zugriffe und Änderungen besser einer bestimmten Person zuordnen.
+
+Für jeden Administrator wird zunächst ein eigener Benutzeraccount angelegt, dass Passwort kann mithilfe von Secrets ebenfalls
+deklarativ festgelegt werden. Dieser wird der Gruppe wheel hinzugefügt, wodurch er administrative Befehle über sudo ausführen kann.
+Die erhöhten Rechte werden somit nur gezielt und für einzelne Befehle verwendet. Anschließend wird die direkte Anmeldung von root
+über SSH deaktiviert.
+```nix
+{ config, ... }:
+{
+  sops.secrets."passwords/nico".neededForUsers = true;
+
+  users.users.nico = {
+    isNormalUser = true;
+    extraGroups = [ "wheel" ];
+    hashedPasswordFile = config.sops.secrets."passwords/nico".path;
+  };
+
+  services.openssh.settings.PermitRootLogin = "no";
+}
+```
+
+#### Mutable Users
+
+Wenn das System ausschließlich von Administratoren genutzt und vollständig deklarativ über NixOS verwaltet wird, kann es sinnvoll
+sein, veränderliche Nutzer zu deaktivieren. Dadurch wird verhindert, dass Benutzer außerhalb der NixOS-Konfiguration angelegt, geändert
+oder gelöscht werden. Auch Änderungen wie Passwortänderungen über klassische Systemwerkzeuge sind anschließend nicht mehr dauerhaft möglich.
+```sh
+{
+  users.mutableUsers = false;
+}
+```
+
+#### Password policy
+
+Andernfalls ist eine Passwortrichtlinie empfehlenswert, welche die Verwendung von triviale oder bereits zuvor verwendete Passwörter verhindert.
+Die für das PAM Modul pwquality verwendbaren Parameter können der [manpage](https://linux.die.net/man/8/pam_pwquality) entnommen werden.
+```nix
+{ pkgs, config, lib, ... }:
+{
+  security.pam.services.passwd.rules.password = {
+    pwquality = {
+      control = "required";
+      modulePath = "${pkgs.libpwquality.lib}/lib/security/pam_pwquality.so";
+      # order BEFORE pam_unix.so
+      order = config.security.pam.services.passwd.rules.password.unix.order - 10;
+      settings = {
+        minlen = 24;
+        dcredit = (-2);  # digits
+        lcredit = (-3);  # lowercase
+        ucredit = (-3);  # uppercase
+        ocredit = (-1);  # other
+        maxrepeat = 3;   # amount of consecutive characters
+        enforce_for_root = true;
+      };
+    };
+    unix = {
+      control = lib.mkForce "required";
+      settings.use_authtok = true;
+    };
+  };
+}
+```
+Negative Werte bei *credit legen eine Mindestanzahl der jeweiligen Zeichenart fest. Ein positiver Wert würde dagegen lediglich die Anzahl der
+zulässigen Zeichen dieser Kategorie beeinflussen und kein Sonderzeichen erzwingen.
+
+#### SSH Keys
+Die Authentifizierung über SSH-Schlüssel bietet gegenüber der passwortbasierten Anmeldung sowohl Sicherheits- als auch Komfortvorteile, da sie
+das Risiko von Phishing, Keyloggern und wiederverwendeten Passwörtern reduziert und der private Schlüssel nach dem einmaligen Entsperren für
+die Dauer der Sitzung genutzt werden kann, ohne die Passphrase bei jeder Verbindung erneut eingeben zu müssen.
+```nix
+{
+  services.openssh.settings.PasswordAuthentication = false;
+  users.users.nico.openssh.authorizedKeys.keys = [
+    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBhgHhBf2mK4BwbrBsJREYMfQJ2jNfhOtRt61EV/hsxV"
+  ];
+}
+```
+Der private Schlüssel sollte ausschließlich auf dem eigenen Endgerät gespeichert und mit einer Passphrase geschützt werden. Auf dem Server bzw.
+in der Nix Konfiguration wird nur der zugehörige öffentliche Schlüssel hinterlegt. Noch besser ist es, den privaten Schlüssel auf einem
+dedizierten Hardware-Sicherheitsschlüssel zu speichern, beispielsweise einem FIDO2- oder OpenPGP-kompatiblen Security Key (z. B. einem YubiKey).
+Dadurch verlässt der private Schlüssel das Gerät nicht und kann in der Regel auch nicht ausgelesen werden. Für die Authentifizierung muss der
+Sicherheitsschlüssel physisch angeschlossen und gegebenenfalls durch eine PIN oder eine Berührung bestätigt werden.
+
+#### fail2ban
+Ist das System aus nicht vertrauenswürdigen Netzwerken erreichbar (z. B. Internet), ist der Einsatz von fail2ban empfehlenswert. Der Dienst
+überwacht fehlgeschlagene Anmeldeversuche und sperrt IP-Adressen, von denen innerhalb eines bestimmten Zeitraums wiederholt verdächtige Zugriffe ausgehen.
+```nix
+{
+  services.fail2ban = {
+    enable = true;
+    maxretry = 5;
+    bantime = "8h";
+  };
+}
+```
+
+### SSH
+Neben den im vorherigen Kapitel beschriebenen Einstellungen bietet SSH zahlreiche weitere Konfigurationsoptionen, die abhängig vom Einsatzzweck des
+Systems geprüft und angepasst werden sollten. Auf den meisten Anwendungsservern wird beispielsweise kein TCP/SSH Forwarding benötigen und können somit
+deaktiviert werden:
+```nix
+{
+  services.openssh.settings = {
+    AllowTcpForwarding = false;
+    AllowAgentForwarding = false;
+  };
+}
+```
+
 ### Nix
-nix.settings.allowed-users = wheel, damit nix nicht von allen nutzern genutzt werden kann sondern nur von Mitgliedern der wheel (aka. sudo) gruppe.
+Der Nix-Daemon unseres Systems erlaubt standardmäßig die Interaktion mit allen Benutzern. Dadurch können diese beispielsweise dynamisch Software mit
+nix shell oder nix run nachladen und ausführen. Auf einem Server ist dieses Verhalten in der Regel nicht erforderlich und kann einem Angreifer zusätzliche
+Möglichkeiten bieten, eigene Software auf das System zu bringen. Daher empfiehlt es sich, den Zugriff auf den Nix-Daemon auf administrative Benutzer zu beschränken.
+```nix
+{
+  nix.settings.allowed-users = [ "@wheel" ];
+}
+```
+
+### NixOS
+Standardmäßig verwendet NixOS NTP-Server aus dem eigenen NixOS-Pool. Dadurch kann für externe Beobachter erkennbar werden, dass das System NixOS verwendet.
+```nix
+{
+  networking.timeServers = [
+    "0.pool.ntp.org"
+    "1.pool.ntp.org"
+    "2.pool.ntp.org"
+    "3.pool.ntp.org"
+  ];
+}
+```
+
+### procfs
+Im Secrets Management Kapitel wurde darauf einegangen, dass unpriviligierte Nutzer auf environment variablen von anderen Prozessen zugreifen können.
+Mit hidepid=2 lässt sich das fixen: <!-- rewrite -->
+<!-- ggf. oben in secrets mgnt noch ein satz dazu, dass in diesem kapitel (+link) ein möglicher fix beschrieben wird -->
+```nix
+{
+  fileSystems."/proc" = {
+    fsType = "proc";
+    device = "proc";
+    options = [
+      "nosuid"
+      "nodev"
+      "noexec"
+      "hidepid=2"
+    ];
+    neededForBoot = true;
+  };
+}
+```
+
+### Kernel
+<!-- will ich das echt empfehlen? nicht sicher wie viel es actually bringt...  Nachladen kann erstmal nur root und dann ist das system eh gefallen ?-->
+```nix
+{
+  security.lockKernelModules = true;
+
+  # kmod blacklist?
+
+  # sysctls in own chapter?
+}
+```
+#### Network
+```nix
+{
+   # do not use ntp servers of nixos project (leaks information that the device uses nixos)
+  networking.timeServers = [
+    "0.pool.ntp.org"
+    "1.pool.ntp.org"
+    "2.pool.ntp.org"
+    "3.pool.ntp.org"
+  ];
+}
+```
+#### User Space
+
+### Memory
+?
+```nix
+{
+  security = {
+    allowSimultaneousMultithreading = lib.mkDefault false;
+
+    forcePageTableIsolation = lib.mkDefault true;
+
+    # This is required by podman to run containers in rootless mode.
+    unprivilegedUsernsClone = lib.mkDefault config.virtualisation.containers.enable;
+
+    virtualisation.flushL1DataCache = lib.mkDefault "always";
+  };
+
+  environment.memoryAllocator.provider = lib.mkDefault "scudo";
+
+  boot.kernelParams = [
+    # Don't merge slabs
+    "slab_nomerge"
+
+    # Overwrite free'd pages
+    "page_poison=1"
+
+    # Enable page allocator randomization
+    "page_alloc.shuffle=1"
+
+    # Disable debugfs
+    "debugfs=off"
+  ];
+}
+```
+
+### usbguard
+wann sinnvoll auf server (primär dedicated hardware)
+```nix
+{
+  services.usbguard = {
+    enable = true;
+    dbus.enable = true;
+    IPCAllowedGroups = [ "wheel" ];
+    insertedDevicePolicy = "apply-policy";
+    presentControllerPolicy = "apply-policy";
+    presentDevicePolicy = "apply-policy";
+    deviceRulesWithPort = false;
+    implicitPolicyTarget = "reject";
+    rules = ''
+      allow id b945:2c62 serial "" name "CHERRY USB Keyboard" hash "KDR4ikabgRgNdISC+g/6BjObDBJi8I8UuyiBNOevd3A=" parent-hash "ePkP4JX+4jPdgw+oSk1zc4Hldj0LmJ3w0fZ2ka9ZCEk=" with-interface { 04:01:00 }
+    '';
+  };
+}
+```
+
 ### Dienste
 Grundsätzlich sollten alle auf dem System laufende Dienste gehärtet werden. NixOS verwendet systemd, welches ein systemd analyse security mitbringt. Viele Services sind derzeit unzureichend gehärtet.
-#### SSH
-diverse schritte sinnvoll, ggf. fail2ban, ggf. passwortpolicy, wenn man keine mutalUsers hat
-### ...
+
 ### Firewall
 Wie auch beim Netzwerk unterstützt NixOS verschiedene Firewallimplementierungen, wie beispielsweise iptables, nftables und firewalld. Hier verwenden wir nftables. Das NixOS Firewall Modul ist aber blöd, deswegen konfigurieren wir den größten Teil selbst.
 
 ## Monitoring
+Mit zunehmender Anzahl an Servern wird auch das Thema Monitoring wichtiger. CPU und RAM Auslastung, verfügbarer Speicherplatz, Ablaufdaten für TLS Zertifikate, ...
+Ähnlich wie bei der Systemhärtung dienen die folgenden Beispiele nur als Inspiration, nicht als vollwertige Konfiguration. Vor allem beim Thema Alerts sind der eigenen Fantasie keine grenzen gesetzt.
+
+Es gibt verschiedene Ansätze zum Thema Monitoring (Push/Pull) und entsprechend natürlich auch verschiedene Tools. Dieses Kapitel beschreibt die Implementierung eines Monitorings mit Prometheus
+
+### Exporter
+node_exporter für systemauslastung
+```nix
+{
+  services.prometheus.exporters.node = {
+    enable = true;
+    openFirewall = true;
+    enabledCollectors = [ "systemd" ];
+  };
+}
+```
+
+blackbox_exporter für tls zertifikate
+
+### Alertmanager
+Alertmanager bietet die Möglichkeit basierend auf den von Prometheus gesammelten Metriken Alerts zu generieren.
+
+Die folgende Regel alamiert aus, wenn in einem Beobachtungsfenster von 20 Minuten bei kontinuierlicher Schreibrate innerhalb von 24 Stunden die Festplatte vollaufen würden.
+
+```nix
+{
+  services.prometheus = {
+    rules = [
+      builtins.toJSON
+      {
+        groups = [
+          {
+            name = "custom";
+            rules = [
+              {
+                alert = "HostDiskWillFillIn24Hours";
+                expr = ''
+                  ((node_filesystem_avail_bytes * 100) / node_filesystem_size_bytes < 10 and ON (instance, device, mountpoint) predict_linear(node_filesystem_avail_bytes{fstype!~"tmpfs"}[1h], 24 * 3600) < 0 and ON (instance, device, mountpoint) node_filesystem_readonly == 0) * on(instance) group_left (nodename) node_uname_info{nodename=~".+"}
+                '';
+                for = "20m";
+                labels = {
+                  severity = "warning";
+                };
+                annotations = {
+                  summary = "Host disk will fill in 24 hours (instance {{ $labels.instance }})";
+                  description = "Filesystem is predicted to run out of space within the next 24 hours at current write rate\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}";
+                };
+              }
+            ];
+          }
+        ];
+      }
+    ];
+    alertmanager = {
+      enable = true;
+      configuration = {
+        route = {
+          group_wait = "10s";
+          group_interval = "30s";
+          repeat_interval = "1d";
+          receiver = "default";
+
+          routes = [
+            {
+              receiver = "default";
+              match_re = {
+                severity = "critical";
+              };
+              continue = true;
+            }
+          ];
+        };
+        receivers = [
+          {
+            name = "default";
+            email_configs = [ "monitoring-alerts@example.com" ];
+          }
+        ];
+      };
+    };
+  };
+}
+```
+
+### Grafana
+Zur Visualisierung der mit Prometheus gesammelten Metriken kann Grafana eingesetzt werden.
+
+Auch Grafana kann auch unsere zuvor aufgesetzte Keycloak instanz angebunden werden.
+
 ## Backup
 - PostgreSQL Datenbnak
 - HedgeDoc uploaded media files
 
+## Partitionierung: /var/log separat, um zu verhindern, dass system nicht mehr arbeiten kann, weil zu viele logs geschrieben wurden
 ## LUKS encrypted root
 
 ## System: CI/CD
@@ -841,7 +1192,53 @@ Wie auch beim Netzwerk unterstützt NixOS verschiedene Firewallimplementierungen
 
 ## System: Router
 <!-- konfiguration eines multi vrf routers mit static route leaks via frr für netzwerksegmentierung -->
+<!-- vrrp mal testen? -->
 
 ## Putting it together
-<!-- create network out of the components build above -->
-<!-- Router with VRFs for Internet, DMZ(proxy) and INFRA(git server) -->
+Im Rahmen des Blogartikels wurden verschiedene Systeme gebaut. Schlussendlich können diese zu einer Infrastruktur verbunden werden. Folgendes Netzwerkdiagramm beschreibt den Aufbau schematisch.
+```mermaid
+flowchart LR
+  %% networks
+  internet[Internet]@{ shape: cloud } --- router[Router]
+  router --- svc[SVC]@{ shape: cloud }
+  router --- infra[Infra]@{ shape: cloud }
+  router --- dmz[DMZ]@{ shape: cloud }
+
+  %% svc network
+  svc --- notes
+
+  %% infra network
+  infra --- git
+  infra --- build
+  infra --- mon
+  infra --- log
+
+  %% dmz network
+  dmz --- proxy
+  dmz --- dns
+  dmz --- time
+```
+### Router
+<!-- VRF route leaks: internet<->svc, infra<->svc internet<->dmz, infra<->dmz -->
+<!-- all hosts use dmz:proxy for outgoing internet, dmz:dns as dns, dmz:time as time server, are monitored by infra:mon and send logs to infra:log -->
+<!-- TODO test using multiple vrf's to separate this, will port fwd from internet to svc work, when default route is not available there? -->
+
+### SVC
+#### notes
+hedgedoc
+### Infra
+#### git
+gitea
+#### build
+gitea actions, gradient
+#### mon
+prometheus + grafana
+#### log
+graylog
+### DMZ
+#### proxy
+squid
+#### dns
+knot resolver (kresd)
+#### time
+?
