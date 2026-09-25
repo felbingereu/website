@@ -9,7 +9,7 @@ draft: True
 ---
 
 # Server- und Netzwerkinfrastruktur mit NixOS
-<!-- REVIEWERS: Julian K, Jan G, Felix E -->
+<!-- REVIEWERS: Julian K, Jan G, Felix E, Christina K. (mit install) -->
 
 <!-- DNS Auf HELPWAVE PVE: hedgedoc.test1234567.de / keycloak.test1234567.de -->
 
@@ -123,6 +123,7 @@ Für die ersten Schritte mit NixOS auf einem Server empfiehlt sich die Installat
 das offizielle Minimal-ISO-Image, das auf der [NixOS-Website](https://nixos.org/download/)
 heruntergeladen werden kann.
 
+<!-- ggf. in fortgeschrittene konzepte, weil eh schon schwierig zu verstsehen -->
 Für die spätere Nutzung sind bereits jetzt zwei weitere Möglichkeiten erwähnenswert:
 
 1. Dank des deklarativen Ansatzes lässt sich ein eigenes ISO-Image vergleichsweise
@@ -703,7 +704,7 @@ Stattdessen speichern wir Secrets in verschlüsselten Dateien außerhalb des Nix
 
 Jedoch bietet HedgeDoc nicht die Möglichkeit das Secret direkt aus einer von sops-nix bereitgestellten Datei einlesen. Die Anwendung erwartet stattdessen den entsprechenden Konfigurationswert beziehungsweise die Umgebungsvariable `CMD_SESSION_SECRET` (HedgeDoc hieß früher CodiMD, daher das `CMD`).
 
-<!-- TODO flake anpassen -->
+Zunächst wird die flake.nix um sops-nix erweitert:
 ```nix
 # flake.nix
 {
@@ -726,11 +727,43 @@ Jedoch bietet HedgeDoc nicht die Möglichkeit das Secret direkt aus einer von so
   };
 }
 ```
-<!-- TODO .sops.yaml und (admin + target) keys anlegen -->
+Anschließend erzeugen wir die Schlüsselpaare für die Administratoren sowie die Systeme, die auf diese Zugreifen müssen. Neben [age Keys](https://github.com/filosottile/age) können auch GPG Keys in sops hinterlegt werden. Auch SSH Keys lassen sich, nachdem diese mit `ssh-to-age` zu einem age Public Key konvertiert wurden hinterlegen. Grundsätzlich ist von der Mehrfachverwendung von Schlüsselmaterial abzuraten, je nach Systemkonfiguration ist es hier hinnehmbar.
+
+Ein age Keypair mit sicheren Unix Zugriffsrechten kann mithilfe der folgenden Befehle erstellt werden:
+```sh
+OLD_UMASK=$(umask)
+umask 177
+age-keygen > private.key
+umask ${OLD_UMASK}
+```
+
+Danach kann die .sops.yaml angelegt werden, in welcher die Schlüssel mit den jeweiligen Secret-Dateien verknüpft werden.
+```yml
+# .sops.yaml
+keys:
+  - &nico age1x0hr45ueh3nu4xypjltmlssz9jexyalzwu4296600gs9mlpl95rq2ny2es
+  - &hedgedoc age12lasmrsaj50hanwq743lljq94x0ax2ht5jf9dysauqt5s22263vs5ql6f0
+
+creation_rules:
+  - path_regex: secrets.yaml
+    key_groups:
+      - age: [ *nico, *hedgedoc ]
+```
+Nun kann die entsprechende secrets.yaml mit `sops secrets.yaml` angelegt werden.
+```yml
+hedgedoc:
+  sessionSecret: My_S3cure-S3cr3t
+```
+Abschließend kann die Nix Konfiguration so angepasst werden, dass das Secret geladen wird und entschlüsselt als Datei zur Verfügung steht.
+Unterstützt eine Anwendung nicht das Laden von Secrets aus Dateien, bietet Sops die Möglichkeit diese in einem Template zur Formatieren und dann beispielsweise als Umgebungsvariablendatei einzubinden.
 ```nix
 { pkgs, config, ... }:
 {
   sops = {
+    age = {
+      keyFile = "/root/private.key";
+      sshKeyPaths = [ ];
+    };
     secrets."hedgedoc/sessionSecret" = { };
     templates."hedgedoc/environment".content = ''
       CMD_SESSION_SECRET=${config.sops.placeholder."hedgedoc/sessionSecret"}
@@ -817,6 +850,7 @@ Jedoch bietet HedgeDoc nicht die Möglichkeit das Secret direkt aus einer von so
   security.acme.acceptTerms = true;
 }
 ```
+Wird ein Key in der .sops.yaml aktualisiert, muss die secrets.yaml mit `sops updatekeys secrets.yaml` aktualisiert werden.
 
 Die Verwendung einer Umgebungsvariablen ist zwar sicherer, als das Secret direkt in der Nix-Konfiguration zu hinterlegen.
 Sie bringt jedoch einen weiteren Nachteil mit sich: Umgebungsvariablen sind an den jeweiligen Prozess gebunden und können
@@ -1007,20 +1041,247 @@ Mit hidepid=2 lässt sich das fixen: <!-- rewrite -->
 ```
 
 ### Kernel
+TODO überlegen was sinnvoll ist
 <!-- will ich das echt empfehlen? nicht sicher wie viel es actually bringt...  Nachladen kann erstmal nur root und dann ist das system eh gefallen ?-->
 ```nix
 {
   security.lockKernelModules = true;
+  security = {
+    allowSimultaneousMultithreading = lib.mkDefault false;
 
-  # kmod blacklist?
+    forcePageTableIsolation = lib.mkDefault true;
+  };
 
-  # sysctls in own chapter?
+  environment.memoryAllocator.provider = lib.mkDefault "scudo";
+
+  boot = {
+    kernelParams = [
+      # This disables slab merging, which significantly increases the difficulty
+      # of heap exploitation by preventing overwriting objects from merged caches
+      # and by making it harder to influence slab cache layout.
+      "slab_nomerge"
+
+      # Randomize page allocator freelists, improving security by making page
+      # allocations less predictable. This also improves performance.
+      "page_alloc.shuffle=1"
+
+      # Disable debugfs, which exposes a lot of sensitive information about the
+      # kernel, see https://lkml.org/lkml/2020/7/16/122
+      "debugfs=off"
+
+      # Overwrite free'd pages to mitigate use-after-free exploits
+      "page_poison=1"
+
+      # Direct memory access (DMA) attacks involve gaining complete access to
+      # all of system memory by inserting certain physical devices. This can
+      # be mitigated via an IOMMU, which controls the areas of memory accessible
+      # to devices, or by blacklisting particularly vulnerable kernel modules.
+      "intel_iommu=on"
+      "amd_iommu=on"
+
+      # Disable busmaster bit on all PCI bridges during very early boot, to fix
+      # a hole in the above IOMMU, see https://mjg59.dreamwidth.org/54433.html
+      "efi=disable_early_pci_dma"
+    ];
+
+    kernel.sysctl = {
+      # A kernel pointer points to a specific location in kernel memory.
+      # These can be very useful in exploiting the kernel, but kernel
+      # pointers are not hidden by default — it is easy to uncover them by,
+      # for example, reading the contents of /proc/kallsyms. This setting
+      # aims to mitigate kernel pointer leaks.
+      "kernel.kptr_restrict" = 2;
+
+      # dmesg is the kernel log. It exposes a large amount of useful kernel
+      # debugging information, but this can often leak sensitive information,
+      # such as kernel pointers. Changing the above sysctl restricts the kernel
+      # log to the CAP_SYSLOG capability.
+      "kernel.dmesg_restrict" = 1;
+
+      # eBPF exposes quite large attack surface. As such, it must be restricted.
+      # These sysctls restrict eBPF to the CAP_BPF capability (CAP_SYS_ADMIN on
+      # kernel versions prior to 5.8) and enable JIT hardening techniques, such
+      # as constant blinding.
+      "kernel.unprivileged_bpf_disabled" = 1;
+      "net.core.bpf_jit_harden" = 2;
+
+      # Restrict loading TTY line disciplines to the CAP_SYS_MODULE capability to
+      # prevent unprivileged attackers from loading vulnerable line disciplines with
+      # the TIOCSETD ioctl, which has been abused in a number of exploits before.
+      "dev.tty.ldisc_autoload" = 0;
+
+      # The userfaultfd() syscall is often abused to exploit use-after-free
+      # flaws. Due to this, this sysctl is used to restrict this syscall to
+      # the CAP_SYS_PTRACE capability.
+      "vm.unprivileged_userfaultfd" = 0;
+
+      # kexec can be used to boot another kernel during runtime, which can be abused
+      # to load a malicious kernel and gain arbitrary code execution in kernel mode.
+      "kernel.kexec_load_disabled" = 1;
+
+      # The SysRq key exposes a lot of potentially dangerous debugging functionality
+      # to unprivileged users. Contrary to common assumptions, SysRq is not only an
+      # issue for physical attacks, as it can also be triggered remotely.
+      # SAK (Secure Attention Key) prevents keylogging, if used correctly.
+      "kernel.sysrq" = 4;
+
+      # Performance events add considerable kernel attack surface and have caused
+      # abundant vulnerabilities. This sysctl restricts all usage of performance
+      # events to the CAP_PERFMON capability (CAP_SYS_ADMIN on kernel versions prior to 5.8).
+      "kernel.perf_event_paranoid" = 3;
+
+      # ftrace exposes internal kernel state and events
+      "kernel.ftrace_enabled" = false;
+
+      # Disable io_uring, as in Android/ChromeOS. This might break virtualization environments
+      # e. g. https://www.armosec.io/blog/io_uring-rootkit-bypasses-linux-security/
+      "kernel.io_uring_disabled" = 2;
+    };
+
+    # The kernel allows unprivileged users to indirectly cause certain modules to be
+    # loaded via module auto-loading. This allows an attacker to auto-load a vulnerable
+    # module which is then exploited. One such example is CVE-2017-6074, in which an
+    # attacker could trigger the DCCP kernel module to be loaded by initiating a DCCP
+    # connection and then exploit a vulnerability in said kernel module.
+    extraModprobeConfig =
+      let
+        cmd = "${pkgs.coreutils}/bin/true";
+        modules = [
+          # Obscure networking protocols in particular add considerable remote attack surface
+          "ax25" # Amateur X.25
+          "netrom"
+          "rose"
+          "sctp" # Stream Control Transmission Protocol
+          "dccp" # Datagram Congestion Control Protocol
+          "rds" # Reliable Datagram Sockets
+          "tipc" # Transparent Inter-process Communication
+          "n-hdlc" # High-Level Data Link Control
+          "x25"
+          "decnet"
+          "econet"
+          "af_802154" # IEEE 802.15.4
+          "ipx" # Internetwork Packet Exchange
+          "appletalk"
+          "can"
+          "atm"
+          "psnap" # Subnetwork Access Protocol
+          "p8022" # IEEE 802.2
+          "p8023" # Novell raw IEEE 802.3
+
+          # Old or rare or insufficiently audited filesystems
+          "adfs"
+          "affs"
+          "bfs"
+          "befs"
+          "cramfs"
+          "efs"
+          "erofs"
+          "exofs"
+          "freevxfs"
+          "f2fs"
+          "hfs"
+          "hpfs"
+          "jfs"
+          "minix"
+          "nilfs2"
+          "ntfs"
+          "omfs"
+          "qnx4"
+          "qnx6"
+          "sysv"
+          "ufs"
+          "jffs2"
+          "hfsplus"
+          "udf"
+          "squashfs"
+
+          # network filesystems
+          #"cifs"
+          #"nfs"
+          #"nfsv3"
+          #"nfsv4"
+          #"ksmbd"
+          #"gfs2"
+
+          # direct memory access
+          "firewire-core"
+          "thunderbolt"
+
+          # Firewire
+          "sbp2"
+          "ohci1394"
+          "firewire-ohci"
+
+          # Wifi
+          "ath"
+          "iwlegacy"
+          "iwlwifi"
+          "mwifiex"
+          "rtlwifi"
+
+          # Virtual Video Test Driver, see https://www.kernel.org/doc/html/v4.12/media/v4l-drivers/vivid.html
+          # caused a privilege escalation vulnerabilities before, see https://www.openwall.com/lists/oss-security/2019/11/02/1
+          "vivid"
+        ];
+      in
+      lib.concatStringsSep "\n" (map (kmod: "install ${kmod} ${cmd}") modules);
+  };
 }
 ```
 #### Network
 ```nix
 {
-   # do not use ntp servers of nixos project (leaks information that the device uses nixos)
+  boot.kernel.sysctl = {
+    # Protect against SYN flood attacks, which are a form of denial-of-service
+    # attack, in which an attacker sends a large amount of bogus SYN requests
+    # in an attempt to consume enough resources to make the system unresponsive
+    # to legitimate traffic.
+    "net.ipv4.tcp_syncookies" = "1";
+
+    # Drop RST packets for sockets in the time-wait state,
+    # see https://datatracker.ietf.org/doc/html/rfc1337.
+    "net.ipv4.tcp_rfc1337" = "1";
+
+    # Enable source validation to prevent IP spoofing
+    # (note: default is needed to ensure that the setting is applied to interfaces added after the sysctls are set)
+    "net.ipv4.conf.all.rp_filter" = "1";
+    "net.ipv4.conf.default.rp_filter" = "1";
+
+    # prevent man-in-the-middle attacks and minimise information disclosure, see
+    # https://askubuntu.com/questions/118273/what-are-icmp-redirects-and-should-they-be-blocked
+    # (note: default is needed to ensure that the setting is applied to interfaces added after the sysctls are set)
+    "net.ipv4.conf.all.accept_redirects" = false;
+    "net.ipv4.conf.default.accept_redirects" = false;
+    "net.ipv4.conf.all.secure_redirects" = false;
+    "net.ipv4.conf.default.secure_redirects" = false;
+    "net.ipv6.conf.all.accept_redirects" = false;
+    "net.ipv6.conf.default.accept_redirects" = false;
+    "net.ipv4.conf.all.send_redirects" = false;
+    "net.ipv4.conf.default.send_redirects" = false;
+
+    # Log packets with impossible addresses to kernel log
+    # (note: default is needed to ensure that the setting is applied to interfaces added after the sysctls are set)
+    "net.ipv4.conf.all.log_martians" = true;
+    "net.ipv4.conf.default.log_martians" = true;
+
+    # Source routing is a mechanism that allows users to redirect network traffic.
+    # As this can be used to perform man-in-the-middle attacks in which the traffic
+    # is redirected for nefarious purposes, the above settings disable this functionality.
+    "net.ipv4.conf.all.accept_source_route" = 0;
+    "net.ipv4.conf.default.accept_source_route" = 0;
+    "net.ipv6.conf.all.accept_source_route" = 0;
+    "net.ipv6.conf.default.accept_source_route" = 0;
+
+    # Ignore broadcast ICMP (mitigate SMURF)
+    "net.ipv4.icmp_echo_ignore_broadcasts" = true;
+
+    # See https://github.com/Netflix/security-bulletins/blob/master/advisories/third-party/2019-001.md
+    "net.ipv4.tcp_sack" = 0;
+    "net.ipv4.tcp_dsack" = 0;
+    "net.ipv4.tcp_fack" = 0;
+  };
+
+  # do not use ntp servers of nixos project (leaks information that the device uses nixos)
   networking.timeServers = [
     "0.pool.ntp.org"
     "1.pool.ntp.org"
@@ -1030,53 +1291,75 @@ Mit hidepid=2 lässt sich das fixen: <!-- rewrite -->
 }
 ```
 #### User Space
-
-### Memory
-?
+TODO überlegen was davon alles sinnvoll ist, nicht alles reinpacken
 ```nix
 {
-  security = {
-    allowSimultaneousMultithreading = lib.mkDefault false;
+  boot.kernel.sysctl = {
+    # ptrace is a system call that allows a program to alter and inspect another running
+    # process, which allows attackers to trivially modify the memory of other running
+    # programs. This restricts usage of ptrace to only processes with the CAP_SYS_PTRACE
+    # capability. Alternatively, set the sysctl to 3 to disable ptrace entirely.
+    "kernel.yama.ptrace_scope" = 2;
 
-    forcePageTableIsolation = lib.mkDefault true;
+    # ASLR is a common exploit mitigation which randomises the position of critical parts
+    # of a process in memory. This can make a wide variety of exploits harder to pull off,
+    # as they first require an information leak. The above settings increase the bits of
+    # entropy used for mmap ASLR, improving its effectiveness.
+    "vm.mmap_rnd_bits" = 32;
+    "vm.mmap_rnd_compat_bits" = 16;
 
-    # This is required by podman to run containers in rootless mode.
-    unprivilegedUsernsClone = lib.mkDefault config.virtualisation.containers.enable;
+    # Permit symlinks to be followed when outside of a world-writable sticky directory,
+    # when the owner of the symlink and follower match or when the directory owner matches
+    # the symlink's owner. This also prevents hardlinks from being created by users that
+    # do not have read/write access to the source file. Both of these prevent many common
+    # TOCTOU races.
+    "fs.protected_hardlinks" = 1;
+    "fs.protected_symlinks" = 1;
 
-    virtualisation.flushL1DataCache = lib.mkDefault "always";
+    # These prevent creating files in potentially attacker-controlled environments, such
+    # as world-writable directories, to make data spoofing attacks more difficult.
+    "fs.protected_fifos" = 2;
+    "fs.protected_regular" = 2;
+
+    # Disable coredumps, because the recorded memory can contain sensitive information,
+    # such as passwords and encryption keys.
+    "kernel.core_pattern" = "|/bin/false";
+
+    # Explicitly prevent processes with running with elevated privileges to dump their memory
+    "fs.suid_dumpable" = 0;
   };
 
-  environment.memoryAllocator.provider = lib.mkDefault "scudo";
-
-  boot.kernelParams = [
-    # Don't merge slabs
-    "slab_nomerge"
-
-    # Overwrite free'd pages
-    "page_poison=1"
-
-    # Enable page allocator randomization
-    "page_alloc.shuffle=1"
-
-    # Disable debugfs
-    "debugfs=off"
+  # Disable core dumps
+  security.pam.loginLimits = [
+    {
+      domain = "*";
+      item = "core";
+      type = "hard";
+      value = "0";
+    }
+    {
+      domain = "*";
+      item = "core";
+      type = "soft";
+      value = "0";
+    }
   ];
 }
 ```
 
 ### usbguard
-wann sinnvoll auf server (primär dedicated hardware)
+Auf dedizierter Server-Hardware werden USB-Geräte häufig nur für Wartungsarbeiten verwendet. Tastatur,
+Installationsmedium oder externe Datenträger sind im laufenden Betrieb normalerweise nicht erforderlich.
+USBGuard kann deshalb dazu verwendet werden, unbekannte oder unerwartete USB-Geräte standardmäßig abzulehnen.
+
+Das reduziert beispielsweise das Risiko, dass ein eingeschobener USB-Stick automatisch als Massenspeicher eingebunden
+wird oder dass ein manipuliertes USB-Gerät als Tastatur (siehe Bad USB) oder Netzwerkadapter auftritt.
 ```nix
 {
   services.usbguard = {
     enable = true;
-    dbus.enable = true;
     IPCAllowedGroups = [ "wheel" ];
-    insertedDevicePolicy = "apply-policy";
     presentControllerPolicy = "apply-policy";
-    presentDevicePolicy = "apply-policy";
-    deviceRulesWithPort = false;
-    implicitPolicyTarget = "reject";
     rules = ''
       allow id b945:2c62 serial "" name "CHERRY USB Keyboard" hash "KDR4ikabgRgNdISC+g/6BjObDBJi8I8UuyiBNOevd3A=" parent-hash "ePkP4JX+4jPdgw+oSk1zc4Hldj0LmJ3w0fZ2ka9ZCEk=" with-interface { 04:01:00 }
     '';
@@ -1091,13 +1374,29 @@ Grundsätzlich sollten alle auf dem System laufende Dienste gehärtet werden. Ni
 Wie auch beim Netzwerk unterstützt NixOS verschiedene Firewallimplementierungen, wie beispielsweise iptables, nftables und firewalld. Hier verwenden wir nftables. Das NixOS Firewall Modul ist aber blöd, deswegen konfigurieren wir den größten Teil selbst.
 
 ## Monitoring
-Mit zunehmender Anzahl an Servern wird auch das Thema Monitoring wichtiger. CPU und RAM Auslastung, verfügbarer Speicherplatz, Ablaufdaten für TLS Zertifikate, ...
-Ähnlich wie bei der Systemhärtung dienen die folgenden Beispiele nur als Inspiration, nicht als vollwertige Konfiguration. Vor allem beim Thema Alerts sind der eigenen Fantasie keine grenzen gesetzt.
+Mit zunehmender Anzahl an Servern gewinnt auch das Monitoring an Bedeutung. Es liefert einen Überblick über den Zustand und
+die Verfügbarkeit der Systeme und hilft dabei, Probleme frühzeitig zu erkennen. Dabei können beispielsweise die CPU- und
+RAM-Auslastung, der verfügbare Speicherplatz, die Erreichbarkeit von Diensten sowie die Gültigkeit von TLS-Zertifikaten
+überwacht werden.
 
-Es gibt verschiedene Ansätze zum Thema Monitoring (Push/Pull) und entsprechend natürlich auch verschiedene Tools. Dieses Kapitel beschreibt die Implementierung eines Monitorings mit Prometheus
+Für die Umsetzung eines Monitorings existieren verschiedene Ansätze. Beim Push-Modell senden überwachte Systeme ihre
+Metriken aktiv an eine zentrale Monitoring-Instanz. Beim Pull-Modell werden die Metriken hingegen von der Monitoring-Instanz
+regelmäßig bei den überwachten Systemen abgefragt. Entsprechend vielfältig ist auch die Auswahl an verfügbaren Werkzeugen.
+
+In diesem Kapitel wird die Implementierung eines Pull-basierten Monitorings mit Prometheus beschrieben.
+Wie bereits bei der Systemhärtung dienen die folgenden Beispiele lediglich als Anregung und stellen keine vollständige
+Monitoring-Konfiguration dar. Welche Metriken erfasst und welche Benachrichtigungen eingerichtet werden, hängt stark von
+der jeweiligen Umgebung und den individuellen Anforderungen ab. Besonders bei der Definition von Alerts gibt es zahlreiche
+Möglichkeiten von einfachen Schwellwerten bis hin zu komplexen, aus mehreren Metriken abgeleiteten Regeln.
 
 ### Exporter
-node_exporter für systemauslastung
+Auf der Prometheus-Website findet sich eine umfangreiche Übersicht verschiedener Exporter, die auf Systemen installiert werden können,
+um Metriken für Prometheus bereitzustellen: <https://prometheus.io/docs/instrumenting/exporters/>.
+
+Besonders hervorzuheben sind der offizielle node_exporter und der blackbox_exporter.
+
+node_exporter stellt Hardware- und Betriebssystemmetriken bereit. Dazu gehören beispielsweise Informationen zur CPU-
+und Speicherauslastung, zu Dateisystemen, Netzwerkverbindungen und Systemlast.
 ```nix
 {
   services.prometheus.exporters.node = {
@@ -1107,14 +1406,66 @@ node_exporter für systemauslastung
   };
 }
 ```
+Der blackbox_exporter prüft die Erreichbarkeit und das Verhalten externer Endpunkte, indem er sogenannte Blackbox-Probes
+durchführt. Unterstützt werden unter anderem Prüfungen über HTTP, HTTPS, DNS, TCP, ICMP und gRPC. Dadurch lässt sich
+beispielsweise feststellen, ob ein Webserver erreichbar ist, ein DNS-Dienst korrekt antwortet oder ein TLS-Zertifikat
+noch gültig ist. Da dieser Dienst nicht primär den Zustand des Systems, auf dem er ausgeführt wird überwacht wird er auf
+dem Monitoring System deployed.
+```nix
+{
+  services.prometheus = {
+    exporters.blackbox = {
+      enable = true;
+      listenAddress = "127.0.0.1";
+      configFile = pkgs.writeText "blackbox.yml" ''
+        modules:
+          http_2xx:
+            prober: http
+      '';
+    };
 
-blackbox_exporter für tls zertifikate
+    scrapeConfigs = [
+      {
+        job_name = "blackbox-exporter";
+        static_configs = [ { targets = [ "127.0.0.1:9115" ]; } ];
+      }
+      {
+        job_name = "blackbox-exporter_http";
+        metrics_path = "/probe";
+        params.module = [ "http_2xx" ];
+        static_configs = [
+          {
+            targets = [
+              "notes.example.com"
+              "auth.example.com"
+            ];
+          }
+        ];
+        relabel_configs = [
+          {
+            source_labels = [ "__address__" ];
+            target_label = "__param_target";
+          }
+          {
+            source_labels = [ "__param_target" ];
+            target_label = "instance";
+          }
+          {
+            target_label = "__address__";
+            replacement = "127.0.0.1:9115";
+          }
+        ];
+      }
+    ];
+  };
+}
+```
 
 ### Alertmanager
-Alertmanager bietet die Möglichkeit basierend auf den von Prometheus gesammelten Metriken Alerts zu generieren.
-
-Die folgende Regel alamiert aus, wenn in einem Beobachtungsfenster von 20 Minuten bei kontinuierlicher Schreibrate innerhalb von 24 Stunden die Festplatte vollaufen würden.
-
+Prometheus kann auf Grundlage der gesammelten Metriken Alert-Regeln auswerten. Für die weitere Verarbeitung und Zustellung
+der ausgelösten Alarme ist Alertmanager zuständig. Im folgenden wird eine Regel implementiert, die einen Alarm auslöst, wenn
+ein Dateisystem bereits weniger als zehn Prozent freien Speicherplatz besitzt und bei gleichbleibender Schreibrate voraussichtlich
+innerhalb der nächsten 24 Stunden vollständig belegt sein wird.
 ```nix
 {
   services.prometheus = {
@@ -1176,56 +1527,519 @@ Die folgende Regel alamiert aus, wenn in einem Beobachtungsfenster von 20 Minute
 ```
 
 ### Grafana
-Zur Visualisierung der mit Prometheus gesammelten Metriken kann Grafana eingesetzt werden.
+Zur Visualisierung der mit Prometheus gesammelten Metriken kann Grafana eingesetzt werden. Die Plattform ermöglicht es, Metriken in
+übersichtlichen Dashboards darzustellen, Zeitreihen zu analysieren und relevante Entwicklungen oder Auffälligkeiten schnell zu erkennen.
 
-Auch Grafana kann auch unsere zuvor aufgesetzte Keycloak instanz angebunden werden.
+```nix
+{ config, ... }:
+{
+  sops.secrets."monitoring/grafana/secretKey".owner = "grafana";
+
+  services = {
+    grafana = {
+      enable = true;
+      settings = {
+        server = {
+          domain = "grafana.example.com";
+          root_url = "https://%(domain)s/";
+        };
+        security.secret_key = "$__file{${config.sops.secrets."monitoring/grafana/secretKey".path}}";
+      };
+      provision = {
+        enable = true;
+        datasources.settings.datasources = [
+          {
+            name = "Prometheus";
+            type = "prometheus";
+            url = "http://127.0.0.1:9090";
+            isDefault = true;
+          }
+        ];
+      };
+    };
+
+    nginx = {
+      enable = true;
+      virtualHosts."grafana.example.com" = {
+        locations."/" = {
+          proxyPass = "http://127.0.0.1:3000/";
+          proxyWebsockets = true;
+        };
+        enableACME = true;
+        forceSSL = true;
+      };
+    };
+  };
+}
+```
+
+Wie hedgedoc verwendet auch Grafana Standardmäßig eine sqlite Datenbank. In dieser werden zwar primär Benutzer und Dashboards gespeichert, dennoch sollte diese gesichert werden
+```nix
+{
+  services = {
+    postgresql = {
+      enable = true;
+      ensureDatabases = [ "grafana" ];
+    };
+    grafana.database = {
+      type = "postgres";
+      host = "/run/postgresql";
+      user = "grafana";
+    };
+  };
+}
+```
+
+Des Weiteren kann auch Grafana an die zuvor eingerichtete Keycloak Instanz angebunden werden.
+```nix
+{
+  services.grafana.settings = {
+    "auth.generic_oauth" = {
+      enabled = true;
+      name = "Keycloak";
+      allow_sign_up = true;
+      client_id = "grafana";
+      client_secret = "$__file{${config.sops.secrets."monitoring/grafana/oidcSecret".path}}";
+      scopes = "email profile roles openid";
+      email_attribute_path = "email";
+      login_attribute_path = "preferred_username";
+      name_attribute_path = "full_name";
+      auth_url = "https://grafana.example.com/realms/main/protocol/openid-connect/auth";
+      token_url = "https://grafana.example.com/realms/main/protocol/openid-connect/token";
+      api_url = "https://grafana.example.com/realms/main/protocol/openid-connect/userinfo";
+      role_attribute_path = "contains(roles[*], 'admin') && 'Admin' || contains(roles[*], 'editor') && 'Editor' || 'Viewer'";
+    };
+  };
+}
+```
+
+In Grafana selbst (Zugangsdaten: admin:admin) können anschließend die gewünschten Dashboards importiert bzw. erstellt werden.
+Beispiele für von mir verwendete Dashboards können <https://github.com/secshellnet/grafana-dashboards> entnommen werden.
 
 ## Backup
+<!--
 - PostgreSQL Datenbnak
 - HedgeDoc uploaded media files
+-->
 
-## Partitionierung: /var/log separat, um zu verhindern, dass system nicht mehr arbeiten kann, weil zu viele logs geschrieben wurden
-## LUKS encrypted root
+## Fortgeschrittene Konzepte
+### Speicherlayout
+Im Kapitel [Installation -> Partitionierung](#partitionierung) wurde der Übersichtlichkeit halber zunächst eine einfache
+Speicheraufteilung verwendet. Neben der EFI-Systempartition bestand das Layout lediglich aus einer unverschlüsselten
+ext4-Partition für das Root-Dateisystem.
+
+Im Folgenden werden verschiedene abweichende Konfigurationen vorgestellt.
+
+#### LUKS encrypted root
+Das root Dateisystem sollte verschlüsselt werden. Zum Zeitpunkt der Installation kann die disk-config.nix entsprechend Angepasst werden. Disko fragt beim Partitionieren das Passwort für die Erstellung des Cryptsetups ab.
+```nix
+{
+  disko.devices = {
+    disk.disk1 = {
+      device = "/dev/sda";
+      type = "disk";
+      content = {
+        type = "gpt";
+        partitions = {
+          esp = {
+            name = "boot";
+            size = "511M";
+            type = "EF00"; # EFI system partition
+            content = {
+              type = "filesystem";
+              format = "vfat";
+              mountpoint = "/boot";
+            };
+          };
+          root = {
+            name = "root";
+            size = "100%";
+            content = {
+              type = "luks";
+              name = "cryptedroot";
+              content = {
+                type = "filesystem";
+                format = "ext4";
+                mountpoint = "/";
+              };
+            };
+          };
+        };
+      };
+    };
+  };
+}
+```
+
+Ein neustart des Servers führt zur Aufforderung das Passwort einzugeben. Während dies bei Clientsystemen typischerweise kein Problem darstellt,
+werden Server häufig auch über das Netzwerk neugestartet, teilweise ist physikalischer Zugriff auf die Maschinen gar nicht möglich. Um Systeme entfernt neustarten zu können, kann im initrd ein SSH server gestartet werden, der dann das entschlüsseln des systems über ssh ermöglicht. Hierbei ist auf die korrekte angabe der für Netzwerk benötigten kernel module zu achten.
+```nix
+{
+  boot.initrd = {
+    systemd = {
+      enable = true;
+      network.enable = false;
+      initrdBin = [
+        (pkgs.writeShellScriptBin "systemctl-default" ''
+          /bin/systemctl default
+        '')
+      ];
+      users.root.shell = "/bin/systemctl-default";
+    };
+    kernelModules = [ "virtio_net" ];
+    network = {
+      enable = true;
+      ifstate = {
+        enable = true;
+        allowIfstateToDrasticlyIncreaseInitrdSize = true;
+        inherit (config.networking.ifstate) settings;
+      };
+      ssh = {
+        enable = true;
+        hostKeys = [ /etc/ssh/ssh_host_ed25519_key ];
+      };
+    };
+  };
+
+}
+```
+
+Alternativ zum Remote Unlock kann bei Vorhandensein eines TPM Chips natürlich dieser über systemd-cryptenroll genutzt werden.
+
+Bei vorhandensein eines TPM Chips kann dies imperativ beispielsweise mit folgendem Befehl durchgeführt werden:
+```sh
+systemd-cryptenroll --tpm2-device=auto --tpm2-pcrs=0 /dev/sda2
+```
+
+#### LVM
+Eine gemeinsamme root Partition kann zum Ausfall eines Systems führen, weil dieses zu viele Logs geschrieben hat und das System über gar keinen freien speicherplatz mehr verfügt, wodurch dienste wie beispielsweise eine datenbank nicht mehr starten können. Aus Security Sicht können weitere LV's sinn ergeben, um spezifische mount options wie noexec oder nosuid auf diesen anzuwenden.
+```nix
+{
+  disko.devices = {
+    disk.disk1 = {
+      device = "/dev/sda";
+      type = "disk";
+      content = {
+        type = "gpt";
+        partitions = {
+          esp = {
+            name = "boot";
+            size = "511M";
+            type = "EF00"; # EFI system partition
+            content = {
+              type = "filesystem";
+              format = "vfat";
+              mountpoint = "/boot";
+            };
+          };
+          luks = {
+            size = "100%";
+            content = {
+              type = "luks";
+              name = "crypted";
+              settings.allowDiscards = true;
+              content = {
+                type = "lvm_pv";
+                vg = "pool";
+              };
+            };
+          };
+        };
+      };
+    };
+    lvm_vg = {
+      pool = {
+        type = "lvm_vg";
+        lvs = {
+          root = {
+            size = "2G";
+            content = {
+              type = "filesystem";
+              format = "ext4";
+              mountpoint = "/var/log";
+              mountOptions = [
+                "defaults"
+                "nosuid"
+                "nodev"
+                "noexec"
+              ];
+            };
+          };
+          root = {
+            size = "100%FREE";
+            content = {
+              type = "filesystem";
+              format = "ext4";
+              mountpoint = "/";
+              mountOptions = [
+                "defaults"
+              ];
+            };
+          };
+        };
+      };
+    };
+  };
+}
+```
+#### ZFS
+ZFS ist ein modernes Dateisystem mit integriertem Volume-Management. Gegenüber der bisher verwendeten Kombination aus
+LVM und ext4 bietet es zusätzliche Funktionen zur Verwaltung und Absicherung von Speicher.
+
+Dazu zählen unter anderem RAID, Prüfsummen zur Erkennung von Datenfehlern, Snapshots, Replikation, transparente
+Kompression und native Verschlüsselung.
+
+Nachteile sind insbesondere der höhere RAM-Bedarf und der zusätzliche Verwaltungsaufwand. ZFS eignet sich daher
+besonders für dedizierte Hardware mit ausreichend Arbeitsspeicher und mehreren physischen Datenträgern. Der
+Einsatz in einer virtuellen Maschine ist ebenfalls möglich, setzt jedoch geeignete virtuelle Datenträger, ausreichend
+zugewiesene Ressourcen und die Unterstützung durch den Hypervisor voraus.
+
+Die native ZFS-Verschlüsselung schützt keine Metadaten. Je nach Anwendungsfall kann daher zusätzlich eine
+Full-Disk-Verschlüsselung mit LUKS sinnvoll sein. Datenhaltige ZFS-Datasets können dennoch ebenfalls durch ZFS
+verschlüsselt werden, um einfache verschlüsselte Backups mittels zfs send und zfs receive zu ermöglichen.
+
+Folgende Disko Konfiguration zeigt die Partitionierung mit zwei physikalischen Festplatten, LUKS und ZFS
+```nix
+{
+  disko.devices = {
+    disk = {
+      disk1 = {
+        device = "/dev/sda";
+        type = "disk";
+        content = {
+          type = "gpt";
+          partitions = {
+            esp = {
+              name = "boot";
+              size = "511M";
+              type = "EF00"; # EFI system partition
+              content = {
+                type = "filesystem";
+                format = "vfat";
+                mountpoint = "/boot/efis/ESP1";
+              };
+            };
+            luks = {
+              size = "100%";
+              content = {
+                type = "luks";
+                name = "disk1-crypted";
+                settings.allowDiscards = true;
+                content = {
+                  type = "zfs";
+                  pool = "rpool";
+                };
+              };
+            };
+          };
+        };
+      };
+      disk2 = {
+        device = "/dev/sdb";
+        type = "disk";
+        content = {
+          type = "gpt";
+          partitions = {
+            esp = {
+              name = "boot";
+              size = "511M";
+              type = "EF00"; # EFI system partition
+              content = {
+                type = "filesystem";
+                format = "vfat";
+                mountpoint = "/boot/efis/ESP2";
+              };
+            };
+            luks = {
+              size = "100%";
+              content = {
+                type = "luks";
+                name = "disk2-crypted";
+                settings.allowDiscards = true;
+                content = {
+                  type = "zfs";
+                  pool = "rpool";
+                };
+              };
+            };
+          };
+        };
+      };
+    };
+    zpool = {
+      rpool = {
+        mode = {
+          topology = {
+            type = "topology";
+            vdev = [
+              {
+                mode = "raidz1";
+                members = [
+                  "/dev/mapper/disk1-crypt"
+                  "/dev/mapper/disk2-crypt"
+                ];
+              }
+            ];
+          };
+        };
+        rootFsOptions = {
+          # TODO recheck options
+          mountpoint = "none";
+          compression = "zstd";
+          acltype = "posixacl";
+          xattr = "sa";
+          "com.sun:auto-snapshot" = "true";
+        };
+        options.ashift = "12";
+        datasets = {
+          "root" = {
+            type = "zfs_fs";
+            mountpoint = "/";
+          };
+
+          "nix" = {
+            type = "zfs_fs";
+            options.mountpoint = "/nix"; # TODO check if both needed
+            mountpoint = "/nix"; # TODO check if both needed
+          };
+
+          "log" = {
+            type = "zfs_fs";
+            options.mountpoint = "/var/log"; # TODO check if both needed
+            mountpoint = "/var/log"; # TODO check if both needed
+          };
+        };
+      };
+    };
+  };
+}
+```
+
+### PKI
+Bisher wurden Zertifikate über die ACME-HTTP-01-Challenge von Let’s Encrypt bezogen. Bei dieser Challenge muss der
+HTTP-Endpunkt der jeweiligen Domain öffentlich erreichbar sein, damit Let’s Encrypt die Domainvalidierung durchführen
+kann. Für interne Dienste, die beispielsweise durch eine Firewall vor dem Internet geschützt sind, ist dieses Verfahren
+daher nicht geeignet.
+
+Eine Alternative stellt die ACME-DNS-01-Challenge dar. Dabei weist der ACME-Client die Kontrolle über eine Domain nach,
+indem er über eine DNS-API einen speziell erzeugten TXT-Record anlegt. Für die Validierung ist dadurch kein direkter
+Zugriff auf den eigentlichen Dienst erforderlich. Auf diese Weise können auch interne Dienste mit öffentlich vertrauenswürdigen
+Let’s-Encrypt-Zertifikaten betrieben werden.
+
+Allerdings werden die Namen solcher Zertifikate in Certificate-Transparency-Logs veröffentlicht. Dadurch können auch interne
+Hostnamen oder Subdomains nach außen bekannt werden. Für interne Dienste, die beispielsweise ausschließlich Administratoren
+zur Verfügung stehen, kann deshalb der Betrieb einer eigenen Public-Key-Infrastruktur (PKI) sinnvoller sein.
+
+Bei einer eigenen PKI wird eine interne Root-CA eingerichtet. Ihr Root-Zertifikat wird auf den Geräten der Administratoren als
+vertrauenswürdige Zertifizierungsstelle hinterlegt. Die internen Webserver erhalten anschließend Zertifikate, die von dieser CA
+oder einer untergeordneten Intermediate-CA signiert wurden. Browser und andere Clients können diese Zertifikate validieren,
+ohne dass sie von einer öffentlich vertrauenswürdigen CA ausgestellt sein müssen.
+
+Der private Schlüssel der Root-CA muss besonders geschützt werden und sollte idealerweise offline aufbewahrt werden. Für
+den laufenden Betrieb empfiehlt sich eine Intermediate-CA, welcehe für die Ausstellung von Leaf Zertifikaten verwendet wird.
+
+Darüber hinaus können mit einer eigenen PKI auch Clientzertifikate für Mutual TLS (mTLS) ausgestellt werden. Während bei
+gewöhnlichem TLS nur der Server seine Identität gegenüber dem Client nachweist, authentifizieren sich bei mTLS beide
+Kommunikationspartner gegenseitig. Der Server prüft dabei nicht nur, ob das präsentierte Clientzertifikat von der eigenen
+CA signiert wurde, sondern kann zusätzlich anhand von Zertifikatsattributen oder Seriennummern entscheiden, ob der jeweilige
+Client zugriffsberechtigt ist.
+
+Das ist insbesondere für administrative Schnittstellen und besonders schützenswerte interne Dienste sinnvoll. Administratoren
+oder Systeme ohne gültiges Clientzertifikat können bereits während des TLS-Verbindungsaufbaus abgewiesen werden. Sie erreichen
+dadurch weder die Webanwendung noch deren Anmeldeseite. Ein kompromittiertes oder erratenes Benutzerpasswort reicht dann allein
+nicht aus, um Zugriff zu erhalten, da zusätzlich ein gültiger privater Schlüssel zum Clientzertifikat benötigt wird.
+
+Die oben beschriebene Struktur könnte Beispielsweise so aussehen:
+
+```mermaid
+flowchart TB
+  root[Root CA] --- inter[Intermediate CA]
+  mTLS[mTLS Client Certificates]
+  TLS[TLS Server Certificates]
+
+  inter --- TLS([TLS Server Certificates])
+  inter --- mTLS([mTLS Client Certificates])
+
+  TLS --- git[git.example.com]
+  TLS --- grafana[grafana.example.com]
+
+  mTLS --- nico
+```
+
+Die Konfiguration im nginx könnte dann beispielsweise so aussehen. Hierbei wird nur der Client
+```nix
+{
+  services.nginx = {
+    commonHttpConfig = ''
+      map "$ssl_client_verify:$ssl_client_s_dn" $reject {
+          default 1;
+          "SUCCESS:CN=nico,O=example,C=DE" 0;
+      }
+    '';
+    virtualHosts."service.example.com".extraConfig = ''
+      ssl_client_certificate ${./root-ca.pem};
+      ssl_verify_client on;
+
+      if ($reject) { return 403; }
+    '';
+  };
+}
+```
 
 ## System: CI/CD
 <!-- aufbau git mit ci/cd pipeline for gitops, ggf. integration von gradient build server-->
-
-## System: Router
-<!-- konfiguration eines multi vrf routers mit static route leaks via frr für netzwerksegmentierung -->
-<!-- vrrp mal testen? -->
 
 ## Putting it together
 Im Rahmen des Blogartikels wurden verschiedene Systeme gebaut. Schlussendlich können diese zu einer Infrastruktur verbunden werden. Folgendes Netzwerkdiagramm beschreibt den Aufbau schematisch.
 ```mermaid
 flowchart LR
-  %% networks
   internet[Internet]@{ shape: cloud } --- router[Router]
   router --- svc[SVC]@{ shape: cloud }
   router --- infra[Infra]@{ shape: cloud }
   router --- dmz[DMZ]@{ shape: cloud }
-
-  %% svc network
   svc --- notes
-
-  %% infra network
+  svc --- auth
   infra --- git
   infra --- build
   infra --- mon
   infra --- log
-
-  %% dmz network
   dmz --- proxy
   dmz --- dns
   dmz --- time
 ```
-### Router
-<!-- VRF route leaks: internet<->svc, infra<->svc internet<->dmz, infra<->dmz -->
-<!-- all hosts use dmz:proxy for outgoing internet, dmz:dns as dns, dmz:time as time server, are monitored by infra:mon and send logs to infra:log -->
-<!-- TODO test using multiple vrf's to separate this, will port fwd from internet to svc work, when default route is not available there? -->
 
-### SVC
+In der flake.nix werden nun mehrere Systeme definiert, was eine gemeinsamme Verwaltung und einheitliche Updatestände ermöglicht.
+
+### Router
+Mithilfe von verschiedenen VRF's werden vier Routingdomainen erstellt. Die jeweils notwendigen Routen werden in die entsprechenden VRF's geleaked.
+```mermaid
+flowchart LR
+  internet[Internet]
+  svc[Services]
+  infra[Infra]
+  dmz[DMZ]
+
+  internet <--> dmz
+  %% todo wenn möglich auch nicht
+  internet <--> svc
+
+  dmz <--> infra
+  dmz <--> svc
+  svc <--> infra
+```
+
+Infrastruktursysteme sind dazu zur Nutzung der in der DMZ angesiedelten Dienste (proxy, dns, time) verpflichtet um das Internet zu erreichen.
+Auf dem Proxy können für jedes System spezifische Policies implementiert werden, welche die benötigten Zugriffe erlauben.
+
+Auch Systeme in der Services VRF sollten sofern Möglich die Systeme der DMZ nutzen. Für nicht HTTP Dienste ist dies jedoch nicht immer möglich. <!-- oder? -->
+
+<!-- vrrp mal testen? -->
+
+### Services
 #### notes
 hedgedoc
+#### auth
+keycloak
 ### Infra
 #### git
 gitea
@@ -1237,7 +2051,7 @@ prometheus + grafana
 graylog
 ### DMZ
 #### proxy
-squid
+squid (forward) + nginx (reverse)
 #### dns
 knot resolver (kresd)
 #### time
