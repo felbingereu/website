@@ -79,6 +79,10 @@ plugins:
       redirect_maps:
         'index.md': 'blog/index.md'
 
+extra_javascript:
+  # treeview diagram used in nixos-infra blog post requires v11.14.0+
+  - https://cdnjs.cloudflare.com/ajax/libs/mermaid/11.15.0/mermaid.min.js
+
 extra:
   generator: false  # remove footer: Made with Material for MkDocs
   consent:
