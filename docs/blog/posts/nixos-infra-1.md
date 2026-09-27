@@ -1224,11 +1224,10 @@ für andere Benutzer einschränken.
 Auf dedizierter Server-Hardware werden USB-Geräte häufig nur für Wartungsarbeiten
 verwendet. Tastatur, Installationsmedium oder externe Datenträger sind im laufenden
 Betrieb normalerweise nicht erforderlich. USBGuard kann deshalb dazu verwendet werden,
-unbekannte oder unerwartete USB-Geräte standardmäßig abzulehnen.
+nicht freigegebene USB-Geräte abzulehnen.
 
-Das reduziert beispielsweise das Risiko, dass ein sogenantes "Bad-USB" Gerät als
+Das reduziert beispielsweise das Risiko, dass ein sogenanntes BadUSB Gerät als
 Tastatur oder Netzwerkadapter auftritt.
-<!-- TODO ggf. controller policy anpassen und default regeln erwähnen? -->
 ```nix
 {
   services.usbguard = {
@@ -1236,7 +1235,16 @@ Tastatur oder Netzwerkadapter auftritt.
     IPCAllowedGroups = [ "wheel" ];
     presentControllerPolicy = "apply-policy";
     rules = ''
-      allow id b945:2c62 serial "" name "CHERRY USB Keyboard" hash "KDR4ikabgRgNdISC+g/6BjObDBJi8I8UuyiBNOevd3A=" parent-hash "ePkP4JX+4jPdgw+oSk1zc4Hldj0LmJ3w0fZ2ka9ZCEk=" with-interface { 04:01:00 }
+      # internals
+      allow id 1d6b:0002 serial "0000:00:1a.0" name "EHCI Host Controller" hash "ej1WVedyLyUMLiQxzEcrwbY45zCodwV85Kzy7hm2Gv4=" parent-hash "e/RW0mMbM+TSFQxpRiMEfL7/3RJfKVdqffBm9F5qA+E=" with-interface 09:00:00
+      allow id 1d6b:0001 serial "0000:01:00.4" name "UHCI Host Controller" hash "ne9MN86uM98TZw0LqhyL7OKEHJUygyWvOjNn1b7Bz+E=" parent-hash "EcoU0c5jMQvq9JSIgu5Ho4RdsdfPb6n13C6Y3wIzu8A=" with-interface 09:00:00
+      allow id 1d6b:0002 serial "0000:00:14.0" name "xHCI Host Controller" hash "4G5jM1710eMHdxBgzKu2iYUFH6ol62c9Vx62XFHYQFM=" parent-hash "ej1WVedyLyUMLiQxzEcrwbY45zCodwV85Kzy7hm2Gv4=" with-interface 09:00:00
+      allow id 1d6b:0003 serial "0000:00:14.0" name "xHCI Host Controller" hash "MMn/OTrO6E00ngK2hDw0p2Q5Qi8H5me5tOmYALU4gm8=" parent-hash "ej1WVedyLyUMLiQxzEcrwbY45zCodwV85Kzy7hm2Gv4=" with-interface 09:00:00
+      allow id 8087:800a serial "" name "" hash "oHMq3XbdbTUsMz5PFkIzzYMCE7ad0v00udn0iZ88B2Q=" parent-hash "ej1WVedyLyUMLiQxzEcrwbY45zCodwV85Kzy7hm2Gv4=" via-port "1-1" with-interface 09:00:00
+      allow id 8087:8002 serial "" name "" hash "qIGkfqX7sv9oTIomveqlZ93sazJ7vBpO2+lAls7F8UQ=" parent-hash "ej1WVedyLyUMLiQxzEcrwbY45zCodwV85Kzy7hm2Gv4=" via-port "2-1" with-interface 09:00:00
+
+      # peripheral
+      allow id 046a:c122 serial "" name "CHERRY USB Keyboard" hash "KDR4ikabgRgNdISC+g/6BjObDBJi8I8UuyiBNOevd3A=" with-interface { 03:01:01 03:00:00 }
     '';
   };
 }
