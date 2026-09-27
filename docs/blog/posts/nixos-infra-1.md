@@ -1,6 +1,6 @@
 ---
 date:
-  created: 2026-09-16
+  created: 2026-09-27
 authors:
 - nicof2000
 categories:
@@ -8,7 +8,7 @@ categories:
 draft: True
 ---
 
-# Server- und Netzwerkinfrastruktur mit NixOS
+# Server- und Netzwerkinfrastruktur mit NixOS (1/2)
 <!-- REVIEWERS: Julian K, Jan G, Felix E, Christina K. (mit install) -->
 
 Seit 2019 beschäftige ich mich mit der Administration Linux-basierter Serversysteme. Angefangen
@@ -60,7 +60,6 @@ auch das deklarative Modell grundlegend von der klassischen Administration ander
 Linux-Distributionen unterscheiden.
 
 ## Nix
-<!--
 ### Syntax
 In diesem Kapitel werden einige Eigenschaften der Nix Syntax erläutert. Es dient primär als Nachschlagewerk für die später genutzten Konfigurationen.
 ```nix
@@ -74,7 +73,7 @@ In diesem Kapitel werden einige Eigenschaften der Nix Syntax erläutert. Es dien
   # Datentypen
   enable = false;
   port = 8000;
-  domain = "hedgedoc";
+  domain = "hedgedoc" + " concat";
   message = ''
     Dieser Text kann
     über mehrere Zeilen gehen.
@@ -84,7 +83,7 @@ In diesem Kapitel werden einige Eigenschaften der Nix Syntax erläutert. Es dien
   fqdn = "${hostname}.example.com";
   ignore = ''
     keine ''${String-Interpolation}
-    in dieser variable.
+    in dieser Variable.
   '';
 
   # Listen
@@ -98,7 +97,10 @@ In diesem Kapitel werden einige Eigenschaften der Nix Syntax erläutert. Es dien
     role = "webserver";
     sshPort = 22;
   };
-
+  client = {
+    name = "nico";
+  };
+  both = server // client;
 }
 ```
 
@@ -120,7 +122,7 @@ In diesem Kapitel werden einige Eigenschaften der Nix Syntax erläutert. Es dien
   };
 }
 ```
--->
+
 ### Package und Option Search
 Bei der Konfiguration eines NixOS-Systems ist es häufig notwendig, zunächst den
 korrekten Namen eines Pakets oder einer Konfigurationsoption zu ermitteln. Dafür
@@ -461,30 +463,42 @@ verwendet allerdings das unverschlüsseltes HTTP Protokoll. Für den produktiven
 Betrieb sollten wir TLS aktivieren, damit Anmeldedaten, Dokumentinhalte und
 Sitzungen nicht unverschlüsselt übertragen werden.
 
-<!-- ggf. theorie von hier einbeziehen: https://adminguide.pages.dev/A._Theorie/20_tls/ -->
-
 Für Zertifikate gibt es verschiedene Möglichkeiten. Für die interne Nutzung
-in einer Umgebung wie z.B. einem Unternehmen kann man eine eigene PKI
-Infrasturktur aufbauen und eigene Zertifikate erstellen. Auf allen Computern
+in einer Umgebung wie beispielsweise einem Unternehmen kann man eine eigene PKI
+Infrasturktur aufbauen und eigene Zertifikate erstellen. Auf allen Systemen
 welche den Dienst nutzen sollen, muss dann ein root CA hinterlegt werden, durch
-welches die validität des Zertifikats geprüft werden kann. Mehr dazu im Kapitel
+welches die Gültigkeit des Zertifikats geprüft werden kann. Mehr dazu im Kapitel
 [Fortgeschrittene Konzepte -> PKI](#pki).
 
-Alternativ dazu besteht die Möglichkeit einen kostenlosen externen Zertifikatsdienst
-wie Let's Encrypt, ZeroSSL oder Actalis zu verwenden, um ein Zertifikat zu erhalten,
-welches von nicht anders konfigurierten Geräten/Browsern vertraut wird. Neben der
-Möglichkeit dies manuell durchzuführen kann das Automatic Certificate Management
-Environment (ACME) verwendet werden, um Zertifikate automatisiert anzufordern und
-zu verlängern.
+Alternativ können Zertifikate über externe Zertifizierungsstellen wie DigiCert,
+GlobalSign oder GoDaddy bezogen werden. Unternehmen nutzen diese Anbieter häufig,
+um von zusätzlichen Garantieleistungen, erweiterten Validierungsstufen (OV/EV)
+oder umfassenden Supportangeboten zu profitieren.
 
-ACME definierte verschiedene Challenges die genutzt werden können um eine
-Domainvalidierung durchzuführen, die notwendig für die Zertifikatsausstellung ist.
-Das ACME Modul in NixOS unterstützt derzeit die Challenges ACME-HTTP-01 und ACME-DNS-01.
-In folgendem Beispiel wird die ACME-HTTP-01 Challenge genutzt, bei der eine Datei
-im `.well-known/acme-challenge/` Verzeichnis des Webservers abgelegt wird. Let’s Encrypt
-ruft diese URL anschließend über HTTP auf. Kann die Datei erfolgreich abgerufen werden,
-ist nachgewiesen, dass der Betreiber die Domain kontrollieren kann beziehungsweise den
-Webserver dieser Domain konfigurieren kann.
+Einige Organisationen bieten kostenlose TLS-Zertifikate an. Der bekannteste Anbieter
+ist Let’s Encrypt, eine von der gemeinnützigen Internet Security Research Group (ISRG)
+betriebene Zertifizierungsstelle. Das Projekt wurde 2015 gestartet und stellt kostenlose
+und automatisiert ausgestellte TLS-Zertifikate bereit, um verschlüsselte Verbindungen per
+HTTPS zu fördern und deren Nutzung als Standard im Internet voranzutreiben.
+
+Neben Let’s Encrypt bieten auch Anbieter wie ZeroSSL und Actalis kostenlose Zertifizierungsdienste
+an. Sie unterstützen das ACME-Protokoll (Automatic Certificate Management Environment),
+mit dem sich Zertifikate automatisiert ausstellen und verlängern lassen.
+
+Diese kostenlosen Zertifikate sind von den gängigen Browsern als vertrauenswürdig anerkannt
+und eignen sich hervorragend für öffentliche Websites, Webanwendungen und APIs. Im Vergleich
+zu kommerziellen Angeboten bieten sie zwar keine zusätzlichen Garantieleistungen oder
+erweiterte Validierung (z. B. EV-Zertifikate), erfüllen aber auf technischer Ebene die
+selben Sicherheitsstandards.
+
+Das ACME-Protokoll definiert verschiedene [Challenges](https://letsencrypt.org/docs/challenge-types/),
+die zur Validierung der Domainkontrolle verwendet werden. Diese Validierung ist Voraussetzung für
+die Ausstellung eines Zertifikats. Das ACME-Modul von NixOS unterstützt derzeit die Challenges
+ACME-HTTP-01 und ACME-DNS-01. Im folgenden Beispiel wird die ACME-HTTP-01-Challenge verwendet.
+Dabei wird eine Datei im Verzeichnis `.well-known/acme-challenge/` des Webroots bereitgestellt.
+Die Zertifizierungsstelle ruft diese Datei anschließend über HTTP ab. Ist die Datei unter der
+erwarteten URL erreichbar, gilt damit als nachgewiesen, dass der Antragsteller die Domain
+kontrolliert beziehungsweise den Webserver für diese Domain konfigurieren kann.
 
 Wir entfernen das überschreiben des forceSSL Parameters, ergänzen enableACME auf dem
 nginx vHost und akzeptieren die Terms of Service des verwendeten Zertifikatsdienstleisters.
@@ -565,7 +579,6 @@ Wir fügen die nixpkgs für unsere Systemarchitektur als pkgs hinzu, laden v4.29
 Nix Store, erstellen die Modsecurity Konfiguration im Nix Store und passen die
 Konfiguration von nginx entsprechend an, sodass Modsecurity als zusätzliches Modul
 geladen und mit der zuvor erstellten Konfiguration aktiviert wird:
-<!-- TODO check if configuration can be shrinked by removing log formats and so on -->
 ```nix
 { pkgs, ... }:
 {
@@ -851,6 +864,7 @@ jedoch weiterhin nicht das Auslesen von Secrets aus Dateien, weshalb dies
 in diesem Fall nicht angewandt werden kann.
 
 <!--
+TODO
 ### Single Sign-On (SSO)
 HedgeDoc kann die Authentifizierung an einen externen Identity Provider (IdP)
 auslagern. Benutzerkonte und Passwörter müssen dadurch nicht mehr ausschließlich
@@ -1431,16 +1445,6 @@ unter Umständen jedoch Passwörter, kryptografische Schlüssel oder andere vert
 Laufzeitdaten enthalten. Auf Produktionsservern ist es daher sinnvoll, Core Dumps zu
 deaktivieren.
 
-<!--
-will ich dazu wirklich etwas schreiben?
-### Dienste
-Grundsätzlich sollten alle auf dem System laufende Dienste gehärtet werden. NixOS verwendet
-systemd, welches ein systemd analyse security mitbringt. Viele Services sind derzeit
-unzureichend gehärtet.
-
-### AuditD / AppArmor / SELinux?
--->
-
 ## Strukturierung der NixOS Konfiguration
 Eine Infrastruktur besteht selten nur aus einem einzigen System.
 Sobald mehrere Systeme verwaltet werden müssen, stellt sich die
@@ -1789,6 +1793,7 @@ sollte diese gesichert werden
 ```
 
 <!--
+TODO
 Des Weiteren kann auch Grafana an die zuvor eingerichtete Keycloak Instanz
 angebunden werden.
 ```nix
@@ -1819,71 +1824,13 @@ gewünschten Dashboards importiert beziehungsweise erstellt werden. Beispiele f�
 von mir verwendete Dashboards können <https://github.com/secshellnet/grafana-dashboards>
 entnommen werden.
 
-## Backup
-<!--
-- PostgreSQL Datenbnak
-- HedgeDoc uploaded media files
--->
-
 ## Fortgeschrittene Konzepte
-
-<!-- REVIEW MARKER -->
-
-TODO neu einsortieren:
-
-Für die spätere Nutzung sind bereits jetzt zwei weitere Möglichkeiten erwähnenswert:
-
-1. Dank des deklarativen Ansatzes lässt sich ein eigenes ISO-Image vergleichsweise
-   einfach erstellen. Dabei können individuelle Konfigurationen direkt integriert werden:
-    ```nix
-    {
-      inputs.nixpkgs.url = "nixpkgs/nixos-unstable";
-      outputs =
-        { nixpkgs, ... }:
-        {
-          nixosConfigurations = {
-            customIso = nixpkgs.lib.nixosSystem {
-              system = "x86_64-linux";
-              modules = [
-                "${nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
-                (
-                  { lib, pkgs, ... }:
-                  {
-                    # enable serial console
-                    boot.kernelParams = [ "console=ttyS0,115200n8" ];
-
-                    users.users.root = {
-                      initialHashedPassword = lib.mkForce null;
-                      password = "s3cr3tPasSw0rt";
-
-                      openssh.authorizedKeys.keys = [
-                        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICjJMDuek9Ug/Eqc1y6Sq65nLhrgLLSgJYTKlUEw6I13"
-                      ];
-                    };
-
-                    console.keyMap = "de";
-                  }
-                )
-              ];
-            };
-          };
-        };
-    }
-    ```
-    ```sh
-    nix build .#nixosConfigurations.customIso.config.system.build.isoImage
-    ```
-2. Tools wie [github:elitak/nixos-infect](https://github.com/elitak/nixos-infect) oder
-   [github:nix-community/nixos-anywhere](https://github.com/nix-community/nixos-anywhere)
-   ermöglichen die Installation von NixOS aus nahezu jedem Linux-basierten System. Hierfür wird eine im
-   Linux Kernel implementierte Funktion (kexec) verwendet, die ein neues Kernel-Image lädt und in dieses startet.
-
 
 ### Speicherlayout
 Im Kapitel [Installation -> Partitionierung](#partitionierung) wurde der
 Übersichtlichkeit halber zunächst eine einfache Speicheraufteilung verwendet.
 Neben der EFI-Systempartition bestand das Layout lediglich aus einer
-unverschlüsselten ext4-Partition für das Root-Dateisystem.
+unverschlüsselten ext4-Partition für das root-Dateisystem.
 
 Im Folgenden werden verschiedene abweichende Konfigurationen vorgestellt.
 
@@ -1930,7 +1877,7 @@ Partitionieren das Passwort für die Erstellung des Cryptsetups ab.
 }
 ```
 
-Ein neustart des Servers führt zur Aufforderung das Passwort einzugeben.
+Ein Neustart des Servers führt zur Aufforderung das Passwort einzugeben.
 Während dies bei Clientsystemen typischerweise kein Problem darstellt, werden
 Server häufig auch über das Netzwerk neugestartet, teilweise ist physikalischer
 Zugriff auf die Maschinen gar nicht möglich. Um Systeme entfernt neustarten zu
@@ -1968,22 +1915,20 @@ Netzwerk benötigten kernel module zu achten.
 }
 ```
 
-Alternativ zum Remote Unlock kann bei Vorhandensein eines TPM Chips
-natürlich dieser über systemd-cryptenroll genutzt werden.
-
-Bei vorhandensein eines TPM Chips kann dies imperativ beispielsweise
-mit folgendem Befehl durchgeführt werden:
+Alternativ lässt sich bei vorhandenem TPM-Chip der Remote Unlock durch eine
+im TPM gespeicherte Entsperrinformation ersetzen. Dazu kann systemd-cryptenroll
+verwendet werden. Die Einrichtung erfolgt beispielsweise mit folgendem Befehl:
 ```sh
 systemd-cryptenroll --tpm2-device=auto --tpm2-pcrs=0 /dev/sda2
 ```
 
 #### LVM
-Eine gemeinsamme root Partition kann zum Ausfall eines Systems führen,
-weil dieses zu viele Logs geschrieben hat und das System über gar keinen
-freien speicherplatz mehr verfügt, wodurch dienste wie beispielsweise eine
-datenbank nicht mehr starten können. Aus Security Sicht können weitere
-Logical Volumes sinn ergeben, um spezifische mount options wie noexec
-oder nosuid auf diesen anzuwenden.
+Eine gemeinsam genutzte root-Partition kann zum Ausfall des Systems führen,
+wenn beispielsweise zu viele Logdateien geschrieben wurden und dadurch kein
+freier Speicherplatz mehr verfügbar ist. In der Folge können Dienste wie
+Datenbanken möglicherweise nicht mehr gestartet werden. Aus sicherheitstechnischer
+Sicht kann es außerdem sinnvoll sein, zusätzliche logische Volumes anzulegen, um
+darauf spezifische Mount-Optionen wie noexec oder nosuid anzuwenden.
 ```nix
 {
   disko.devices = {
@@ -2160,7 +2105,6 @@ physikalischen Festplatten, LUKS und ZFS
           };
         };
         rootFsOptions = {
-          # TODO recheck options
           mountpoint = "none";
           compression = "zstd";
           acltype = "posixacl";
@@ -2176,14 +2120,14 @@ physikalischen Festplatten, LUKS und ZFS
 
           "nix" = {
             type = "zfs_fs";
-            options.mountpoint = "/nix"; # TODO check if both needed
-            mountpoint = "/nix"; # TODO check if both needed
+            options.mountpoint = "/nix";
+            mountpoint = "/nix";
           };
 
           "log" = {
             type = "zfs_fs";
-            options.mountpoint = "/var/log"; # TODO check if both needed
-            mountpoint = "/var/log"; # TODO check if both needed
+            options.mountpoint = "/var/log";
+            mountpoint = "/var/log";
           };
         };
       };
@@ -2191,6 +2135,59 @@ physikalischen Festplatten, LUKS und ZFS
   };
 }
 ```
+
+### Weitere Installationsmöglichkeiten
+Neben der im Kapitel [Installation](#installation) beschriebenen Nutzung des offiziellen
+ISO-Images, lässt sich aufgrund des deklarativen Ansatzes auch ein angepasstes Image
+vergleichsweise einfach erstellen. Dabei können individuelle Konfigurationen direkt
+integriert werden:
+```nix
+{
+  inputs.nixpkgs.url = "nixpkgs/nixos-unstable";
+  outputs =
+    { nixpkgs, ... }:
+    {
+      nixosConfigurations = {
+        customIso = nixpkgs.lib.nixosSystem {
+          system = "x86_64-linux";
+          modules = [
+            "${nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
+            (
+              { lib, pkgs, ... }:
+Ausschließlich der Client mit dem DN `CN=nico,O=example,C=DE` wird akzeptiert.
+              {
+                # enable serial console
+                boot.kernelParams = [ "console=ttyS0,115200n8" ];
+
+                users.users.root = {
+                  initialHashedPassword = lib.mkForce null;
+                  password = "s3cr3tPasSw0rt";
+
+                  openssh.authorizedKeys.keys = [
+                    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICjJMDuek9Ug/Eqc1y6Sq65nLhrgLLSgJYTKlUEw6I13"
+                  ];
+                };
+
+                console.keyMap = "de";
+              }
+            )
+          ];
+        };
+      };
+    };
+}
+```
+```sh
+nix build .#nixosConfigurations.customIso.config.system.build.isoImage
+```
+
+Des Weiteren existieren Tools wie [github:elitak/nixos-infect](https://github.com/elitak/nixos-infect)
+oder [github:nix-community/nixos-anywhere](https://github.com/nix-community/nixos-anywhere)
+welche die Installation von NixOS aus nahezu jedem Linux-basierten System ermöglichen.
+Hierfür wird eine im Linux Kernel implementierte Funktion (kexec) verwendet, die ein
+neues Kernel-Image lädt und in dieses startet. Mithilfe dieser Werkzeuge kann NixOS auch
+auf einem Server installiert werden, wenn der Hosting-Anbieter weder ein NixOS-Image
+bereitstellt noch die Verwendung eigener ISO-Images erlaubt.
 
 ### PKI
 Bisher wurden Zertifikate über die ACME-HTTP-01-Challenge von Let’s Encrypt
@@ -2255,8 +2252,7 @@ flowchart TB
   mTLS --- nico
 ```
 
-Die Konfiguration im nginx könnte dann beispielsweise so aussehen.
-Hierbei wird nur der Client ...
+Die Konfiguration im nginx könnte dann beispielsweise so aussehen:
 ```nix
 {
   services.nginx = {
@@ -2275,81 +2271,3 @@ Hierbei wird nur der Client ...
   };
 }
 ```
-
-## System: CI/CD
-<!-- aufbau git mit ci/cd pipeline for gitops, ggf. integration von gradient build server-->
-
-## Putting it together
-Im Rahmen des Blogartikels wurden verschiedene Systeme gebaut. Schlussendlich können
-diese zu einer Infrastruktur verbunden werden. Folgendes Netzwerkdiagramm beschreibt
-den Aufbau schematisch.
-```mermaid
-flowchart LR
-  internet[Internet]@{ shape: cloud } --- router[Router]
-  router --- svc[SVC]@{ shape: cloud }
-  router --- infra[Infra]@{ shape: cloud }
-  router --- dmz[DMZ]@{ shape: cloud }
-  svc --- notes
-  svc --- auth
-  infra --- git
-  infra --- build
-  infra --- mon
-  infra --- log
-  dmz --- proxy
-  dmz --- dns
-  dmz --- time
-```
-
-In der flake.nix werden nun mehrere Systeme definiert, was eine gemeinsamme
-Verwaltung und einheitliche Updatestände ermöglicht.
-
-### Router
-Mithilfe von verschiedenen VRF's werden vier Routingdomainen erstellt.
-Die jeweils notwendigen Routen werden in die entsprechenden VRF's geleaked.
-```mermaid
-flowchart LR
-  internet[Internet]
-  svc[Services]
-  infra[Infra]
-  dmz[DMZ]
-
-  internet <--> dmz
-  %% todo wenn möglich auch nicht
-  internet <--> svc
-
-  dmz <--> infra
-  dmz <--> svc
-  svc <--> infra
-```
-
-Infrastruktursysteme sind dazu zur Nutzung der in der DMZ angesiedelten
-Dienste (proxy, dns, time) verpflichtet um das Internet zu erreichen.
-Auf dem Proxy können für jedes System spezifische Policies implementiert
-werden, welche die benötigten Zugriffe erlauben.
-
-Auch Systeme in der Services VRF sollten sofern Möglich die Systeme der
-DMZ nutzen. Für nicht HTTP Dienste ist dies jedoch nicht immer möglich. <!-- oder? -->
-
-<!-- vrrp mal testen? -->
-
-### Services
-#### notes
-hedgedoc
-#### auth
-keycloak
-### Infra
-#### git
-gitea
-#### build
-gitea actions, gradient
-#### mon
-prometheus + grafana
-#### log
-graylog
-### DMZ
-#### proxy
-squid (forward) + nginx (reverse)
-#### dns
-knot resolver (kresd)
-#### time
-?
