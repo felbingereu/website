@@ -55,7 +55,7 @@ Für größere Infrastrukturen ist es besonders vorteilhaft, Konfigurationen zen
 und von den einzelnen Systemen darauf verweisen zu lassen.
 Dadurch entsteht eine zentrale Single Source of Truth.
 
-NixOS bringt jedoch eine deutlich höhere Lernkurve mit sich, da sich sowohl die Nix-Sprache als
+NixOS bringt jedoch eine deutlich steilere Lernkurve mit sich, da sich sowohl die Nix-Sprache als
 auch das deklarative Modell grundlegend von der klassischen Administration anderer
 Linux-Distributionen unterscheiden.
 
@@ -128,6 +128,12 @@ Bei der Konfiguration eines NixOS-Systems ist es häufig notwendig, zunächst de
 korrekten Namen eines Pakets oder einer Konfigurationsoption zu ermitteln. Dafür
 stellt das Nix-Ökosystem eine [Websuche](https://search.nixos.org) zur Verfügung.
 
+### Formatting
+Ein einheitlicher Stil macht Nix-Code leichter lesbar und einfacher zu warten. Dafür
+eignen sich zwei Werkzeuge, die unterschiedliche Aufgaben übernehmen: `nixfmt` formatiert
+den Code; `deadnix` sucht nach ungenutzten Bindings, also etwa Variablen oder
+Funktionsargumenten, die im Ausdruck nicht verwendet werden. 
+
 ## Installation
 Für die ersten Schritte mit NixOS auf einem Server empfiehlt sich die Installation über
 das offizielle Minimal-ISO-Image, das auf der [NixOS-Website](https://nixos.org/download/)
@@ -189,30 +195,31 @@ sudo nix --experimental-features "nix-command flakes" run \
 
 Alternativ besteht natürlich die Möglichkeit das System manuell zu partitionieren:
 ```shell
-parted /dev/sda -- mklabel gpt
-parted /dev/sda -- mkpart ESP fat32 2MB 512MB
-parted /dev/sda -- set 1 esp on
-parted /dev/sda -- mkpart primary 512MB 100%
-mkfs.fat -F 32 -n boot /dev/sda1
-mkfs.ext4 /dev/sda2
+sudo parted /dev/sda -- mklabel gpt
+sudo parted /dev/sda -- mkpart ESP fat32 2MB 512MB
+sudo parted /dev/sda -- set 1 esp on
+sudo parted /dev/sda -- mkpart primary 512MB 100%
+sudo mkfs.fat -F 32 -n boot /dev/sda1
+sudo mkfs.ext4 /dev/sda2
 
-mount /dev/sda2 /mnt
-mkdir /mnt/boot
-mount /dev/sda1 /mnt/boot
+sudo mount /dev/sda2 /mnt
+sudo mkdir /mnt/boot
+sudo mount /dev/sda1 /mnt/boot
 ```
 
 ### Minimalinstallation
-Anschließend werden mit folgendem Befehl einige Konfigurationsoptionen generiert, welche
-im weiteren Verlauf genutzt werden:
+Anschließend werden mit folgendem Befehl zwei Konfigurationsdateien generiert,
+welche im weiteren Verlauf genutzt werden:
 ```sh
-nixos-generate-config --root /mnt
+sudo nixos-generate-config --root /mnt
 ```
 Die generierten Konfigurationen liegen unter /mnt/etc/nixos/.
 
-Falls das System mit Disko aufgesetzt wurde, kann die generierte hardware-configuration.nix
-um die fileSystems Optionen reduziert werden.
+Falls das System mit Disko aufgesetzt wurde, müssen die `fileSystems` und `swapDevices` Optionen
+aus der generierte hardware-configuration.nix entfernt werden. Stattdessen wird die disk-config.nix
+hinzugefügt.
 ```sh
-mv /tmp/disk-config.nix /mnt/etc/nixos/disk-config.nix
+sudo mv /tmp/disk-config.nix /mnt/etc/nixos/disk-config.nix
 ```
 Die in der Initrd verfügbaren Kernelmodule können sich je nach System deutlich unterscheiden.
 Daher sollte immer die generierte Konfiguration inspiziert werden.
@@ -290,8 +297,14 @@ wird und die generierten Konfigurationsdateien sowie die disk-config.nix geladen
 
 Zuletzt kann das System installiert werden:
 ```sh
-nixos-install --root /mnt/ --flake /mnt/etc/nixos/#server
+sudo nixos-install --root /mnt/ --flake /mnt/etc/nixos/#server
 ```
+
+Dabei wird die `flake.lock` erzeugt, welche die konkreten Versionen beinhaltet,
+die verwendet werden. Die `flake.lock` kann durch den Befehl `nix flake update`
+auf die jeweils aktuellsten Versionen aktiviert werden.
+
+Schlussendlich wird das System mit dem Befehl `reboot` neugestartet.
 
 ## Netzwerkimplementierung
 NixOS bietet verschiedene Möglichkeiten das Netzwerk zu konfigurieren:
@@ -310,6 +323,9 @@ Implementierung einzusetzen. Dadurch bleibt die Konfiguration einheitlich und le
 nachvollziehbar. Aufgrund der hohen Flexibilität von IfState und der Fokus dieses Artikels auf
 Server- und Netzwerkinfrasturkur (also Router) wird daher IfState verwendet.
 
+Folgender Codeblock enthält eine statische Dual-Stack (IPv4 + IPv6) Konfiguration.
+Die MAC- sowie IP-Adresse und Routen müssen entsprechend angepasst werden.
+
 ```nix
 # networking.nix
 {
@@ -319,25 +335,25 @@ Server- und Netzwerkinfrasturkur (also Router) wird daher IfState verwendet.
       settings = {
         interfaces.ens18 = {
           addresses = [
-            "192.168.0.100/24"
-            "fd08:ef47:ab81:f69d:1034:56ff:fe78:9abc/64"
+            "192.168.0.100/24"  # TODO
+            "fd08:ef47:ab81:f69d:1034:56ff:fe78:9abc/64"  # TODO
           ];
           link = {
             state = "up";
             kind = "physical";
           };
-          identify.perm_address = "12:34:56:78:9a:bc";
+          identify.perm_address = "12:34:56:78:9a:bc"; # TODO
         };
         routing.routes = [
           {
             to = "0.0.0.0/0";
             dev = "ens18";
-            via = "192.168.0.1";
+            via = "192.168.0.1";  # TODO
           }
           {
             to = "::/0";
             dev = "ens18";
-            via = "fe80::1";
+            via = "fe80::1";  # TODO
           }
         ];
       };
@@ -346,6 +362,33 @@ Server- und Netzwerkinfrasturkur (also Router) wird daher IfState verwendet.
   };
 }
 ```
+
+Anschließend wird die networking.nix in der flake.nix eingebunden:
+```nix
+# flake.nix
+{
+  inputs = {
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    disko.url = "github:nix-community/disko";
+  };
+  outputs = { nixpkgs, disko, ... }: {
+    nixosConfigurations = {
+      server = nixpkgs.lib.nixosSystem {
+        modules = [
+          ./configuration.nix
+          ./hardware-configuration.nix
+          disko.nixosModules.disko
+          ./disk-config.nix
+          ./networking.nix  # <----
+        ];
+      };
+    };
+  };
+}
+```
+
+Schlussendlich wird das System mit dem Befehl `sudo nixos-rebuild switch --flake /etc/nixos#server`
+neu gebaut, wodurch die Konfiguration angewandt wird.
 
 ## Dienste betreiben
 Nachdem NixOS installiert und die grundlegende Systemkonfiguration eingerichtet ist, widmen
@@ -368,7 +411,10 @@ und überprüfen, welche Änderungen NixOS tatsächlich vorgenommen hat.
 
 ### Minimalkonfiguration
 
-Das NixOS-Modul für HedgeDoc lässt sich zunächst mit nur einer Option aktivieren:
+Das NixOS-Modul für HedgeDoc lässt sich zunächst mit nur einer Option aktivieren.
+Grundsätzlich ist es egal, in welcher Datei die Konfiguration definiert wird,
+solange diese im System (in der flake.nix) importiert wird. Im Folgenden wird
+die Konfiguration in der bislang leeren Datei `hedgedoc.nix` vorgenommen.
 ```nix
 {
   services.hedgedoc.enable = true;
@@ -377,7 +423,7 @@ Das NixOS-Modul für HedgeDoc lässt sich zunächst mit nur einer Option aktivie
 Nachdem die Änderungen mit `sudo nixos-rebuild switch --flake /etc/nixos#server`
 übernommen wurden, ist feststellbar, dass der systemd-Service `hedgedoc` läuft und
 HedgeDoc auf der IPv6-Loopback-Adresse ([::1]) auf Port 3000 zur Verfügung steht
-(siehe `ss -tlpn`).
+(siehe `systemctl status hedgedoc` sowie `ss -tlpn`).
 
 ### HedgeDoc direkt erreichbar machen
 
@@ -397,9 +443,9 @@ einem erneuten Deployment ist HedgeDoc beispielsweise über die URL
 
 Für einen produktiven Betrieb ist diese Variante allerdings nicht ideal. Der interne
 Webserver der Anwendung wird dadurch direkt dem Netzwerk beziehungsweise dem Internet
-ausgesetzt. Außerdem müsste sich die Anwendung selbst um Themen wie TLS-Terminierung,
-HTTP-Weiterleitungen und gegebenenfalls weitere Sicherheits- und Proxy-Einstellungen
-kümmern.
+ausgesetzt. Außerdem müsste sich die Anwendung selbst um Themen wie TLS-Terminierung
+(hier: https), HTTP-Weiterleitungen und gegebenenfalls weitere
+Sicherheits- und Proxy-Einstellungen kümmern.
 
 Stattdessen setzen wir einen Reverse Proxy vor HedgeDoc. Der Reverse Proxy nimmt die
 externen Verbindungen entgegen und leitet sie intern an HedgeDoc weiter. Dadurch kann
@@ -426,10 +472,26 @@ Das HedgeDoc-Modul kann die passende nginx-Konfiguration automatisch erzeugen:
 Mit `configureNginx = true` wird nginx als Abhängigkeit aktiviert und ein virtueller
 Host für die angegebene Domain angelegt. Beim Aktivieren der Konfiguration erhalten
 wir jedoch eine Fehlermeldung, die uns darüber Informiert, dass kein TLS Zertifikat
-für diesen vHost verfügbar ist. Dies hängt damit zusammen, dass das hedgedoc nixos
-modul die option forceSSL im nginx vHost auf true setzt, welche dann ein für diese
-Domain gültiges TLS Zertifkat erfordert. Zunächst deaktivieren wir dieses verhalten
-des Moduls, um den Dienst über nginx mittels http bereitzustellen.
+für diesen vHost verfügbar ist. Dies hängt damit zusammen, dass das hedgedoc
+NixOS-Modul die Option forceSSL im nginx vHost auf true setzt, welche dann ein für
+diese Domain gültiges TLS Zertifkat erfordert. Zunächst deaktivieren wir dieses
+verhalten des Moduls, um den Dienst über nginx mittels http bereitzustellen.
+
+```nix
+{
+  services = {
+    hedgedoc = {
+      enable = true;
+      configureNginx = true;
+      settings.domain = "notes.example.com";
+    };
+    nginx.virtualHosts."notes.example.com".forceSSL = false;
+  };
+}
+```
+
+Auch dies führt zu einer Fehlermeldung, da die Option bereits definiert ist.
+Die Lösung für dieses Problem wird im nächsten Kapitel erläutert.
 
 ### NixOS config merge
 
@@ -453,9 +515,27 @@ definieren. Eine niedrigere Zahl hat dabei eine höhere Priorität.
 }
 ```
 Nachdem dieser Konfiguration übernommen wurde, ist feststellbar dass nginx
-hedgedoc auf port 80 zur Verfügung stellt. Die Kommunikation zwischen nginx
-und hedgedoc läuft hierbei nicht mehr über TCP/IP ports die lokal gebindet
-sind, sondern über unix sockets.
+HedgeDoc zwar auf Port 80 zur Verfügung stellt, es von außen aber dennoch
+nicht erreichbar ist. Dies hängt mit der fehlenden Firewall für Port 80 zusammen,
+welche durch folgenden Codeblock entsprechend angepasst wird.
+```nix
+{ lib, ... }:
+{
+  services = {
+    hedgedoc = {
+      enable = true;
+      configureNginx = true;
+      settings.domain = "notes.example.com";
+    };
+    nginx.virtualHosts."notes.example.com".forceSSL = lib.mkOverride 99 false;
+  };
+  networking.firewall.allowedTCPPorts = [ 80 ];
+}
+```
+Die Kommunikation zwischen nginx und hedgedoc läuft nun nicht mehr über
+TCP/IP ports die lokal gebindet sind, sondern über [unix sockets](https://openbook.rheinwerk-verlag.de/linux_unix_programmierung/Kap11-017.htm).
+Dies ist im HedgeDoc Modul von NixOS festgelegt und wird als Best Practice
+angesehen.
 
 ### TLS
 HedgeDoc ist nun über nginx von anderen Computern aus erreichbar. Die Verbindung
@@ -501,7 +581,8 @@ erwarteten URL erreichbar, gilt damit als nachgewiesen, dass der Antragsteller d
 kontrolliert beziehungsweise den Webserver für diese Domain konfigurieren kann.
 
 Wir entfernen das überschreiben des forceSSL Parameters, ergänzen enableACME auf dem
-nginx vHost und akzeptieren die Terms of Service des verwendeten Zertifikatsdienstleisters.
+nginx vHost, akzeptieren die Terms of Service des verwendeten Zertifikatsdienstleisters
+und öffnen den für HTTPs verwendeten Port 443 in der Firewall.
 ```nix
 {
   services = {
@@ -513,6 +594,10 @@ nginx vHost und akzeptieren die Terms of Service des verwendeten Zertifikatsdien
     nginx.virtualHosts."notes.example.com".enableACME = true;
   };
   security.acme.acceptTerms = true;
+  networking.firewall.allowedTCPPorts = [
+    80
+    443
+  ];
 }
 ```
 Aufgrund des standardmäßig vom HedgeDoc Module gesetzten forceSSL Parameters werden
@@ -523,7 +608,7 @@ Standardmäßig verwendet HedgeDoc SQLite um Daten persistent zu speichern. Das 
 für eine minimale Installation praktisch, weil keine zusätzliche Datenbank eingerichtet
 werden muss. Für einen produktiven Betrieb ist eine separate Datenbank wie PostgreSQL
 jedoch die bessere Wahl, da bei mehreren gleichzeitigen Zugriffen und schreibintensiven
-Anwendungen eine dateibasierte Datenbank aber an ihre Grenzen stößt.
+Anwendungen eine dateibasierte Datenbank an ihre Grenzen stößt.
 ```nix
 {
   services = {
@@ -551,6 +636,10 @@ Anwendungen eine dateibasierte Datenbank aber an ihre Grenzen stößt.
     nginx.virtualHosts."notes.example.com".enableACME = true;
   };
   security.acme.acceptTerms = true;
+  networking.firewall.allowedTCPPorts = [
+    80
+    443
+  ];
 }
 ```
 Ähnlich wie zuvor nginx verwendet auch hedgedoc den Unix-Domain-Socket für die
@@ -563,22 +652,24 @@ sie nicht nur IP-Adressen und Ports, sondern auch die Inhalte von HTTP-Anfragen
 analysiert. Dadurch kann sie verdächtige Muster erkennen und beispielsweise SQL-,
 SSTI- und Command-Injection-Versuche sowie Cross-Site-Scripting blockieren.
 
-Im folgenden wird ModSecurity mit dem OWASP Core Ruleset (CRS) in Nginx integriert.
-Requests, die einen zuvor definierten Anomaly Score überschreiten, werden automatisch
-protokolliert (`SecRuleEngine DetectionOnly`) oder abgelehnt (`SecRuleEngine On`).
-Dadurch lassen sich bestimmte Angriffe auf HedgeDoc oder verwendete Bibliotheken bereits
-vor ihrer Verarbeitung durch die Anwendung abfangen.
+Im folgenden wird [ModSecurity](https://github.com/owasp-modsecurity/ModSecurity) mit
+dem OWASP Core Ruleset (CRS) in Nginx integriert. Requests, die einen zuvor
+definierten Anomaly Score überschreiten, werden automatisch protokolliert
+(`SecRuleEngine DetectionOnly`) oder abgelehnt (`SecRuleEngine On`).
+Dadurch lassen sich bestimmte Angriffe auf HedgeDoc oder verwendete Bibliotheken
+bereits vor ihrer Verarbeitung durch die Anwendung abfangen.
 
 Für die meisten Anwendungen müssen einzelne Regeln des CRS deaktiviert oder angepasst
 werden, da sie andernfalls legitime Anfragen blockieren können. Bei HedgeDoc betrifft
 dies beispielsweise die für die kollaborative Bearbeitung erforderliche WebSocket
-basierte Kommunikation sowie die Funktion zum Löschen von Notes.
+basierte Kommunikation (`/socket.io/`) sowie die Funktion zum Löschen von Notes
+(`/history/`).
 
-Wir fügen die nixpkgs für unsere Systemarchitektur als pkgs hinzu, laden v4.29.0 von
-[github:coreruleset/coreruleset](https://github.com/coreruleset/coreruleset) in den
-Nix Store, erstellen die Modsecurity Konfiguration im Nix Store und passen die
-Konfiguration von nginx entsprechend an, sodass Modsecurity als zusätzliches Modul
-geladen und mit der zuvor erstellten Konfiguration aktiviert wird:
+Dazu laden wir [github:coreruleset/coreruleset](https://github.com/coreruleset/coreruleset)
+in der derzeit aktuellsten Version v4.29.0 in den Nix Store, erstellen die
+ModSecurity Konfiguration im Nix Store und passen die Konfiguration von nginx
+entsprechend an, sodass Modsecurity als zusätzliches Modul geladen und mit der
+zuvor erstellten Konfiguration aktiviert wird:
 ```nix
 { pkgs, ... }:
 {
@@ -655,12 +746,17 @@ geladen und mit der zuvor erstellten Konfiguration aktiviert wird:
       };
   };
   security.acme.acceptTerms = true;
+  networking.firewall.allowedTCPPorts = [
+    80
+    443
+  ];
 }
 ```
 
 
 ### Secrets Management
-Beim Blick in die HedgeDoc-Logs fällt folgende Meldung auf:
+Beim Blick in die HedgeDoc-Logs (`systemctl status hedgedoc` bzw.
+`journalctl -u hedgedoc`) fällt folgende Meldung auf:
 
 > Session secret not set. Using random generated one.
 > Please set `sessionSecret` in your config.json file.
@@ -680,14 +776,15 @@ nicht unmittelbar in der Nix-Konfiguration hinterlegt werden, da diese im Nix St
 welcher von allen Benutzern des Systems gelesen werden kann, gespeichert werden.
 
 Stattdessen speichern wir Secrets in verschlüsselten Dateien außerhalb des Nix Stores.
-Für diesen Zweck verwenden wir sops zusammen mit sops-nix. Die Secrets bleiben dabei
-verschlüsselt im Repository und werden erst während der Aktivierung der NixOS-Konfiguration
-auf dem Zielsystem entschlüsselt. sops-nix legt die einzelnen Werte anschließend als
+Für diesen Zweck verwenden wir [sops](https://github.com/getsops/sops) zusammen mit
+[sops-nix](https://github.com/mic92/sops-nix). Die Secrets bleiben dabei verschlüsselt
+im Repository und werden erst während der Aktivierung der NixOS-Konfiguration auf dem
+Zielsystem entschlüsselt. sops-nix legt die einzelnen Werte anschließend als
 geschützte Dateien im Dateisystem ab und kann deren Besitzer und Zugriffsrechte deklarativ
 festlegen.
 
 Jedoch bietet HedgeDoc nicht die Möglichkeit das Secret direkt aus einer von
-sops-nix bereitgestellten Datei einlesen. Die Anwendung erwartet stattdessen
+sops-nix bereitgestellten Datei einzulesen. Die Anwendung erwartet stattdessen
 den entsprechenden Konfigurationswert beziehungsweise die Umgebungsvariable
 `CMD_SESSION_SECRET` (HedgeDoc hieß früher CodiMD, daher das `CMD`).
 
@@ -698,16 +795,14 @@ Zunächst wird die flake.nix um sops-nix erweitert:
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     disko.url = "github:nix-community/disko";
-    sops-nix.url = "github:Mic92/sops-nix";
+    sops-nix.url = "github:Mic92/sops-nix";  # <--
   };
-  outputs = { nixpkgs, disko, sops-nix, ... }: {
+  outputs = { nixpkgs, disko, sops-nix, ... }: {  # <--
     nixosConfigurations = {
       server = nixpkgs.lib.nixosSystem {
         modules = [
-          ./configuration.nix
-          disko.nixosModules.disko
-          ./disk-config.nix
-          sops-nix.nixosModules.default
+          # ...
+          sops-nix.nixosModules.default  # <--
         ];
       };
     };
@@ -723,12 +818,21 @@ Grundsätzlich sollte Schlüsselmaterial nicht mehrfach verwendet werden.
 Abhängig von der jeweiligen Systemkonfiguration kann dies in diesem Fall
 jedoch vertretbar sein.
 
+Da wir das `age` Paket bisher nicht installiert haben, können wir ein
+weiteres Feature von NixOS nutzen: DevShells. Mithilfe von
+`nix shell nixpkgs#age --extra-experimental-features "nix-command flakes"`
+können wir diese in der aktuellen Shell verfügbar machen. Alternativ
+besteht natürlich die Möglichkeit das Paket permanent zu installieren,
+da dieses jedoch im weiteren Verlauf nicht nötig ist und grundsätzlich
+auf Serversystemen nur notwendige Pakete installiert sein sollten, wird
+darauf bewusst verzichtet.
+
 Ein age Keypair mit sicheren Unix Zugriffsrechten kann mithilfe der
 folgenden Befehle erstellt werden:
 ```sh
 OLD_UMASK=$(umask)
-umask 177
-age-keygen > private.key
+umask 0177
+age-keygen > ~root/private.key
 umask ${OLD_UMASK}
 ```
 
@@ -746,9 +850,15 @@ creation_rules:
       - age: [ *nico, *hedgedoc ]
 ```
 Nun kann die entsprechende secrets.yaml mit `sops secrets.yaml` angelegt werden.
+Wie bereits zuvor ist auch sops derzeit nicht auf dem System hinterlegt. Wieder
+kann eine Nix DevShell verwendet werden um den Befehl verfügbar zu machen.
+Da dieser Befehl im weiteren Verlauf des Blogartikels häufiger benötigt wird
+können wir ihn alternativ permanent verfügbar machen, in dem wir unsere Nix
+Konfiguration um `environment.systemPackages = [ pkgs.sops ];` erweitern.
+In der Datei secrets.yaml fügen wir folgenden Inhalt mit zufallsgeneriertem Passwort hinzu:
 ```yml
 hedgedoc:
-  sessionSecret: My_S3cure-S3cr3t
+  sessionSecret: My_S3cure-R4nd0m-S3cr3t
 ```
 Abschließend lässt sich die Nix-Konfiguration so anpassen, dass das Secret
 geladen und entschlüsselt als Datei bereitgestellt wird. Unterstützt eine
@@ -844,6 +954,10 @@ Umgebungsvariablendatei eingebunden werden.
       };
   };
   security.acme.acceptTerms = true;
+  networking.firewall.allowedTCPPorts = [
+    80
+    443
+  ];
 }
 ```
 Wird ein Key in der .sops.yaml aktualisiert, muss die secrets.yaml mit
@@ -1016,6 +1130,10 @@ Keycloak deaktiviert.
     };
   };
   security.acme.acceptTerms = true;
+  networking.firewall.allowedTCPPorts = [
+    80
+    443
+  ];
 }
 ```
 TODO:
