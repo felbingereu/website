@@ -8,7 +8,7 @@ categories:
 draft: True
 ---
 
-# Server- und Netzwerkinfrastruktur mit NixOS (1/2)
+# Server- und Netzwerkinfrastruktur mit NixOS (1/3)
 <!-- REVIEWERS: Julian K, Jan G, Felix E, Christina K. (mit install) -->
 
 Seit 2019 beschäftige ich mich mit der Administration Linux-basierter Serversysteme. Angefangen
@@ -132,7 +132,7 @@ stellt das Nix-Ökosystem eine [Websuche](https://search.nixos.org) zur Verfügu
 Ein einheitlicher Stil macht Nix-Code leichter lesbar und einfacher zu warten. Dafür
 eignen sich zwei Werkzeuge, die unterschiedliche Aufgaben übernehmen: `nixfmt` formatiert
 den Code; `deadnix` sucht nach ungenutzten Bindings, also etwa Variablen oder
-Funktionsargumenten, die im Ausdruck nicht verwendet werden. 
+Funktionsargumenten, die im Ausdruck nicht verwendet werden.
 
 ## Installation
 Für die ersten Schritte mit NixOS auf einem Server empfiehlt sich die Installation über
@@ -1124,9 +1124,12 @@ Keycloak deaktiviert.
         inherit hostname;
         proxy-headers = "forwarded";
       };
-      database.host = "/run/postgresql";
-        sslCertificateKey = "/var/lib/acme/${hostname}/key.pem";
-        sslCertificate = "/var/lib/acme/${hostname}/fullchain.pem";
+      database = {
+        host = "/run/postgresql";
+        passwordFile = "...";
+      };
+      sslCertificateKey = "/var/lib/acme/${hostname}/key.pem";
+      sslCertificate = "/var/lib/acme/${hostname}/fullchain.pem";
     };
   };
   security.acme.acceptTerms = true;
@@ -1578,9 +1581,10 @@ Frage, wie die NixOS-Konfiguration sinnvoll organisiert werden
 kann. NixOS eignet sich besonders gut dafür, als Infrastruktur
 as Code (IaC) in einem Git-Repository abgelegt zu werden. Die
 Konfiguration aller Systeme kann dadurch versioniert, nachvollziehbar
-geändert und reproduzierbar ausgerollt werden. Eine einfache und
-gut erweiterbare Struktur besteht aus einem Verzeichnis für die
-einzelnen Hosts und einem zweiten Verzeichnis für wiederverwendbare
+geändert und reproduzierbar ausgerollt werden. Die flake.lock erhält
+die exakte Version der verwendeten externen Quellen (wie z. B. nixpkgs).
+Eine einfache und gut erweiterbare Struktur besteht aus einem Verzeichnis
+für die einzelnen Hosts und einem zweiten Verzeichnis für wiederverwendbare
 Module.
 
 Das folgende Beispiel beschreibt eine mögliche Struktur:
@@ -1636,6 +1640,26 @@ treeView-beta
     ".sops.yaml" ## wer secrets entschlüsseln darf
 ```
 -->
+
+Der Befehl `nixos-rebuild` erlaubt auch die Definition eines Zielhosts,
+somit lässt sich die Konfiguration eines Servers auch von einem Client
+aus verändern. Das git-Repository muss daher nicht auf jeden Server
+kopiert und aktuell gehalten werden.
+
+Um beispielsweise das System "notes" zu deployen wird folgender Befehl
+genutzt.
+```
+sudo nixos-rebuild switch \
+  --flake .#notes \
+  --target-host nico@192.168.1.10 \
+  --sudo
+```
+
+Im NixOS-Ökosystem existieren viele verschiedenen Deploy Tools, die
+die Erstellung einer Deploy-Konfiguration (z.B. IP des Zielsystem) erlauben.
+Beispiele dafür sind [deploy-rs](https://github.com/serokell/deploy-rs),
+[deploy-sh](https://radicle.defelo.de/nodes/radicle.defelo.de/rad:z392ZFR7AcScpaQqmTKUDkDj9FWMq)
+und [colmena](https://github.com/nix-community/colmena).
 
 ## Monitoring
 Mit zunehmender Anzahl an Servern gewinnt auch das Monitoring
@@ -2008,7 +2032,7 @@ Während dies bei Clientsystemen typischerweise kein Problem darstellt, werden
 Server häufig auch über das Netzwerk neugestartet, teilweise ist physikalischer
 Zugriff auf die Maschinen gar nicht möglich. Um Systeme entfernt neustarten zu
 können, kann im initrd ein SSH server gestartet werden, der dann das entschlüsseln
-des systems über ssh ermöglicht. Hierbei ist auf die korrekte angabe der für
+des systems über ssh ermöglicht. Hierbei ist auf die korrekte Angabe der für
 Netzwerk benötigten kernel module zu achten.
 ```nix
 {
