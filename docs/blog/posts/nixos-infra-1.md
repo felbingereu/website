@@ -1,15 +1,16 @@
 ---
 date:
-  created: 2026-09-27
+  created: 2026-11-01
 authors:
 - nicof2000
+- herrluisi
 categories:
 - NixOS
 draft: True
 ---
 
 # Server- und Netzwerkinfrastruktur mit NixOS (1/3)
-<!-- REVIEWERS: Julian K, Jan G, Felix E, Christina K. (mit install) -->
+<!-- REVIEWERS: Julian K, Jan G, Felix E, Christina K. (mit install), Luis H. -->
 
 Seit 2019 beschäftige ich mich mit der Administration Linux-basierter Serversysteme. Angefangen
 hat alles mit eigenen Projekten. Mit der Zeit übernahm ich jedoch auch die Betreuung von Systemen
@@ -838,16 +839,16 @@ umask ${OLD_UMASK}
 
 Danach kann die .sops.yaml angelegt werden, in welcher die Schlüssel
 mit den jeweiligen Secret-Dateien verknüpft werden.
-```yml
+```yaml
 # .sops.yaml
 keys:
   - &nico age1x0hr45ueh3nu4xypjltmlssz9jexyalzwu4296600gs9mlpl95rq2ny2es
-  - &hedgedoc age12lasmrsaj50hanwq743lljq94x0ax2ht5jf9dysauqt5s22263vs5ql6f0
+  - &notes age12lasmrsaj50hanwq743lljq94x0ax2ht5jf9dysauqt5s22263vs5ql6f0
 
 creation_rules:
   - path_regex: secrets.yaml
     key_groups:
-      - age: [ *nico, *hedgedoc ]
+      - age: [ *nico, *notes ]
 ```
 Nun kann die entsprechende secrets.yaml mit `sops secrets.yaml` angelegt werden.
 Wie bereits zuvor ist auch sops derzeit nicht auf dem System hinterlegt. Wieder
@@ -2304,7 +2305,6 @@ integriert werden:
             "${nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
             (
               { lib, pkgs, ... }:
-Ausschließlich der Client mit dem DN `CN=nico,O=example,C=DE` wird akzeptiert.
               {
                 # enable serial console
                 boot.kernelParams = [ "console=ttyS0,115200n8" ];

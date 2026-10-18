@@ -3,6 +3,7 @@ date:
   created: 2027-01-01
 authors:
 - nicof2000
+- herrluisi
 categories:
 - NixOS
 draft: True

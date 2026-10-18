@@ -1,8 +1,9 @@
 ---
 date:
-  created: 2026-10-14
+  created: 2026-12-01
 authors:
 - nicof2000
+- herrluisi
 categories:
 - NixOS
 draft: True
@@ -14,6 +15,7 @@ NixOS gegeben. Dieser Teil beschäftigt sich mit Strukturierung einer Infrastruk
 komplett basierende auf NixOS.
 
 Im Fokus liegen dabei:
+
 - Netzwerksegmentierung
 - Implementierung des Prinzips: Ein Dienst pro System
 - GitOps (CI/CD Pipeline) mit

@@ -14,7 +14,7 @@ draft: true
 Anfang 2026 wurde ich Mitglied im [DENOG e.V.](https://www.denog.de/), die technische Internet & Netzwerk Community,
 zur Förderung einer unabhängigen und offenen Plattform zum Austausch von Erfahrungen, Standards und Entwicklungen.
 
-Als Mentee durfte ich in der zweiter Runde des Mentoring-Programm teilgenommen. Das Programm umfasste verschiedene
+Als Mentee durfte ich in der zweiten Runde des Mentoring-Programm teilgenommen. Das Programm umfasste verschiedene
 Themen, die sowohl für die persönliche als auch für die berufliche Entwicklung relevant sind.
 
 <!-- more -->
@@ -33,12 +33,15 @@ Themenbereiche im Rahmen des Mentorings behandelt:
 - MPLS[^5], LDP[^6], Traffic Engineeging, RSVP[^7], PCE[^8]
 - SRv6[^9], inklusive Aufbau eines Labs mit FRR on Linux
 - VPP[^10], Nutzung von L2VPN, EVPN, MACsec
-- CGNAT / DS-Lite / MAP-T / MAP-E / NAT64+DNS64 / NPTv6
+- CGNAT[^11] / DS-Lite / MAP-T / MAP-E / NAT64+DNS64 / NPTv6
 
 <!-- ggf. mehr zum SRv6 schreiben -->
 
+Mir hat das Mentoring sehr viel gebracht und ich kann es jedem mit Interesse an Netzwerktechnik empfehlen.
+
 <!-- Bewertung -->
 <!-- Welcome WG -->
+Im Rahmen der [Welcome Working Group]() heißt der DENOG e. V. seine neuen Mitglieder willkommen.
 
 [^1]: OSPF: Open Shortest Path First
 [^2]: ISIS: Intermediate System to Intermediate System
@@ -50,3 +53,4 @@ Themenbereiche im Rahmen des Mentorings behandelt:
 [^8]: PCE: Path Computation Element
 [^9]: SRv6: Segment Routing v6
 [^10]: VPP: Vector Packet Processing
+[^11]: CGNAT: Carrier-grade Network Address Translation
