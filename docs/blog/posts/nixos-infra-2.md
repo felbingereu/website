@@ -93,6 +93,8 @@ treeView-beta
     "..."
 ```
 
+#### Interne Netzwerkschnittstelle
+
 Eine interne Netzwerkschnittstelle sieht dann beispielsweise so aus:
 ```nix
 # hosts/router/interfaces/ens20-inf.nix
@@ -120,6 +122,37 @@ in
   };
 }
 ```
+
+#### Firewall
+
+In der Firewallkonfiguration finden sich dann die sets sowie Weiterleitungsregeln:
+```nix
+# hosts/router/firewall.nix
+{
+  networking.nftables.tables.nixos-fw.content = ''
+    set build4 {
+      type ipv4_addr
+      elements = { 192.168.1.10 }
+    }
+    set build6 {
+      type ipv6_addr
+      elements = { fd00::192:168:1:10 }
+    }
+
+    # ...
+
+    chain forward-allow {
+      # build -> git, to get git repos
+      ip saddr @build4 ip daddr @git4 tcp dport { 22, 443 } accept
+      ip6 saddr @build6 ip6 daddr @git6 tcp dport { 22, 443 } accept
+
+      # ...
+    }
+  '';
+}
+```
+
+#### Wireguard
 
 Der Wireguard Endpunkt benötigt verschiedene Secrets (Private Key, Preshared Key für
 jeden Client) Diese werden über sops verwaltet, auf dem System als Datei bereitgestellt
@@ -173,3 +206,46 @@ Des Weiteren ist zu bedenken, dass der von Wiregaurd verwendete Port (hier: 5182
 aus dem Internet erreichbar sein muss. Dafür fügen wir in der Konfiguration der
 Netzwerkschnittstelle ens18 eine Firewallregel ein, welche eingehende Anfragen
 erlauben.
+
+#### Internet
+```nix
+# hosts/router/interfaces/ens18-internet.nix
+let
+  interface = "ens18";
+in
+{
+  networking = {
+    ifstate.settings = {
+      interfaces."${interface}" = {
+        addresses = [ "192.168.0.2/24" ];
+        alt-names = [ "internet" ];
+        link = {
+          state = "up";
+          kind = "physical";
+          address = "12:34:56:78:9a:bc";
+        };
+      };
+      routing.routes = [
+        {
+          to = "0.0.0.0/0";
+          via = "192.168.0.1";
+        }
+      ];
+    };
+    nftables.tables.nixos-fw.content =
+      let
+        wg0Port = toString config.networking.ifstate.settings.interfaces.wg0.listen_port;
+      in
+      ''
+        chain input-allow {
+          # wireguard
+          iifname ${interface} ip daddr @routerPublic4 udp dport ${wg0Port} accept
+          iifname ${interface} ip6 daddr @routerPublic6 udp dport ${wg0Port} accept
+        }
+      '';
+  };
+}
+```
+Hier nutzen wir einen der Vorteile von Nix: In der Konfiguration können wir auf andere Konfigurationselemente zugreifen.
+Statt den Port statisch festzulegen, beziehen wir ihn über config aus der bestehenden Konfiguration. Ändert sich der Port,
+muss er dadurch nur an einer Stelle angepasst werden.
