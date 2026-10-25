@@ -52,15 +52,139 @@ aus dem Internet auf intern gehostete Dienste, die öffentlich erreichbar sein s
 (hedgedoc, keycloak). Die Systeme `dns` und `time` stellen einen DNS Resolver (Knot Resolver)
 sowie einen Zeitserver (chrony) zur Verfügung.
 
-Der Router verbindet die Netzsegmente untereinander. Auf diese System werden strikte Firwallregeln für die Weiterleitung von IP Paketen definiert. Sowohl für den Zugriff auf das Infra Segment, als auch die Administration wird ein Wireguard Endpunkt auf dem Server bereitgestellt, mit dem sich Clients aus dem Internet verbinden können.
+Der Router verbindet die Netzsegmente untereinander. Auf diese System werden strikte Firwallregeln
+für die Weiterleitung von IP Paketen definiert. Sowohl für den Zugriff auf das Infra Segment, als
+auch die Administration wird ein Wireguard Endpunkt auf dem Server bereitgestellt, mit dem sich
+Clients aus dem Internet verbinden können.
 
-## Randbedingungen
-- Alle Systeme werden in einem git-Repository gepflegt und entsprechend der Struktur
-  aus dem vorherigen Artikel definiert.
-- Das Deployment erfolgt über `nixos-rebuild`.
-- Die gesamte finale Konfiguration kann unter
-  [TODO_HIER_URL_EINFÜGEN](https://TODO_HIER_URL_EINFÜGEN) eingesehen werden. Die
-  folgenden Kapitel enthalten lediglich relevante Ausschnitte.
+## Strukturierung der NixOS Konfiguration
+Eine Infrastruktur besteht selten nur aus einem einzigen System. Sobald mehrere Systeme verwaltet
+werden müssen, stellt sich die Frage, wie die NixOS-Konfiguration sinnvoll organisiert werden
+kann. NixOS eignet sich besonders gut dafür, als Infrastruktur as Code (IaC) in einem Git-Repository
+abgelegt zu werden. Die Konfiguration aller Systeme kann dadurch versioniert, nachvollziehbar
+geändert und reproduzierbar ausgerollt werden. Die flake.lock erhält die exakte Version der
+verwendeten externen Quellen (wie z. B. nixpkgs). Eine einfache und gut erweiterbare Struktur
+besteht aus einem Verzeichnis für die einzelnen Hosts und einem zweiten Verzeichnis für
+wiederverwendbare Module (beispielsweise die Härtungskonfiguration).
+
+Das folgende Beispiel beschreibt die hier genutzte Struktur:
+```mermaid
+treeView-beta
+    ".git"
+    "hosts"
+        "auth"
+            "configuration.nix"
+            "disk-config.nix"
+            "hardware-configuration.nix"
+            "keycloak.nix"
+            "secrets.yml"
+        "build"
+            "configuration.nix"
+            "disk-config.nix"
+            "gradient.nix"
+            "hardware-configuration.nix"
+            "secrets.yml"
+        "dns"
+            "configuration.nix"
+            "disk-config.nix"
+            "dns.nix"
+            "hardware-configuration.nix"
+            "secrets.yml"
+        "git"
+            "configuration.nix"
+            "disk-config.nix"
+            "forgejo.nix"
+            "hardware-configuration.nix"
+            "secrets.yml"
+        "log"
+            "configuration.nix"
+            "disk-config.nix"
+            "graylog.nix"
+            "hardware-configuration.nix"
+            "secrets.yml"
+        "mon"
+            "configuration.nix"
+            "disk-config.nix"
+            "grafana.nix"
+            "hardware-configuration.nix"
+            "prometheus.nix"
+            "secrets.yml"
+        "notes"
+            "configuration.nix"
+            "disk-config.nix"
+            "hardware-configuration.nix"
+            "hedgedoc.nix"
+            "secrets.yml"
+        "proxy"
+            "configuration.nix"
+            "disk-config.nix"
+            "hardware-configuration.nix"
+            "nginx.nix"
+            "secrets.yml"
+            "squid.nix"
+        "time"
+            "configuration.nix"
+            "disk-config.nix"
+            "hardware-configuration.nix"
+            "secrets.yml"
+            "time.nix"
+    "modules"
+        "hardening.nix"
+    ".sops.yaml"
+```
+<!--
+TODO: Inline Descriptions und Logos funktionieren nicht, siehe:
+https://mermaid.ai/open-source/syntax/treeView.html#inline-descriptions-with
+```mermaid
+---
+config:
+  treeView:
+    showIcons: true
+    defaultIconPack: material-icon-theme
+    extensionIcons:
+      .nix: nix
+---
+treeView-beta
+    ".git/"
+    "hosts" ## konkrete Systemkonfigurationen
+        "auth/"
+            "configuration.nix"
+            "disk-config.nix"
+            "hardware-configuration.nix"
+            "secrets.yml"
+        "notes/"
+            "configuration.nix"
+            "disk-config.nix"
+            "hardware-configuration.nix"
+            "secrets.yml"
+    "modules" ## wiederverwendbare NixOS Module
+        "hardening.nix"
+        "hedgedoc.nix"
+        "keycloak.nix"
+    ".sops.yaml" ## wer secrets entschlüsseln darf
+```
+-->
+
+Der Befehl `nixos-rebuild` erlaubt auch die Definition eines Zielhosts, somit lässt sich
+die Konfiguration eines Servers auch von einem Client aus verändern. Das git-Repository
+muss daher nicht auf jeden Server kopiert und aktuell gehalten werden.
+
+Um beispielsweise das System "notes" zu deployen wird folgender Befehl genutzt.
+```
+sudo nixos-rebuild switch \
+  --flake .#notes \
+  --target-host nico@192.168.1.10 \
+  --sudo
+```
+
+Im NixOS-Ökosystem existieren viele verschiedenen Deploy Tools, die
+die Erstellung einer Deploy-Konfiguration (z.B. IP des Zielsystem) erlauben.
+Beispiele dafür sind [deploy-rs](https://github.com/serokell/deploy-rs),
+[deploy-sh](https://radicle.defelo.de/nodes/radicle.defelo.de/rad:z392ZFR7AcScpaQqmTKUDkDj9FWMq)
+und [colmena](https://github.com/nix-community/colmena).
+
+Im Rahmen dieses Blogartikels wird auf kein externes Deploy Tool zurückgegriffen, sondern
+`nixos-rebuild` wie oben beschrieben verwendet.
 
 ## Implementierung
 ### Router
@@ -251,3 +375,316 @@ in
 Hier nutzen wir einen der Vorteile von Nix: In der Konfiguration können wir auf andere Konfigurationselemente zugreifen.
 Statt den Port statisch festzulegen, beziehen wir ihn über config aus der bestehenden Konfiguration. Ändert sich der Port,
 muss er dadurch nur an einer Stelle angepasst werden.
+
+### Monitoring
+Mit zunehmender Anzahl an Servern gewinnt auch das Monitoring
+an Bedeutung. Es liefert einen Überblick über den Zustand und
+die Verfügbarkeit der Systeme und hilft dabei, Probleme frühzeitig
+zu erkennen. Dabei können beispielsweise die CPU- und RAM-Auslastung,
+der verfügbare Speicherplatz, die Erreichbarkeit von Diensten sowie
+die Gültigkeit von TLS-Zertifikaten überwacht werden.
+
+Für die Umsetzung eines Monitorings existieren verschiedene Ansätze.
+Beim Push-Modell senden überwachte Systeme ihre Metriken aktiv an eine
+zentrale Monitoring-Instanz. Beim Pull-Modell werden die Metriken
+hingegen von der Monitoring-Instanz regelmäßig bei den überwachten
+Systemen abgefragt. Entsprechend vielfältig ist auch die Auswahl
+an verfügbaren Werkzeugen.
+
+In diesem Kapitel wird die Implementierung eines Pull-basierten
+Monitorings mit Prometheus beschrieben. Wie bereits bei der
+Systemhärtung dienen die folgenden Beispiele lediglich als Anregung
+und stellen keine vollständige Monitoring-Konfiguration dar. Welche
+Metriken erfasst und welche Benachrichtigungen eingerichtet werden,
+hängt stark von der jeweiligen Umgebung und den individuellen Anforderungen
+ab. Besonders bei der Definition von Alerts gibt es zahlreiche Möglichkeiten
+von einfachen Schwellwerten bis hin zu komplexen, aus mehreren Metriken
+abgeleiteten Regeln.
+
+```nix
+{
+  services.prometheus = {
+    enable = true;
+    scrapeConfigs = [
+      {
+        job_name = "prometheus";
+        static_configs = [ { targets = [ "localhost:9090" ]; } ];
+      }
+    ];
+  };
+}
+```
+
+#### Prometheus Exporter
+Auf der Prometheus-Website findet sich eine umfangreiche Übersicht
+verschiedener Exporter, die auf Systemen installiert werden können,
+um Metriken für Prometheus bereitzustellen:
+<https://prometheus.io/docs/instrumenting/exporters/>.
+
+Besonders hervorzuheben sind der offizielle node_exporter und der
+blackbox_exporter.
+
+node_exporter stellt Hardware- und Betriebssystemmetriken bereit. Dazu gehören
+beispielsweise Informationen zur CPU- und Speicherauslastung, zu Dateisystemen,
+Netzwerkverbindungen und Systemlast.
+```nix
+{
+  services.prometheus.exporters.node = {
+    enable = true;
+    enabledCollectors = [ "systemd" ];
+  };
+}
+```
+Auf dem Monitoring System wird dann die entsprechende Scrape Config hinzugefügt:
+```nix
+{
+  services.prometheus.scrapeConfigs = [
+    {
+      job_name = "node-exporter";
+      static_configs = [
+        {
+          targets = [
+            "notes.example.com:9100"
+            "auth.example.com:9100"
+            "monitoring.example.com:9100"
+          ];
+        }
+      ];
+      relabel_configs = [
+        {
+          source_labels = [ "__address__" ];
+          regex = "([^:]+):\\d+";
+          target_label = "instance";
+        }
+      ];
+    }
+  ];
+}
+```
+
+Der blackbox_exporter prüft die Erreichbarkeit und das Verhalten externer
+Endpunkte, indem er sogenannte Blackbox-Probes durchführt. Unterstützt
+werden unter anderem Prüfungen über HTTP, HTTPS, DNS, TCP, ICMP und gRPC.
+Dadurch lässt sich beispielsweise feststellen, ob ein Webserver erreichbar
+ist, ein DNS-Dienst korrekt antwortet oder ein TLS-Zertifikat noch gültig
+ist. Da dieser Dienst nicht primär den Zustand des Systems überwacht,
+auf dem er ausgeführt wird, wird er auf dem Monitoring-System deployed.
+```nix
+{
+  services.prometheus = {
+    exporters.blackbox = {
+      enable = true;
+      listenAddress = "127.0.0.1";
+      configFile = pkgs.writeText "blackbox.yml" ''
+        modules:
+          http_2xx:
+            prober: http
+      '';
+    };
+
+    scrapeConfigs = [
+      {
+        job_name = "blackbox-exporter";
+        static_configs = [ { targets = [ "127.0.0.1:9115" ]; } ];
+      }
+      {
+        job_name = "blackbox-exporter_http";
+        metrics_path = "/probe";
+        params.module = [ "http_2xx" ];
+        static_configs = [
+          {
+            targets = [
+              "notes.example.com"
+              "auth.example.com"
+            ];
+          }
+        ];
+        relabel_configs = [
+          {
+            source_labels = [ "__address__" ];
+            target_label = "__param_target";
+          }
+          {
+            source_labels = [ "__param_target" ];
+            target_label = "instance";
+          }
+          {
+            target_label = "__address__";
+            replacement = "127.0.0.1:9115";
+          }
+        ];
+      }
+    ];
+  };
+}
+```
+
+#### Alertmanager
+Prometheus kann auf Grundlage der gesammelten Metriken Alert-Regeln
+auswerten. Für die weitere Verarbeitung und Zustellung der ausgelösten
+Alarme ist Alertmanager zuständig. Im folgenden wird eine Regel
+implementiert, die einen Alarm auslöst, wenn ein Dateisystem bereits
+weniger als zehn Prozent freien Speicherplatz besitzt und bei
+gleichbleibender Schreibrate voraussichtlich innerhalb der nächsten 24
+Stunden vollständig belegt sein wird.
+```nix
+{
+  services.prometheus = {
+    rules = [
+      (
+        builtins.toJSON
+        {
+          groups = [
+            {
+              name = "custom";
+              rules = [
+                {
+                  alert = "HostDiskWillFillIn24Hours";
+                  expr = ''
+                    ((node_filesystem_avail_bytes * 100) / node_filesystem_size_bytes < 10 and ON (instance, device, mountpoint) predict_linear(node_filesystem_avail_bytes{fstype!~"tmpfs"}[1h], 24 * 3600) < 0 and ON (instance, device, mountpoint) node_filesystem_readonly == 0) * on(instance) group_left (nodename) node_uname_info{nodename=~".+"}
+                  '';
+                  for = "20m";
+                  labels = {
+                    severity = "warning";
+                  };
+                  annotations = {
+                    summary = "Host disk will fill in 24 hours (instance {{ $labels.instance }})";
+                    description = "Filesystem is predicted to run out of space within the next 24 hours at current write rate\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}";
+                  };
+                }
+              ];
+            }
+          ];
+        }
+      )
+    ];
+    alertmanager = {
+      enable = true;
+      configuration = {
+        route = {
+          group_wait = "10s";
+          group_interval = "30s";
+          repeat_interval = "1d";
+          receiver = "default";
+
+          routes = [
+            {
+              receiver = "default";
+              match_re = {
+                severity = "critical";
+              };
+              continue = true;
+            }
+          ];
+        };
+        receivers = [
+          {
+            name = "default";
+            email_configs = [ "monitoring-alerts@example.com" ];
+          }
+        ];
+      };
+    };
+  };
+}
+```
+
+#### Grafana
+Zur Visualisierung der mit Prometheus gesammelten Metriken kann Grafana
+eingesetzt werden. Die Plattform ermöglicht es, Metriken in übersichtlichen
+Dashboards darzustellen, Zeitreihen zu analysieren und relevante
+Entwicklungen oder Auffälligkeiten schnell zu erkennen.
+
+```nix
+{ config, ... }:
+{
+  sops.secrets."monitoring/grafana/secretKey".owner = "grafana";
+
+  services = {
+    grafana = {
+      enable = true;
+      settings = {
+        server = {
+          domain = "grafana.example.com";
+          root_url = "https://%(domain)s/";
+        };
+        security.secret_key = "$__file{${config.sops.secrets."monitoring/grafana/secretKey".path}}";
+      };
+      provision = {
+        enable = true;
+        datasources.settings.datasources = [
+          {
+            name = "Prometheus";
+            type = "prometheus";
+            url = "http://127.0.0.1:9090";
+            isDefault = true;
+          }
+        ];
+      };
+    };
+
+    nginx = {
+      enable = true;
+      virtualHosts."grafana.example.com" = {
+        locations."/" = {
+          proxyPass = "http://127.0.0.1:3000/";
+          proxyWebsockets = true;
+        };
+        enableACME = true;
+        forceSSL = true;
+      };
+    };
+  };
+}
+```
+
+Wie hedgedoc verwendet auch Grafana Standardmäßig eine sqlite Datenbank.
+In dieser werden zwar primär Benutzer und Dashboards gespeichert, dennoch
+sollte diese gesichert werden
+```nix
+{
+  services = {
+    postgresql = {
+      enable = true;
+      ensureDatabases = [ "grafana" ];
+    };
+    grafana.database = {
+      type = "postgres";
+      host = "/run/postgresql";
+      user = "grafana";
+    };
+  };
+}
+```
+
+<!--
+TODO
+Des Weiteren kann auch Grafana an die zuvor eingerichtete Keycloak Instanz
+angebunden werden.
+```nix
+{
+  services.grafana.settings = {
+    "auth.generic_oauth" = {
+      enabled = true;
+      name = "Keycloak";
+      allow_sign_up = true;
+      client_id = "grafana";
+      client_secret = "$__file{${config.sops.secrets."monitoring/grafana/oidcSecret".path}}";
+      scopes = "email profile roles openid";
+      email_attribute_path = "email";
+      login_attribute_path = "preferred_username";
+      name_attribute_path = "full_name";
+      auth_url = "https://grafana.example.com/realms/main/protocol/openid-connect/auth";
+      token_url = "https://grafana.example.com/realms/main/protocol/openid-connect/token";
+      api_url = "https://grafana.example.com/realms/main/protocol/openid-connect/userinfo";
+      role_attribute_path = "contains(roles[*], 'admin') && 'Admin' || contains(roles[*], 'editor') && 'Editor' || 'Viewer'";
+    };
+  };
+}
+```
+-->
+
+In Grafana selbst (Zugangsdaten: admin:admin) können anschließend die
+gewünschten Dashboards importiert beziehungsweise erstellt werden. Beispiele für
+von mir verwendete Dashboards können <https://github.com/secshellnet/grafana-dashboards>
+entnommen werden.
