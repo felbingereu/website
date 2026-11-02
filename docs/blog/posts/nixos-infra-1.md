@@ -1,15 +1,13 @@
 ---
 date:
-  created: 2026-11-01
+  created: 2026-11-02
 authors:
 - nicof2000
 categories:
 - NixOS
-draft: True
 ---
 
 # Server- und Netzwerkinfrastruktur mit NixOS (1/3)
-<!-- REVIEWERS: Julian K, Jan G, Felix E, Christina K. (mit install), Luis H. -->
 
 Seit 2019 beschäftige ich mich mit der Administration Linux-basierter Serversysteme. Angefangen
 hat alles mit eigenen Projekten. Mit der Zeit übernahm ich jedoch auch die Betreuung von Systemen
@@ -25,7 +23,7 @@ in verschiedenen Infrastrukturen mehrfach aufbaute. Um diese Aufgaben zu vereinh
 wiederverwendbar zu machen, begann ich daher mit der Erstellung eigener Ansible-Rollen.
 
 Ende 2022 beschäftigte ich mich intensiver mit [NixOS](https://nixos.org/) und entschied mich,
-einige Komponenten testweise damit neu zu deployen. Von diesem Konzept war ich direkt angetan.
+einige Komponenten testweise damit neu zu deployen. Von diesem Konzept war ich direkt überzeugt.
 Innerhalb kurzer Zeit migrierte ich schließlich eine vollständig von mir betreute Infrastruktur
 auf NixOS.
 
@@ -38,18 +36,18 @@ in den definierten Zustand versetzt.
 
 <!-- more -->
 
-Für Server- und Netzwerkinfrastruktur eignet sich NixOS durch die Möglichkeit, die gesamte
-Konfiguration versioniert und nachvollziehbar zu verwalten. Die Konfigurationsdateien können
-in Git abgelegt werden, was die Zusammenarbeit stark vereinfacht. Änderungen lassen sich
+Für Server- und Netzwerkinfrastruktur eignet sich NixOS besonders gut, da es die Möglichkeit
+bietet die Konfiguraion versioniert und nachvollziehbar zu verwalten. Die Konfigurationsdateien
+können in Git abgelegt werden, was die Zusammenarbeit stark vereinfacht. Änderungen lassen sich
 dadurch dokumentieren und vor der Anwendung beispielsweise über Pull Requests prüfen und
 reviewen. Gleichzeitig können mehrere Systeme konsistent konfiguriert werden, wodurch
 Konfigurationsabweichungen und manuelle Fehler reduziert werden.
 
-Ein weiterer Vorteil ist die Reproduzierbarkeit. Systeme können auf Grundlage derselben
-Konfiguration für verschiedene Anwendungsfälle (z. B. Test-, Staging- und Produktionsumgebungen)
-aufgebaut werden. Das vereinfacht Wartung, Migration und Wiederherstellung. Durch die Verwaltung
-verschiedener Systemgenerationen ist es außerdem möglich, bei fehlerhaften Änderungen auf
-eine zuvor funktionierende Konfiguration zurückzurollen.
+Ein weiterer Vorteil ist, dass Systeme auf Grundlage derselben Konfiguration für verschiedene
+Anwendungsfälle (z. B. Test-, Staging- und Produktionsumgebungen) aufgebaut werden können und
+dadurch Reproduzierbar sind. Dies wiederum vereinfacht die Wartung, Migration und Wiederherstellung.
+Durch die Verwaltung verschiedener Systemgenerationen ist es außerdem möglich, bei fehlerhaften
+Änderungen auf eine zuvor funktionierende Konfiguration zurückzurollen.
 
 Für größere Infrastrukturen ist es besonders vorteilhaft, Konfigurationen zentral zu definieren
 und von den einzelnen Systemen darauf verweisen zu lassen.
@@ -137,7 +135,7 @@ Funktionsargumenten, die im Ausdruck nicht verwendet werden.
 ## Installation
 Für die ersten Schritte mit NixOS auf einem Server empfiehlt sich die Installation über
 das offizielle Minimal-ISO-Image, das auf der [NixOS-Website](https://nixos.org/download/)
-heruntergeladen werden kann.
+zu finden ist.
 
 ### Partitionierung
 Nachdem NixOS gestartet wurde, muss die Festplatte, auf der es installiert werden soll,
@@ -270,9 +268,10 @@ Sie lässt sich im groben und ganzen auf den folgenden Inhalt reduzieren:
 }
 ```
 
-Für die Verwaltung des Systems nutzen wir die modernen Nix Flakes, anstelle von Nix Channels,
-daher erstellen wir die Datei flake.nix, in der ein System unter dem Namen `server` erstellt
-wird und die generierten Konfigurationsdateien sowie die disk-config.nix geladen werden.
+Für die Verwaltung des Systems nutzen wir die modernen Nix Flakes, anstelle von Nix Channels.
+
+In der Datei flake.nix erstellen wir ein System unter dem Namen `server`, in welchem wir die
+generierten Konfigurationsdateien sowie die disk-config.nix laden.
 ```nix
 # flake.nix
 {
@@ -300,11 +299,11 @@ Zuletzt kann das System installiert werden:
 sudo nixos-install --root /mnt/ --flake /mnt/etc/nixos/#server
 ```
 
-Dabei wird die `flake.lock` erzeugt, welche die konkreten Versionen beinhaltet,
-die verwendet werden. Die `flake.lock` kann durch den Befehl `nix flake update`
-auf die jeweils aktuellsten Versionen aktiviert werden.
+Dabei wird die Datei `flake.lock` erzeugt, welche die konkret verwendeten Versionen festhält.
+Mit dem Befehl `nix flake update` lassen sich die darin referenzierten Pakete auf die jeweils
+aktuellsten Versionen aktualisieren.
 
-Schlussendlich wird das System mit dem Befehl `reboot` neugestartet.
+Abschließend wird das System mit dem Befehl `reboot` neugestartet.
 
 ## Netzwerkimplementierung
 NixOS bietet verschiedene Möglichkeiten das Netzwerk zu konfigurieren:
@@ -335,25 +334,25 @@ Die MAC- sowie IP-Adresse und Routen müssen entsprechend angepasst werden.
       settings = {
         interfaces.ens18 = {
           addresses = [
-            "192.168.0.100/24"  # TODO
-            "fd08:ef47:ab81:f69d:1034:56ff:fe78:9abc/64"  # TODO
+            "192.168.0.100/24"  # <----
+            "fd08:ef47:ab81:f69d:1034:56ff:fe78:9abc/64"  # <----
           ];
           link = {
             state = "up";
             kind = "physical";
           };
-          identify.perm_address = "12:34:56:78:9a:bc"; # TODO
+          identify.perm_address = "12:34:56:78:9a:bc";  # <----
         };
         routing.routes = [
           {
             to = "0.0.0.0/0";
             dev = "ens18";
-            via = "192.168.0.1";  # TODO
+            via = "192.168.0.1";  # <----
           }
           {
             to = "::/0";
             dev = "ens18";
-            via = "fe80::1";  # TODO
+            via = "fe80::1";  # <----
           }
         ];
       };
@@ -387,8 +386,8 @@ Anschließend wird die networking.nix in der flake.nix eingebunden:
 }
 ```
 
-Schlussendlich wird das System mit dem Befehl `sudo nixos-rebuild switch --flake /etc/nixos#server`
-neu gebaut, wodurch die Konfiguration angewandt wird.
+Um die Konfiguration neu zu bauen und anzuwenden wird schlussendlich der Befehl
+`sudo nixos-rebuild switch --flake /etc/nixos#server` ausgeführt.
 
 ## Dienste betreiben
 Nachdem NixOS installiert und die grundlegende Systemkonfiguration eingerichtet ist, widmen
@@ -435,7 +434,7 @@ wäre die Anpassung der "Listen Address" auf allen Netzwerkadressen:
 {
   services.hedgedoc = {
     enable = true;
-    settings.host = "0.0.0.0";
+    settings.host = "0.0.0.0";  # <----
   };
 }
 ```
@@ -466,8 +465,8 @@ Das HedgeDoc-Modul kann die passende nginx-Konfiguration automatisch erzeugen:
 {
   services.hedgedoc = {
     enable = true;
-    configureNginx = true;
-    settings.domain = "notes.example.com";
+    configureNginx = true;  # <----
+    settings.domain = "notes.example.com";  # <----
   };
 }
 ```
@@ -487,7 +486,7 @@ verhalten des Moduls, um den Dienst über nginx mittels http bereitzustellen.
       configureNginx = true;
       settings.domain = "notes.example.com";
     };
-    nginx.virtualHosts."notes.example.com".forceSSL = false;
+    nginx.virtualHosts."notes.example.com".forceSSL = false;  # <----
   };
 }
 ```
@@ -499,7 +498,7 @@ Die Lösung für dieses Problem wird im nächsten Kapitel erläutert.
 
 An dieser Stelle kommt eine wichtige Eigenschaft von NixOS zum Einsatz:
 Mehrere Konfigurationsfragmente können dieselbe Option setzen. NixOS muss
-deshalb entscheiden, welcher Wert verwendet wird. Dafür gibt es nummerische
+deshalb entscheiden welcher Wert verwendet wird. Dafür gibt es nummerische
 Prioritäten. Der normale Standardwert einer Option wird mit der Priorität 100
 behandelt. Mit lib.mkOverride können wir einen Wert mit einer anderen Priorität
 definieren. Eine niedrigere Zahl hat dabei eine höhere Priorität.
@@ -531,7 +530,7 @@ welche durch folgenden Codeblock entsprechend angepasst wird.
     };
     nginx.virtualHosts."notes.example.com".forceSSL = lib.mkOverride 99 false;
   };
-  networking.firewall.allowedTCPPorts = [ 80 ];
+  networking.firewall.allowedTCPPorts = [ 80 ];  # <----
 }
 ```
 Die Kommunikation zwischen nginx und hedgedoc läuft nun nicht mehr über
@@ -541,7 +540,7 @@ angesehen.
 
 ### TLS
 HedgeDoc ist nun über nginx von anderen Computern aus erreichbar. Die Verbindung
-verwendet allerdings das unverschlüsseltes HTTP Protokoll. Für den produktiven
+verwendet allerdings das unverschlüsselte HTTP Protokoll. Für den produktiven
 Betrieb sollten wir TLS aktivieren, damit Anmeldedaten, Dokumentinhalte und
 Sitzungen nicht unverschlüsselt übertragen werden.
 
@@ -561,7 +560,7 @@ Einige Organisationen bieten kostenlose TLS-Zertifikate an. Der bekannteste Anbi
 ist Let’s Encrypt, eine von der gemeinnützigen Internet Security Research Group (ISRG)
 betriebene Zertifizierungsstelle. Das Projekt wurde 2015 gestartet und stellt kostenlose
 und automatisiert ausgestellte TLS-Zertifikate bereit, um verschlüsselte Verbindungen per
-HTTPS zu fördern und deren Nutzung als Standard im Internet voranzutreiben.
+HTTPs zu fördern und deren Nutzung als Standard im Internet voranzutreiben.
 
 Neben Let’s Encrypt bieten auch Anbieter wie ZeroSSL und Actalis kostenlose Zertifizierungsdienste
 an. Sie unterstützen das ACME-Protokoll (Automatic Certificate Management Environment),
@@ -578,13 +577,13 @@ die zur Validierung der Domainkontrolle verwendet werden. Diese Validierung ist 
 die Ausstellung eines Zertifikats. Das ACME-Modul von NixOS unterstützt derzeit die Challenges
 ACME-HTTP-01 und ACME-DNS-01. Im folgenden Beispiel wird die ACME-HTTP-01-Challenge verwendet.
 Dabei wird eine Datei im Verzeichnis `.well-known/acme-challenge/` des Webroots bereitgestellt.
-Die Zertifizierungsstelle ruft diese Datei anschließend über HTTP ab. Ist die Datei unter der
+Die Zertifizierungsstelle ruft diese Datei anschließend über HTTP auf. Ist die Datei unter der
 erwarteten URL erreichbar, gilt damit als nachgewiesen, dass der Antragsteller die Domain
 kontrolliert beziehungsweise den Webserver für diese Domain konfigurieren kann.
 
-Wir entfernen das überschreiben des forceSSL Parameters, ergänzen enableACME auf dem
-nginx vHost, akzeptieren die Terms of Service des verwendeten Zertifikatsdienstleisters
-und öffnen den für HTTPs verwendeten Port 443 in der Firewall.
+Wir entfernen das Überschreiben des Parameters forceSSL, aktivieren enableACME für den nginx
+VirtualHost, akzeptieren die Terms of Service des verwendeten Zertifikatsdienstleisters
+und geben den für HTTPs genutzten Port 443 in der Firewall frei.
 ```nix
 {
   services = {
@@ -593,17 +592,17 @@ und öffnen den für HTTPs verwendeten Port 443 in der Firewall.
       configureNginx = true;
       settings.domain = "notes.example.com";
     };
-    nginx.virtualHosts."notes.example.com".enableACME = true;
+    nginx.virtualHosts."notes.example.com".enableACME = true;  # <----
   };
   security.acme.acceptTerms = true;
   networking.firewall.allowedTCPPorts = [
     80
-    443
+    443  # <----
   ];
 }
 ```
 Aufgrund des standardmäßig vom HedgeDoc Module gesetzten forceSSL Parameters werden
-anschließend sämtliche Requests von HTTP auf HTTPS angehoben.
+anschließend sämtliche Requests von HTTP auf HTTPs angehoben.
 
 ### PostgreSQL
 Standardmäßig verwendet HedgeDoc SQLite um Daten persistent zu speichern. Das ist
@@ -614,7 +613,7 @@ Anwendungen eine dateibasierte Datenbank an ihre Grenzen stößt.
 ```nix
 {
   services = {
-    postgresql = {
+    postgresql = {  # <----
       enable = true;
       ensureDatabases = [ "hedgedoc" ];
       ensureUsers = [
@@ -629,7 +628,7 @@ Anwendungen eine dateibasierte Datenbank an ihre Grenzen stößt.
       configureNginx = true;
       settings = {
         domain = "notes.example.com";
-        db = {
+        db = {  # <----
           dialect = "postgresql";
           host = "/run/postgresql";
         };
@@ -697,7 +696,7 @@ zuvor erstellten Konfiguration aktiviert wird:
         };
       };
     };
-    nginx =
+    nginx =  # <----
       let
         modsecurity_crs = pkgs.fetchFromGitHub {
           owner = "coreruleset";
@@ -761,7 +760,9 @@ Beim Blick in die HedgeDoc-Logs (`systemctl status hedgedoc` bzw.
 `journalctl -u hedgedoc`) fällt folgende Meldung auf:
 
 > Session secret not set. Using random generated one.
+>
 > Please set `sessionSecret` in your config.json file.
+>
 > All users will be logged out.
 
 HedgeDoc verwendet ein Session-Secret, um die Sitzungs-Cookies der Benutzer zu
@@ -797,14 +798,14 @@ Zunächst wird die flake.nix um sops-nix erweitert:
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     disko.url = "github:nix-community/disko";
-    sops-nix.url = "github:Mic92/sops-nix";  # <--
+    sops-nix.url = "github:Mic92/sops-nix";  # <----
   };
-  outputs = { nixpkgs, disko, sops-nix, ... }: {  # <--
+  outputs = { nixpkgs, disko, sops-nix, ... }: {  # <----
     nixosConfigurations = {
       server = nixpkgs.lib.nixosSystem {
         modules = [
           # ...
-          sops-nix.nixosModules.default  # <--
+          sops-nix.nixosModules.default  # <----
         ];
       };
     };
@@ -852,8 +853,8 @@ creation_rules:
       - age: [ *nico, *notes ]
 ```
 Nun kann die entsprechende secrets.yaml mit `sops secrets.yaml` angelegt werden.
-Wie bereits zuvor ist auch sops derzeit nicht auf dem System hinterlegt. Wieder
-kann eine Nix DevShell verwendet werden um den Befehl verfügbar zu machen.
+Wie bereits zuvor bei `age` ist auch sops derzeit nicht auf dem System hinterlegt.
+Wieder kann eine Nix DevShell verwendet werden um den Befehl verfügbar zu machen.
 Da dieser Befehl im weiteren Verlauf des Blogartikels häufiger benötigt wird
 können wir ihn alternativ permanent verfügbar machen, in dem wir unsere Nix
 Konfiguration um `environment.systemPackages = [ pkgs.sops ];` erweitern.
@@ -973,14 +974,20 @@ nach Systemkonfiguration über das proc-Dateisystem ausgelesen werden
 ptrace) kann dadurch auf die Umgebungsvariablen anderer Prozesse zugreifen und
 somit auch das Session-Secret einsehen.
 
-Das Init-System systemd stellt mit `LoadCredential` zwar einen geeigneteren
-Mechanismus bereit. Dabei werden Zugangsdaten beim Start des Dienstes in
-einem geschützten, temporären Verzeichnis abgelegt. HedgeDoc unterstützt
-jedoch weiterhin nicht das Auslesen von Secrets aus Dateien, weshalb dies
-in diesem Fall nicht angewandt werden kann.
+Mit `LoadCredential` bietet das verwendete Init-System `systemd` zwar einen
+geeigneteren Mechanismus, der Zugangsdaten beim Start des Dienstes in einem
+geschützten temporären Verzeichnis bereitstellt – HedgeDoc unterstützt jedoch
+nach wie vor das Auslesen von Secrets aus Dateien nicht, weshalb sich dieser
+Ansatz hier nicht nutzen lässt.
 
-<!--
-TODO
+<!--  TODO
+      Der notwendige Schritt wäre, das preStart-Skript des systemd-Dienstes so anzupassen,
+      dass es die betreffenden Werte mithilfe von jq durch den Inhalt der Secret-Dateien
+      ersetzt. Da dies Kenntnisse in systemd, jq und Nix erfordert, lassen wir die Umsetzung
+      an dieser Stelle aus. Vielleicht ergänze ich sie in einem späteren Teil.
+      https://github.com/NixOS/nixpkgs/blob/9bb52223f4f6a0cc606fd0852d8784f896c137d5/nixos/modules/services/web-apps/hedgedoc.nix#L294-L305
+-->
+
 ### Single Sign-On (SSO)
 HedgeDoc kann die Authentifizierung an einen externen Identity Provider (IdP)
 auslagern. Benutzerkonte und Passwörter müssen dadurch nicht mehr ausschließlich
@@ -992,10 +999,10 @@ ohne sich dort erneut anmelden zu müssen. Die Anwendungen leiten den Benutzer z
 Anmeldung an den IdP weiter und erhalten anschließend die für die eigene Sitzung
 benötigten Authentifizierungsinformationen.
 
-Im Folgenden konfigurieren wir HedgeDoc so, dass die Authentifizierung über OpenID
-Connect (OIDC) und Keycloak erfolgt. Keycloak ist eine Open-Source-Plattform für
-Identity- und Access-Management und übernimmt in diesem Aufbau die zentrale Verwaltung
-der Benutzer sowie deren Anmeldung.
+Im zweiten Teil dieses Blogartikels konfigurieren wir HedgeDoc so, dass die
+Authentifizierung über OpenID Connect (OIDC) und Keycloak erfolgt. Keycloak ist
+eine Open-Source-Plattform für Identity- und Access-Management und übernimmt in
+diesem Aufbau die zentrale Verwaltung der Benutzer sowie deren Anmeldung.
 
 Während sich einige Anwendungen wie HedgeDoc vollständig über Nix konfigurieren lassen,
 gibt es auch Ausnahmen. Keycloak ist ein Beispiel dafür: Zwar kann NixOS Keycloak auf
@@ -1003,14 +1010,15 @@ dem System installieren und als Dienst betreiben, die eigentliche Konfiguration 
 Benutzern und OIDC-Clients erfolgt standardmäßig jedoch manuell über die Weboberfläche.
 
 !!! info
-    Das NixOS-Modul für Keycloak bietet grundsätzlich die Möglichkeit, Realms
-    über eine JSON-Datei zu konfigurieren (`services.keycloak.realmFiles`).
-    Dadurch ließe sich auch die Keycloak-Konfiguration deklarativ verwalten.
-    Diese Variante behandeln wir hier jedoch nicht, da sie ein detaillierteres
-    Verständnis der Keycloak-Datenstruktur und der Realm-Konfiguration voraussetzt.
-    Stattdessen nehmen wir die notwendigen Einstellungen zunächst direkt über die
-    Weboberfläche vor.
+    Das NixOS-Modul für Keycloak unterstützt die Konfiguration von Realms über
+    JSON-Dateien (`services.keycloak.realmFiles`). Damit ließen sich die
+    Realm-Einstellungen ebenfalls deklarativ verwalten. Auf diese Variante gehen
+    wir hier jedoch nicht näher ein, da sie ein genaueres Verständnis der
+    Keycloak-Datenstruktur und der Realm-Konfiguration erfordert. Stattdessen
+    nehmen wir die erforderlichen Einstellungen zunächst über die Weboberfläche vor.
 
+<!--
+TODO
 Wird keycloak lediglich mit `services.keycloak.enable = true;` aktiviert, erhalten
 wir verschiedene Fehlermeldungen. Anders als HedgeDoc nutzt Keycloak keine SQLite
 Datenbank, sondern erfordert von Anfang an die Konfiguration einer PostgreSQL Datenbank.
@@ -1020,8 +1028,23 @@ Für ein einfacheres Verständnis der Zusammenhänge in diesem Blogartikel wird 
 ModSecurity Konfiguration um eine Regel erweitert, die die WAF für alle Anfragen an
 Keycloak deaktiviert.
 ```nix
-{ pkgs, ... }:
+{ pkgs, config, ... }:
 {
+  sops = {
+    defaultSopsFile = ./secrets.yaml;
+    age = {
+      keyFile = "/root/private.key";
+      sshKeyPaths = [ ];
+    };
+    secrets = {
+      "hedgedoc/sessionSecret" = { };
+      "keycloak/databasePassword" = { };
+    };
+    templates."hedgedoc/environment".content = ''
+      CMD_SESSION_SECRET=${config.sops.placeholder."hedgedoc/sessionSecret"}
+    '';
+  };
+
   services = {
     postgresql = {
       enable = true;
@@ -1100,16 +1123,17 @@ Keycloak deaktiviert.
         virtualHosts."notes.example.com".enableACME = true;
         virtualHosts."auth.example.com" = {
           locations = {
-            "= /".return = "307 https://${hostname}/realms/main/account/";
+            "= /".return = "307 https://auth.example.com/realms/main/account/";
             "/" = {
-              proxyPass = "https://127.0.0.1:8443/";
+              proxyPass = "https://127.0.0.1:8000/";
               proxyWebsockets = true;
             };
             "~* (/admin|/realms/master)" = {
-              proxyPass = "https://127.0.0.1:8443";
+              proxyPass = "https://127.0.0.1:8000";
               proxyWebsockets = true;
             };
           };
+          forceSSL = true;
           enableACME = true;
         };
         additionalModules = [ pkgs.nginxModules.modsecurity ];
@@ -1125,11 +1149,9 @@ Keycloak deaktiviert.
       settings = {
         inherit hostname;
         proxy-headers = "forwarded";
+        https-port = 8000;
       };
-      database = {
-        host = "/run/postgresql";
-        passwordFile = "...";
-      };
+      database.passwordFile = config.sops.secrets."keycloak/databasePassword".path;
       sslCertificateKey = "/var/lib/acme/${hostname}/key.pem";
       sslCertificate = "/var/lib/acme/${hostname}/fullchain.pem";
     };
@@ -1141,11 +1163,51 @@ Keycloak deaktiviert.
   ];
 }
 ```
+TODO: PostgreSQL keycloak user password needs to be set manually at this point, maybe fix with initial script for now, later another module can be included
+Mit `kc.sh bootstrap-admin user` wird ein lokaler Admin Account erzeugt. -> resultiert aber in fehlermeldung, ggf. doch via nix deklarativ definieren?
 TODO:
-- this chapter has not been reviewed yet
-- keycloak isn't working like this, was complicated last time we did it... see helpwave
 - show pictures of keycloak setup (webgui)
 - adjust hedgedoc in separate codeblock for oidc login
+
+```nix
+{
+  sops = {
+    defaultSopsFile = ./secrets.yaml;
+    age = {
+      keyFile = "/root/private.key";
+      sshKeyPaths = [ ];
+    };
+    secrets = {
+      "hedgedoc/sessionSecret" = { };
+      "hedgedoc/oidcSecret" = { };
+      "keycloak/databasePassword" = { };
+    };
+    templates."hedgedoc/environment".content = ''
+      CMD_SESSION_SECRET=${config.sops.placeholder."hedgedoc/sessionSecret"}
+      CMD_OAUTH2_CLIENT_SECRET=${config.sops.placeholder."hedgedoc/oidcSecret"}
+    '';
+  };
+
+  services = {
+    hedgedoc = {
+      settings = {
+        oauth2 = {
+          userProfileURL = "https://auth.example.com/realms/example/protocol/openid-connect/userinfo";
+          userProfileUsernameAttr = "preferred_username";
+          userProfileDisplayNameAttr = "name";
+          userProfileEmailAttr = "email";
+          tokenURL = "https://auth.example.com/realms/example/protocol/openid-connect/token";
+          authorizationURL = "https://auth.example.com/realms/example/protocol/openid-connect/auth";
+          clientID = "notes.example.com";
+          clientSecret = ""; # defined in secrets, but needs to be configured for login button to show
+          providerName = "Keycloak";
+          scope = "openid email profile";
+        };
+      };
+    };
+  };
+}
+```
 -->
 
 ## Systemhärtung
@@ -1182,8 +1244,8 @@ Privilegien ausgeführt. Für viele administrative Aufgaben ist das jedoch nicht
 erforderlich. Ein Fehler bei der Eingabe oder Ausführung eines Befehls kann dadurch
 weitreichende Auswirkungen auf das gesamte System haben. Insbesondere in Umgebungen
 mit mehreren Administratoren ist die Verwendung personalisierter Benutzerkonten
-empfehlenswert. Dadurch lassen sich Zugriffe und Änderungen besser einer bestimmten
-Person zuordnen.
+empfehlenswert. So können Zugriffe und Änderungen eindeutig einzelnen Personen
+zugeordnet werden.
 
 Für jeden Administrator wird zunächst ein eigener Benutzeraccount angelegt,
 dass Passwort kann mithilfe von Secrets ebenfalls deklarativ festgelegt werden.
@@ -1223,7 +1285,7 @@ nicht mehr dauerhaft möglich.
 #### Password policy
 
 Andernfalls ist eine Passwortrichtlinie empfehlenswert, welche die Verwendung
-von triviale oder bereits zuvor verwendete Passwörter verhindert. Die für das
+von trivialen oder bereits zuvor verwendete Passwörter verhindert. Die für das
 PAM Modul pwquality verwendbaren Parameter können der
 [manpage](https://linux.die.net/man/8/pam_pwquality) entnommen werden.
 ```nix
@@ -1403,7 +1465,7 @@ vollständig manuell mit nftables.
             parameter-problem, destination-unreachable, packet-too-big, time-exceeded
           } accept
 
-          # SSH, HTTP und HTTPS (udp für HTTP/3 (QUIC))
+          # SSH, HTTP und HTTPs (udp für HTTP/3 (QUIC))
           tcp dport ssh accept
           tcp dport http accept
           meta l4proto { tcp, udp } th dport https accept
@@ -1418,7 +1480,7 @@ vollständig manuell mit nftables.
             parameter-problem, destination-unreachable, packet-too-big, time-exceeded
           } accept
 
-          # DNS, NTP, HTTP und HTTPS (udp für HTTP/3 (QUIC))
+          # DNS, NTP, HTTP und HTTPs (udp für HTTP/3 (QUIC))
           udp dport domain accept
           udp dport ntp accept
           tcp dport http accept
@@ -1469,9 +1531,9 @@ Tables enthalten Chains, die wiederum aus Regeln bestehen.
 
 Die input Chain wird über eine type Definition direkt an einen Netfilter-Hook
 gebunden. Sie wird dadurch registriert und automatisch für den entsprechenden
-Paketpfad ausgewertet. Die Chain input-allow wird dagegen lediglich aus der
-registrierten input-Chain über einen jump aufgerufen und dient lediglich dazu,
-die Regeln für erlaubte eingehende Verbindungen strukturiert abzulegen.
+Paketpfad ausgewertet. Die Chain input-allow wird hingegen über einen Jump
+aus der registrierten input-Chain aufgerufen und dient ausschließlich der
+strukturierten Ablage von Regeln für erlaubte eingehende Verbindungen.
 
 Für das Verständnis von nftables ist der Paketpfad durch den Linux-Netzwerk-Stack
 entscheidend. Abhängig von Herkunft und Ziel durchläuft jedes Paket bestimmte
@@ -1969,7 +2031,7 @@ vertrauenswürdigen CA ausgestellt sein müssen.
 
 Der private Schlüssel der Root-CA muss besonders geschützt werden und sollte
 idealerweise offline aufbewahrt werden. Für den laufenden Betrieb empfiehlt sich
-eine Intermediate-CA, welcehe für die Ausstellung von Leaf Zertifikaten verwendet
+eine Intermediate-CA, welche für die Ausstellung von Leaf Zertifikaten verwendet
 wird.
 
 Darüber hinaus können mit einer eigenen PKI auch Clientzertifikate für Mutual TLS
