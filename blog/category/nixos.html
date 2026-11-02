@@ -814,6 +814,72 @@
     <div class="md-post__meta md-meta">
       <ul class="md-meta__list">
         <li class="md-meta__item">
+          <time datetime="2026-11-02 00:00:00+00:00">November 2, 2026</time></li>
+        
+          <li class="md-meta__item">
+            in
+            
+              <a href="nixos.html" class="md-meta__link">NixOS</a></li>
+        
+        
+          
+          <li class="md-meta__item">
+            
+              30 min read
+            
+          </li>
+        
+      </ul>
+      
+    </div>
+  </header>
+  <div class="md-post__content md-typeset">
+    <h2 id="server-und-netzwerkinfrastruktur-mit-nixos-13"><a class="toclink" href="../2026/11/02/server--und-netzwerkinfrastruktur-mit-nixos-13.html">Server- und Netzwerkinfrastruktur mit NixOS (1/3)</a></h2>
+<p>Seit 2019 beschäftige ich mich mit der Administration Linux-basierter Serversysteme. Angefangen
+hat alles mit eigenen Projekten. Mit der Zeit übernahm ich jedoch auch die Betreuung von Systemen
+für Freunde und Bekannte, darunter beispielsweise für den YouTuber The Morpheus Tutorials.</p>
+<p>Um das Einarbeiten weiterer Teammitglieder und die spätere Übergabe von Aufgaben zu vereinfachen,
+begann ich Ende 2020 mit der Erstellung des sogenannten <a href="https://github.com/felbinger/AdminGuide">AdminGuide</a>'s.
+Dabei handelte es sich um eine Sammlung aus Konzepten, Beispielkonfigurationen und "Lessons Learned",
+die ich bei der Administration der betreuten Systeme angewandt und dokumentiert hatte.</p>
+<p>Mit der Zeit stellte ich fest, dass ich bestimmte Komponenten (z. B. Monitoring oder Log-Collection)
+in verschiedenen Infrastrukturen mehrfach aufbaute. Um diese Aufgaben zu vereinheitlichen und
+wiederverwendbar zu machen, begann ich daher mit der Erstellung eigener Ansible-Rollen.</p>
+<p>Ende 2022 beschäftigte ich mich intensiver mit <a href="https://nixos.org/">NixOS</a> und entschied mich,
+einige Komponenten testweise damit neu zu deployen. Von diesem Konzept war ich direkt überzeugt.
+Innerhalb kurzer Zeit migrierte ich schließlich eine vollständig von mir betreute Infrastruktur
+auf NixOS.</p>
+<p>Im Gegensatz zu traditionellen Automatisierungswerkzeugen wie <a href="https://docs.ansible.com/">Ansible</a>
+oder <a href="https://saltproject.io/">Salt</a>, die überwiegend imperativ arbeiten, setzt NixOS auf eine
+deklarative Konfiguration. Dabei wird nicht Schritt für Schritt beschrieben, welche Änderungen
+auf einem System vorgenommen werden sollen, sondern welcher Zielzustand erreicht werden soll.
+Mit einem sogenannten rebuild wird diese Konfiguration anschließend angewandt und das System
+in den definierten Zustand versetzt.</p>
+
+    
+      <nav class="md-post__action">
+        <a href="../2026/11/02/server--und-netzwerkinfrastruktur-mit-nixos-13.html">
+          Continue reading
+        </a>
+      </nav>
+    
+  </div>
+</article>
+      
+        <article class="md-post md-post--excerpt">
+  <header class="md-post__header">
+    
+      <nav class="md-post__authors md-typeset">
+        
+          <span class="md-author">
+            <img src="../../assets/external/github.com/felbinger.png.jpg" alt="Nico Felbinger">
+          </span>
+        
+      </nav>
+    
+    <div class="md-post__meta md-meta">
+      <ul class="md-meta__list">
+        <li class="md-meta__item">
           <time datetime="2026-06-13 00:00:00+00:00">June 13, 2026</time></li>
         
           <li class="md-meta__item">

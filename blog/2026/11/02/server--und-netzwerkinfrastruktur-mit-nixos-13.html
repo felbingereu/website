@@ -1,0 +1,3272 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://felbinger.eu/blog/2026/11/02/server--und-netzwerkinfrastruktur-mit-nixos-13.html">
+      
+      
+        <link rel="prev" href="../../06/13/nixos-on-raspberry-pi-4-with-encrypted-filesystem-2026.html">
+      
+      
+      
+      <link rel="icon" href="../../../../media/favicon.ico">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.49">
+    
+    
+      
+        <title>Server- und Netzwerkinfrastruktur mit NixOS (1/3) - felbinger.eu</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../assets/stylesheets/main.6f8fc17f.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+        <script src="../../../../assets/external/unpkg.com/iframe-worker/shim.js"></script>
+      
+    
+    
+      
+        
+        
+        
+        <link rel="stylesheet" href="../../../../assets/external/fonts.googleapis.com/css.49ea35f2.css">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="green" data-md-color-accent="lime">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#server-und-netzwerkinfrastruktur-mit-nixos-13" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../../.." title="felbinger.eu" class="md-header__button md-logo" aria-label="felbinger.eu" data-md-component="logo">
+      
+  <img src="../../../../media/favicon-32x32.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            felbinger.eu
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Server- und Netzwerkinfrastruktur mit NixOS (1/3)
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="green" data-md-color-accent="lime"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 6H7c-3.31 0-6 2.69-6 6s2.69 6 6 6h10c3.31 0 6-2.69 6-6s-2.69-6-6-6m0 10H7c-2.21 0-4-1.79-4-4s1.79-4 4-4h10c2.21 0 4 1.79 4 4s-1.79 4-4 4M7 9c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="green" data-md-color-accent="lime"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h10a5 5 0 0 0 5-5 5 5 0 0 0-5-5m0 8a3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3 3 3 0 0 1-3 3"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" hidden>
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../.." title="felbinger.eu" class="md-nav__button md-logo" aria-label="felbinger.eu" data-md-component="logo">
+      
+  <img src="../../../../media/favicon-32x32.png" alt="logo">
+
+    </a>
+    felbinger.eu
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_1" id="__nav_1_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Blog
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_1_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_1">
+            <span class="md-nav__icon md-icon"></span>
+            Blog
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      <a href="../../../index.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Index
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_1_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_1_2" id="__nav_1_2_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Categories
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_1_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1_2">
+            <span class="md-nav__icon md-icon"></span>
+            Categories
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../category/grapheneos.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    GrapheneOS
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../category/networking.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Networking
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../category/nixos.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    NixOS
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Knowledgebase
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            Knowledgebase
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../knowledgebase/android.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Android
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../knowledgebase/applications.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Applications
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../knowledgebase/ben-eater-8bit-computer.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Ben Eater: 8bit Computer
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../knowledgebase/cryptsetup.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Cryptsetup
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../knowledgebase/django.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Django
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../knowledgebase/ffmpeg.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ffmpeg
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../knowledgebase/hosting.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Hosting
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../knowledgebase/mysql.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    MariaDB
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../knowledgebase/nftables.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    nftables
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../knowledgebase/openssl.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    OpenSSL
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../knowledgebase/rpi.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Raspberry PI
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../knowledgebase/ssh.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    SSH
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../knowledgebase/udev.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    udev
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../knowledgebase/windows.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Windows
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#nix" class="md-nav__link">
+    <span class="md-ellipsis">
+      Nix
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Nix">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#syntax" class="md-nav__link">
+    <span class="md-ellipsis">
+      Syntax
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#package-und-option-search" class="md-nav__link">
+    <span class="md-ellipsis">
+      Package und Option Search
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#formatting" class="md-nav__link">
+    <span class="md-ellipsis">
+      Formatting
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#installation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Installation
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Installation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#partitionierung" class="md-nav__link">
+    <span class="md-ellipsis">
+      Partitionierung
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#minimalinstallation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Minimalinstallation
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#netzwerkimplementierung" class="md-nav__link">
+    <span class="md-ellipsis">
+      Netzwerkimplementierung
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dienste-betreiben" class="md-nav__link">
+    <span class="md-ellipsis">
+      Dienste betreiben
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Dienste betreiben">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#minimalkonfiguration" class="md-nav__link">
+    <span class="md-ellipsis">
+      Minimalkonfiguration
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#hedgedoc-direkt-erreichbar-machen" class="md-nav__link">
+    <span class="md-ellipsis">
+      HedgeDoc direkt erreichbar machen
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#nginx-als-reverse-proxy-konfigurieren" class="md-nav__link">
+    <span class="md-ellipsis">
+      nginx als Reverse Proxy konfigurieren
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#nixos-config-merge" class="md-nav__link">
+    <span class="md-ellipsis">
+      NixOS config merge
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tls" class="md-nav__link">
+    <span class="md-ellipsis">
+      TLS
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#postgresql" class="md-nav__link">
+    <span class="md-ellipsis">
+      PostgreSQL
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#web-application-firewall" class="md-nav__link">
+    <span class="md-ellipsis">
+      Web Application Firewall
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#secrets-management" class="md-nav__link">
+    <span class="md-ellipsis">
+      Secrets Management
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#single-sign-on-sso" class="md-nav__link">
+    <span class="md-ellipsis">
+      Single Sign-On (SSO)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#systemhartung" class="md-nav__link">
+    <span class="md-ellipsis">
+      Systemhärtung
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Systemhärtung">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#benutzer" class="md-nav__link">
+    <span class="md-ellipsis">
+      Benutzer
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Benutzer">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#mutable-users" class="md-nav__link">
+    <span class="md-ellipsis">
+      Mutable Users
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#password-policy" class="md-nav__link">
+    <span class="md-ellipsis">
+      Password policy
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ssh-keys" class="md-nav__link">
+    <span class="md-ellipsis">
+      SSH Keys
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#fail2ban" class="md-nav__link">
+    <span class="md-ellipsis">
+      fail2ban
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ssh" class="md-nav__link">
+    <span class="md-ellipsis">
+      SSH
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#nix_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      Nix
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#procfs" class="md-nav__link">
+    <span class="md-ellipsis">
+      procfs
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#usbguard" class="md-nav__link">
+    <span class="md-ellipsis">
+      usbguard
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#firewall" class="md-nav__link">
+    <span class="md-ellipsis">
+      Firewall
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#kernel" class="md-nav__link">
+    <span class="md-ellipsis">
+      Kernel
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fortgeschrittene-konzepte" class="md-nav__link">
+    <span class="md-ellipsis">
+      Fortgeschrittene Konzepte
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Fortgeschrittene Konzepte">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#speicherlayout" class="md-nav__link">
+    <span class="md-ellipsis">
+      Speicherlayout
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Speicherlayout">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#luks-encrypted-root" class="md-nav__link">
+    <span class="md-ellipsis">
+      LUKS encrypted root
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lvm" class="md-nav__link">
+    <span class="md-ellipsis">
+      LVM
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#zfs" class="md-nav__link">
+    <span class="md-ellipsis">
+      ZFS
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#weitere-installationsmoglichkeiten" class="md-nav__link">
+    <span class="md-ellipsis">
+      Weitere Installationsmöglichkeiten
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pki" class="md-nav__link">
+    <span class="md-ellipsis">
+      PKI
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+  <div class="md-content md-content--post" data-md-component="content">
+    <div class="md-sidebar md-sidebar--post" data-md-component="sidebar" data-md-type="navigation">
+      <div class="md-sidebar__scrollwrap">
+        <div class="md-sidebar__inner md-post">
+          <nav class="md-nav md-nav--primary">
+            <div class="md-post__back">
+              <div class="md-nav__title md-nav__container">
+                <a href="../../../index.html" class="md-nav__link">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+                  <span class="md-ellipsis">
+                    Back to index
+                  </span>
+                </a>
+              </div>
+            </div>
+            
+              <div class="md-post__authors md-typeset">
+                
+                  <div class="md-profile md-post__profile">
+                    <span class="md-author md-author--long">
+                      <img src="../../../../assets/external/github.com/felbinger.png.jpg" alt="Nico Felbinger">
+                    </span>
+                    <span class="md-profile__description">
+                      <strong>
+                        
+                          Nico Felbinger
+                        
+                      </strong>
+                      <br>
+                      computer science student
+                    </span>
+                  </div>
+                
+              </div>
+            
+            <ul class="md-post__meta md-nav__list">
+              <li class="md-nav__item md-nav__item--section">
+                <div class="md-post__title">
+                  <span class="md-ellipsis">
+                    Metadata
+                  </span>
+                </div>
+                <nav class="md-nav">
+                  <ul class="md-nav__list">
+                    <li class="md-nav__item">
+                      <div class="md-nav__link">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 19H5V8h14m-3-7v2H8V1H6v2H5c-1.11 0-2 .89-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2h-1V1m-1 11h-5v5h5z"/></svg>
+                        <time datetime="2026-11-02 00:00:00+00:00" class="md-ellipsis">November 2, 2026</time>
+                      </div>
+                    </li>
+                    
+                    
+                      <li class="md-nav__item">
+                        <div class="md-nav__link">
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9 3v15h3V3zm3 2 4 13 3-1-4-13zM5 5v13h3V5zM3 19v2h18v-2z"/></svg>
+                          <span class="md-ellipsis">
+                            in
+                            
+                              <a href="../../../category/nixos.html">NixOS</a></span>
+                        </div>
+                      </li>
+                    
+                    
+                      
+                      <li class="md-nav__item">
+                        <div class="md-nav__link">
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 20a8 8 0 0 0 8-8 8 8 0 0 0-8-8 8 8 0 0 0-8 8 8 8 0 0 0 8 8m0-18a10 10 0 0 1 10 10 10 10 0 0 1-10 10C6.47 22 2 17.5 2 12A10 10 0 0 1 12 2m.5 5v5.25l4.5 2.67-.75 1.23L11 13V7z"/></svg>
+                          <span class="md-ellipsis">
+                            
+                              30 min read
+                            
+                          </span>
+                        </div>
+                      </li>
+                    
+                  </ul>
+                </nav>
+              </li>
+            </ul>
+          </nav>
+          
+        </div>
+      </div>
+    </div>
+    <article class="md-content__inner md-typeset">
+      
+        
+
+
+<h1 id="server-und-netzwerkinfrastruktur-mit-nixos-13">Server- und Netzwerkinfrastruktur mit NixOS (1/3)<a class="headerlink" href="#server-und-netzwerkinfrastruktur-mit-nixos-13" title="Permanent link">&para;</a></h1>
+<p>Seit 2019 beschäftige ich mich mit der Administration Linux-basierter Serversysteme. Angefangen
+hat alles mit eigenen Projekten. Mit der Zeit übernahm ich jedoch auch die Betreuung von Systemen
+für Freunde und Bekannte, darunter beispielsweise für den YouTuber The Morpheus Tutorials.</p>
+<p>Um das Einarbeiten weiterer Teammitglieder und die spätere Übergabe von Aufgaben zu vereinfachen,
+begann ich Ende 2020 mit der Erstellung des sogenannten <a href="https://github.com/felbinger/AdminGuide">AdminGuide</a>'s.
+Dabei handelte es sich um eine Sammlung aus Konzepten, Beispielkonfigurationen und "Lessons Learned",
+die ich bei der Administration der betreuten Systeme angewandt und dokumentiert hatte.</p>
+<p>Mit der Zeit stellte ich fest, dass ich bestimmte Komponenten (z. B. Monitoring oder Log-Collection)
+in verschiedenen Infrastrukturen mehrfach aufbaute. Um diese Aufgaben zu vereinheitlichen und
+wiederverwendbar zu machen, begann ich daher mit der Erstellung eigener Ansible-Rollen.</p>
+<p>Ende 2022 beschäftigte ich mich intensiver mit <a href="https://nixos.org/">NixOS</a> und entschied mich,
+einige Komponenten testweise damit neu zu deployen. Von diesem Konzept war ich direkt überzeugt.
+Innerhalb kurzer Zeit migrierte ich schließlich eine vollständig von mir betreute Infrastruktur
+auf NixOS.</p>
+<p>Im Gegensatz zu traditionellen Automatisierungswerkzeugen wie <a href="https://docs.ansible.com/">Ansible</a>
+oder <a href="https://saltproject.io/">Salt</a>, die überwiegend imperativ arbeiten, setzt NixOS auf eine
+deklarative Konfiguration. Dabei wird nicht Schritt für Schritt beschrieben, welche Änderungen
+auf einem System vorgenommen werden sollen, sondern welcher Zielzustand erreicht werden soll.
+Mit einem sogenannten rebuild wird diese Konfiguration anschließend angewandt und das System
+in den definierten Zustand versetzt.</p>
+<!-- more -->
+
+<p>Für Server- und Netzwerkinfrastruktur eignet sich NixOS besonders gut, da es die Möglichkeit
+bietet die Konfiguraion versioniert und nachvollziehbar zu verwalten. Die Konfigurationsdateien
+können in Git abgelegt werden, was die Zusammenarbeit stark vereinfacht. Änderungen lassen sich
+dadurch dokumentieren und vor der Anwendung beispielsweise über Pull Requests prüfen und
+reviewen. Gleichzeitig können mehrere Systeme konsistent konfiguriert werden, wodurch
+Konfigurationsabweichungen und manuelle Fehler reduziert werden.</p>
+<p>Ein weiterer Vorteil ist, dass Systeme auf Grundlage derselben Konfiguration für verschiedene
+Anwendungsfälle (z. B. Test-, Staging- und Produktionsumgebungen) aufgebaut werden können und
+dadurch Reproduzierbar sind. Dies wiederum vereinfacht die Wartung, Migration und Wiederherstellung.
+Durch die Verwaltung verschiedener Systemgenerationen ist es außerdem möglich, bei fehlerhaften
+Änderungen auf eine zuvor funktionierende Konfiguration zurückzurollen.</p>
+<p>Für größere Infrastrukturen ist es besonders vorteilhaft, Konfigurationen zentral zu definieren
+und von den einzelnen Systemen darauf verweisen zu lassen.
+Dadurch entsteht eine zentrale Single Source of Truth.</p>
+<p>NixOS bringt jedoch eine deutlich steilere Lernkurve mit sich, da sich sowohl die Nix-Sprache als
+auch das deklarative Modell grundlegend von der klassischen Administration anderer
+Linux-Distributionen unterscheiden.</p>
+<h2 id="nix">Nix<a class="headerlink" href="#nix" title="Permanent link">&para;</a></h2>
+<h3 id="syntax">Syntax<a class="headerlink" href="#syntax" title="Permanent link">&para;</a></h3>
+<p>In diesem Kapitel werden einige Eigenschaften der Nix Syntax erläutert. Es dient primär als Nachschlagewerk für die später genutzten Konfigurationen.
+<div class="highlight"><pre><span></span><code><span class="c1"># Einzeiliger Kommentar</span>
+
+<span class="cm">/*</span>
+<span class="cm">  Mehrzeiliger Kommentar</span>
+<span class="cm">*/</span>
+
+<span class="p">{</span>
+  <span class="c1"># Datentypen</span>
+  <span class="ss">enable</span> <span class="o">=</span> <span class="no">false</span><span class="p">;</span>
+  <span class="ss">port</span> <span class="o">=</span> <span class="mi">8000</span><span class="p">;</span>
+  <span class="ss">domain</span> <span class="o">=</span> <span class="s2">"hedgedoc"</span> <span class="o">+</span> <span class="s2">" concat"</span><span class="p">;</span>
+  <span class="ss">message</span> <span class="o">=</span> <span class="s s-Multiline">''</span>
+<span class="s s-Multiline">    Dieser Text kann</span>
+<span class="s s-Multiline">    über mehrere Zeilen gehen.</span>
+<span class="s s-Multiline">  ''</span><span class="p">;</span>
+
+  <span class="c1"># String-Interpolation</span>
+  <span class="ss">fqdn</span> <span class="o">=</span> <span class="s2">"</span><span class="si">${</span>hostname<span class="si">}</span><span class="s2">.example.com"</span><span class="p">;</span>
+  <span class="ss">ignore</span> <span class="o">=</span> <span class="s s-Multiline">''</span>
+<span class="s s-Multiline">    keine </span><span class="se">''$</span><span class="s s-Multiline">{String-Interpolation}</span>
+<span class="s s-Multiline">    in dieser Variable.</span>
+<span class="s s-Multiline">  ''</span><span class="p">;</span>
+
+  <span class="c1"># Listen</span>
+  <span class="ss">webPorts</span> <span class="o">=</span> <span class="p">[</span> <span class="mi">80</span> <span class="mi">443</span> <span class="p">];</span> <span class="c1"># kein Komma!</span>
+  <span class="ss">sshPorts</span> <span class="o">=</span> <span class="p">[</span> <span class="mi">22</span> <span class="p">];</span>
+  <span class="ss">allPorts</span> <span class="o">=</span> webPorts <span class="o">++</span> sshPorts<span class="p">;</span>
+
+  <span class="c1"># Attrs</span>
+  <span class="ss">server</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="ss">hostname</span> <span class="o">=</span> <span class="s2">"server01"</span><span class="p">;</span>
+    <span class="ss">role</span> <span class="o">=</span> <span class="s2">"webserver"</span><span class="p">;</span>
+    <span class="ss">sshPort</span> <span class="o">=</span> <span class="mi">22</span><span class="p">;</span>
+  <span class="p">};</span>
+  <span class="ss">client</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="ss">name</span> <span class="o">=</span> <span class="s2">"nico"</span><span class="p">;</span>
+  <span class="p">};</span>
+  <span class="ss">both</span> <span class="o">=</span> server <span class="o">//</span> client<span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+  a<span class="o">.</span>b<span class="o">.</span><span class="ss">c</span> <span class="o">=</span> <span class="no">true</span><span class="p">;</span>
+  <span class="c1"># ist das gleiche wie</span>
+  <span class="ss">a</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="ss">b</span> <span class="o">=</span> <span class="p">{</span>
+      <span class="ss">c</span> <span class="o">=</span> <span class="no">true</span><span class="p">;</span>
+    <span class="p">};</span>
+  <span class="p">};</span>
+
+  <span class="c1"># wenn punkte in key vorkommen, dann muss gequoted werden:</span>
+  a<span class="o">.</span><span class="s2">"b.c"</span> <span class="o">=</span> <span class="no">true</span><span class="p">;</span>
+  <span class="c1"># ist das gleiche wie</span>
+  <span class="ss">a</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">"b.c"</span> <span class="o">=</span> <span class="no">true</span><span class="p">;</span>
+  <span class="p">};</span>
+<span class="p">}</span>
+</code></pre></div>
+<h3 id="package-und-option-search">Package und Option Search<a class="headerlink" href="#package-und-option-search" title="Permanent link">&para;</a></h3>
+<p>Bei der Konfiguration eines NixOS-Systems ist es häufig notwendig, zunächst den
+korrekten Namen eines Pakets oder einer Konfigurationsoption zu ermitteln. Dafür
+stellt das Nix-Ökosystem eine <a href="https://search.nixos.org">Websuche</a> zur Verfügung.</p>
+<h3 id="formatting">Formatting<a class="headerlink" href="#formatting" title="Permanent link">&para;</a></h3>
+<p>Ein einheitlicher Stil macht Nix-Code leichter lesbar und einfacher zu warten. Dafür
+eignen sich zwei Werkzeuge, die unterschiedliche Aufgaben übernehmen: <code>nixfmt</code> formatiert
+den Code; <code>deadnix</code> sucht nach ungenutzten Bindings, also etwa Variablen oder
+Funktionsargumenten, die im Ausdruck nicht verwendet werden.</p>
+<h2 id="installation">Installation<a class="headerlink" href="#installation" title="Permanent link">&para;</a></h2>
+<p>Für die ersten Schritte mit NixOS auf einem Server empfiehlt sich die Installation über
+das offizielle Minimal-ISO-Image, das auf der <a href="https://nixos.org/download/">NixOS-Website</a>
+zu finden ist.</p>
+<h3 id="partitionierung">Partitionierung<a class="headerlink" href="#partitionierung" title="Permanent link">&para;</a></h3>
+<p>Nachdem NixOS gestartet wurde, muss die Festplatte, auf der es installiert werden soll,
+partitioniert werden. <a href="https://github.com/nix-community/disko">github:nix-community/disko</a>
+ermöglicht die Konfiguration von Partitionierung und Formatierung deklarativ in Nix.
+Diverse Konfigurationsbeispiele, wie die Verwendung von LUKS oder ZFS, können den
+<a href="https://github.com/nix-community/disko/tree/master/example">examples im disko Repository</a>
+entnommen werden.</p>
+<p>Um die ersten Schritte übersichtlich zu halten, werden zunächst lediglich eine
+EFI-Systempartition sowie ein unverschlüsseltes ext4-root-Dateisystem eingerichtet. In
+späteren Kapiteln werden neben der Verwendung von LUKS, LVM und ZFS auch verschiedene
+Möglichkeiten zum Entsperren verschlüsselter Systeme behandelt, darunter die TPM-Integration
+mittels systemd-cryptenroll sowie das Remote-Entsperren per SSH aus der Initrd-Umgebung.</p>
+<p><div class="highlight"><pre><span></span><code><span class="c1"># /tmp/disk-config.nix</span>
+<span class="p">{</span>
+  disko<span class="o">.</span>devices<span class="o">.</span>disk<span class="o">.</span><span class="ss">disk1</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="ss">device</span> <span class="o">=</span> <span class="s2">"/dev/sda"</span><span class="p">;</span>
+    <span class="ss">type</span> <span class="o">=</span> <span class="s2">"disk"</span><span class="p">;</span>
+    <span class="ss">content</span> <span class="o">=</span> <span class="p">{</span>
+      <span class="ss">type</span> <span class="o">=</span> <span class="s2">"gpt"</span><span class="p">;</span>
+      <span class="ss">partitions</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="ss">esp</span> <span class="o">=</span> <span class="p">{</span>
+          <span class="ss">name</span> <span class="o">=</span> <span class="s2">"boot"</span><span class="p">;</span>
+          <span class="ss">size</span> <span class="o">=</span> <span class="s2">"511M"</span><span class="p">;</span>
+          <span class="ss">type</span> <span class="o">=</span> <span class="s2">"EF00"</span><span class="p">;</span> <span class="c1"># EFI system partition</span>
+          <span class="ss">content</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="ss">type</span> <span class="o">=</span> <span class="s2">"filesystem"</span><span class="p">;</span>
+            <span class="ss">format</span> <span class="o">=</span> <span class="s2">"vfat"</span><span class="p">;</span>
+            <span class="ss">mountpoint</span> <span class="o">=</span> <span class="s2">"/boot"</span><span class="p">;</span>
+          <span class="p">};</span>
+        <span class="p">};</span>
+        <span class="ss">root</span> <span class="o">=</span> <span class="p">{</span>
+          <span class="ss">name</span> <span class="o">=</span> <span class="s2">"root"</span><span class="p">;</span>
+          <span class="ss">size</span> <span class="o">=</span> <span class="s2">"100%"</span><span class="p">;</span>
+          <span class="ss">content</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="ss">type</span> <span class="o">=</span> <span class="s2">"filesystem"</span><span class="p">;</span>
+            <span class="ss">format</span> <span class="o">=</span> <span class="s2">"ext4"</span><span class="p">;</span>
+            <span class="ss">mountpoint</span> <span class="o">=</span> <span class="s2">"/"</span><span class="p">;</span>
+          <span class="p">};</span>
+        <span class="p">};</span>
+      <span class="p">};</span>
+    <span class="p">};</span>
+  <span class="p">};</span>
+<span class="p">}</span>
+</code></pre></div>
+Die Konfiguration kann mit folgendem Befehl angewandt werden:
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>nix<span class="w"> </span>--experimental-features<span class="w"> </span><span class="s2">"nix-command flakes"</span><span class="w"> </span>run<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>github:nix-community/disko/latest<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--<span class="w"> </span>--mode<span class="w"> </span>destroy,format,mount<span class="w"> </span>/tmp/disk-config.nix
+</code></pre></div></p>
+<p>Alternativ besteht natürlich die Möglichkeit das System manuell zu partitionieren:
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>parted<span class="w"> </span>/dev/sda<span class="w"> </span>--<span class="w"> </span>mklabel<span class="w"> </span>gpt
+sudo<span class="w"> </span>parted<span class="w"> </span>/dev/sda<span class="w"> </span>--<span class="w"> </span>mkpart<span class="w"> </span>ESP<span class="w"> </span>fat32<span class="w"> </span>2MB<span class="w"> </span>512MB
+sudo<span class="w"> </span>parted<span class="w"> </span>/dev/sda<span class="w"> </span>--<span class="w"> </span><span class="nb">set</span><span class="w"> </span><span class="m">1</span><span class="w"> </span>esp<span class="w"> </span>on
+sudo<span class="w"> </span>parted<span class="w"> </span>/dev/sda<span class="w"> </span>--<span class="w"> </span>mkpart<span class="w"> </span>primary<span class="w"> </span>512MB<span class="w"> </span><span class="m">100</span>%
+sudo<span class="w"> </span>mkfs.fat<span class="w"> </span>-F<span class="w"> </span><span class="m">32</span><span class="w"> </span>-n<span class="w"> </span>boot<span class="w"> </span>/dev/sda1
+sudo<span class="w"> </span>mkfs.ext4<span class="w"> </span>/dev/sda2
+
+sudo<span class="w"> </span>mount<span class="w"> </span>/dev/sda2<span class="w"> </span>/mnt
+sudo<span class="w"> </span>mkdir<span class="w"> </span>/mnt/boot
+sudo<span class="w"> </span>mount<span class="w"> </span>/dev/sda1<span class="w"> </span>/mnt/boot
+</code></pre></div></p>
+<h3 id="minimalinstallation">Minimalinstallation<a class="headerlink" href="#minimalinstallation" title="Permanent link">&para;</a></h3>
+<p>Anschließend werden mit folgendem Befehl zwei Konfigurationsdateien generiert,
+welche im weiteren Verlauf genutzt werden:
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>nixos-generate-config<span class="w"> </span>--root<span class="w"> </span>/mnt
+</code></pre></div>
+Die generierten Konfigurationen liegen unter /mnt/etc/nixos/.</p>
+<p>Falls das System mit Disko aufgesetzt wurde, müssen die <code>fileSystems</code> und <code>swapDevices</code> Optionen
+aus der generierte hardware-configuration.nix entfernt werden. Stattdessen wird die disk-config.nix
+hinzugefügt.
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>mv<span class="w"> </span>/tmp/disk-config.nix<span class="w"> </span>/mnt/etc/nixos/disk-config.nix
+</code></pre></div>
+Die in der Initrd verfügbaren Kernelmodule können sich je nach System deutlich unterscheiden.
+Daher sollte immer die generierte Konfiguration inspiziert werden.
+<div class="highlight"><pre><span></span><code><span class="c1"># hardware-configuration.nix</span>
+<span class="p">{</span> lib<span class="p">,</span> modulesPath<span class="p">,</span> <span class="o">...</span> <span class="p">}:</span>
+<span class="p">{</span>
+  <span class="ss">imports</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span>modulesPath <span class="o">+</span> <span class="s2">"/profiles/qemu-guest.nix"</span><span class="p">)</span>
+  <span class="p">];</span>
+
+  boot<span class="o">.</span>initrd<span class="o">.</span><span class="ss">availableKernelModules</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">"ata_piix"</span>
+    <span class="s2">"uhci_hcd"</span>
+    <span class="s2">"virtio_pci"</span>
+    <span class="s2">"virtio_scsi"</span>
+    <span class="s2">"sd_mod"</span>
+    <span class="s2">"sr_mod"</span>
+  <span class="p">];</span>
+
+  nixpkgs<span class="o">.</span><span class="ss">hostPlatform</span> <span class="o">=</span> lib<span class="o">.</span>mkDefault <span class="s2">"x86_64-linux"</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></p>
+<p>Die Erzeugte configuration.nix enthält beispielsweise die Konfiguration des Bootloaders,
+welche dafür sorgt, dass das System nach der Installation gestartet werden kann. Des Weiteren
+wird <code>system.stateVersion</code> konfiguriert, welches die nixpkgs Version mit der das System
+installiert wurde enthält, um das Verhalten bestimmter systembezogener Dienste und
+Standardwerte bei späteren Aktualisierungen kompatibel zu halten.</p>
+<p>Sie lässt sich im groben und ganzen auf den folgenden Inhalt reduzieren:
+<div class="highlight"><pre><span></span><code><span class="c1"># configuration.nix</span>
+<span class="p">{</span>
+  boot<span class="o">.</span><span class="ss">loader</span> <span class="o">=</span> <span class="p">{</span>
+    systemd-boot<span class="o">.</span><span class="ss">enable</span> <span class="o">=</span> <span class="no">true</span><span class="p">;</span>
+    efi<span class="o">.</span><span class="ss">canTouchEfiVariables</span> <span class="o">=</span> <span class="no">true</span><span class="p">;</span>
+  <span class="p">};</span>
+
+  console<span class="o">.</span><span class="ss">keyMap</span> <span class="o">=</span> <span class="s2">"de"</span><span class="p">;</span>
+
+  services<span class="o">.</span><span class="ss">openssh</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="ss">enable</span> <span class="o">=</span> <span class="no">true</span><span class="p">;</span>
+    settings<span class="o">.</span><span class="ss">PermitRootLogin</span> <span class="o">=</span> <span class="s2">"yes"</span><span class="p">;</span>
+  <span class="p">};</span>
+
+  system<span class="o">.</span><span class="ss">stateVersion</span> <span class="o">=</span> <span class="s2">"26.05"</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></p>
+<p>Für die Verwaltung des Systems nutzen wir die modernen Nix Flakes, anstelle von Nix Channels.</p>
+<p>In der Datei flake.nix erstellen wir ein System unter dem Namen <code>server</code>, in welchem wir die
+generierten Konfigurationsdateien sowie die disk-config.nix laden.
+<div class="highlight"><pre><span></span><code><span class="c1"># flake.nix</span>
+<span class="p">{</span>
+  <span class="ss">inputs</span> <span class="o">=</span> <span class="p">{</span>
+    nixpkgs<span class="o">.</span><span class="ss">url</span> <span class="o">=</span> <span class="s2">"github:nixos/nixpkgs/nixos-unstable"</span><span class="p">;</span>
+    disko<span class="o">.</span><span class="ss">url</span> <span class="o">=</span> <span class="s2">"github:nix-community/disko"</span><span class="p">;</span>
+  <span class="p">};</span>
+  <span class="ss">outputs</span> <span class="o">=</span> <span class="p">{</span> nixpkgs<span class="p">,</span> disko<span class="p">,</span> <span class="o">...</span> <span class="p">}:</span> <span class="p">{</span>
+    <span class="ss">nixosConfigurations</span> <span class="o">=</span> <span class="p">{</span>
+      <span class="ss">server</span> <span class="o">=</span> nixpkgs<span class="o">.</span>lib<span class="o">.</span>nixosSystem <span class="p">{</span>
+        <span class="ss">modules</span> <span class="o">=</span> <span class="p">[</span>
+          <span class="l">./configuration.nix</span>
+          <span class="l">./hardware-configuration.nix</span>
+          disko<span class="o">.</span>nixosModules<span class="o">.</span>disko
+          <span class="l">./disk-config.nix</span>
+        <span class="p">];</span>
+      <span class="p">};</span>
+    <span class="p">};</span>
+  <span class="p">};</span>
+<span class="p">}</span>
+</code></pre></div></p>
+<p>Zuletzt kann das System installiert werden:
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>nixos-install<span class="w"> </span>--root<span class="w"> </span>/mnt/<span class="w"> </span>--flake<span class="w"> </span>/mnt/etc/nixos/#server
+</code></pre></div></p>
+<p>Dabei wird die Datei <code>flake.lock</code> erzeugt, welche die konkret verwendeten Versionen festhält.
+Mit dem Befehl <code>nix flake update</code> lassen sich die darin referenzierten Pakete auf die jeweils
+aktuellsten Versionen aktualisieren.</p>
+<p>Abschließend wird das System mit dem Befehl <code>reboot</code> neugestartet.</p>
+<h2 id="netzwerkimplementierung">Netzwerkimplementierung<a class="headerlink" href="#netzwerkimplementierung" title="Permanent link">&para;</a></h2>
+<p>NixOS bietet verschiedene Möglichkeiten das Netzwerk zu konfigurieren:</p>
+<ol>
+<li>die klassischen <code>networking.*</code>-Optionen</li>
+<li><code>NetworkManager</code></li>
+<li><code>systemd-networkd</code></li>
+<li><code>ifstate</code></li>
+</ol>
+<p>Die Wahl der Netzwerkimplementierung hängt letztlich von den individuellen Anforderungen und
+Präferenzen ab. Obwohl in der NixOS-Netzwerk-Community von den klassischen <code>networking.*</code>-Optionen
+abgeraten wird, stellt sie für den Einstieg dennoch eine praktikable Lösung dar.</p>
+<p>Für eine konsistente Systemlandschaft kann es jedoch sinnvoll sein, auf allen Systemen dieselbe
+Implementierung einzusetzen. Dadurch bleibt die Konfiguration einheitlich und leichter
+nachvollziehbar. Aufgrund der hohen Flexibilität von IfState und der Fokus dieses Artikels auf
+Server- und Netzwerkinfrasturkur (also Router) wird daher IfState verwendet.</p>
+<p>Folgender Codeblock enthält eine statische Dual-Stack (IPv4 + IPv6) Konfiguration.
+Die MAC- sowie IP-Adresse und Routen müssen entsprechend angepasst werden.</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># networking.nix</span>
+<span class="p">{</span>
+  <span class="ss">networking</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="ss">ifstate</span> <span class="o">=</span> <span class="p">{</span>
+      <span class="ss">enable</span> <span class="o">=</span> <span class="no">true</span><span class="p">;</span>
+      <span class="ss">settings</span> <span class="o">=</span> <span class="p">{</span>
+        interfaces<span class="o">.</span><span class="ss">ens18</span> <span class="o">=</span> <span class="p">{</span>
+          <span class="ss">addresses</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s2">"192.168.0.100/24"</span>  <span class="c1"># &lt;----</span>
+            <span class="s2">"fd08:ef47:ab81:f69d:1034:56ff:fe78:9abc/64"</span>  <span class="c1"># &lt;----</span>
+          <span class="p">];</span>
+          <span class="ss">link</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="ss">state</span> <span class="o">=</span> <span class="s2">"up"</span><span class="p">;</span>
+            <span class="ss">kind</span> <span class="o">=</span> <span class="s2">"physical"</span><span class="p">;</span>
+          <span class="p">};</span>
+          identify<span class="o">.</span><span class="ss">perm_address</span> <span class="o">=</span> <span class="s2">"12:34:56:78:9a:bc"</span><span class="p">;</span>  <span class="c1"># &lt;----</span>
+        <span class="p">};</span>
+        routing<span class="o">.</span><span class="ss">routes</span> <span class="o">=</span> <span class="p">[</span>
+          <span class="p">{</span>
+            <span class="ss">to</span> <span class="o">=</span> <span class="s2">"0.0.0.0/0"</span><span class="p">;</span>
+            <span class="ss">dev</span> <span class="o">=</span> <span class="s2">"ens18"</span><span class="p">;</span>
+            <span class="ss">via</span> <span class="o">=</span> <span class="s2">"192.168.0.1"</span><span class="p">;</span>  <span class="c1"># &lt;----</span>
+          <span class="p">}</span>
+          <span class="p">{</span>
+            <span class="ss">to</span> <span class="o">=</span> <span class="s2">"::/0"</span><span class="p">;</span>
+            <span class="ss">dev</span> <span class="o">=</span> <span class="s2">"ens18"</span><span class="p">;</span>
+            <span class="ss">via</span> <span class="o">=</span> <span class="s2">"fe80::1"</span><span class="p">;</span>  <span class="c1"># &lt;----</span>
+          <span class="p">}</span>
+        <span class="p">];</span>
+      <span class="p">};</span>
+    <span class="p">};</span>
+    <span class="ss">nameservers</span> <span class="o">=</span> <span class="p">[</span> <span class="s2">"1.1.1.1"</span> <span class="p">];</span>
+  <span class="p">};</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>Anschließend wird die networking.nix in der flake.nix eingebunden:
+<div class="highlight"><pre><span></span><code><span class="c1"># flake.nix</span>
+<span class="p">{</span>
+  <span class="ss">inputs</span> <span class="o">=</span> <span class="p">{</span>
+    nixpkgs<span class="o">.</span><span class="ss">url</span> <span class="o">=</span> <span class="s2">"github:nixos/nixpkgs/nixos-unstable"</span><span class="p">;</span>
+    disko<span class="o">.</span><span class="ss">url</span> <span class="o">=</span> <span class="s2">"github:nix-community/disko"</span><span class="p">;</span>
+  <span class="p">};</span>
+  <span class="ss">outputs</span> <span class="o">=</span> <span class="p">{</span> nixpkgs<span class="p">,</span> disko<span class="p">,</span> <span class="o">...</span> <span class="p">}:</span> <span class="p">{</span>
+    <span class="ss">nixosConfigurations</span> <span class="o">=</span> <span class="p">{</span>
+      <span class="ss">server</span> <span class="o">=</span> nixpkgs<span class="o">.</span>lib<span class="o">.</span>nixosSystem <span class="p">{</span>
+        <span class="ss">modules</span> <span class="o">=</span> <span class="p">[</span>
+          <span class="l">./configuration.nix</span>
+          <span class="l">./hardware-configuration.nix</span>
+          disko<span class="o">.</span>nixosModules<span class="o">.</span>disko
+          <span class="l">./disk-config.nix</span>
+          <span class="l">./networking.nix</span>  <span class="c1"># &lt;----</span>
+        <span class="p">];</span>
+      <span class="p">};</span>
+    <span class="p">};</span>
+  <span class="p">};</span>
+<span class="p">}</span>
+</code></pre></div></p>
+<p>Um die Konfiguration neu zu bauen und anzuwenden wird schlussendlich der Befehl
+<code>sudo nixos-rebuild switch --flake /etc/nixos#server</code> ausgeführt.</p>
+<h2 id="dienste-betreiben">Dienste betreiben<a class="headerlink" href="#dienste-betreiben" title="Permanent link">&para;</a></h2>
+<p>Nachdem NixOS installiert und die grundlegende Systemkonfiguration eingerichtet ist, widmen
+wir uns nun dem eigentlichen Zweck des Servers: der Bereitstellung von Diensten.
+Als ersten Dienst betreiben wir HedgeDoc, eine webbasierte Anwendung zur gemeinsamen
+Bearbeitung von Markdown-Dokumenten.</p>
+<p>Dabei erweitern wir die Konfiguration schrittweise: von einer minimalen Einrichtung bis hin
+zu einer öffentlich erreichbaren Instanz. Nach jedem Schritt aktivieren wir die Konfiguration
+und überprüfen, welche Änderungen NixOS tatsächlich vorgenommen hat.</p>
+<div class="admonition info">
+<p class="admonition-title">Strukturierung</p>
+<p>Die in den folgenden Kapiteln dargestellten Codeblöcke enthalten zur
+besseren Nachvollziehbarkeit sämtliche angepassten Dienstkonfigurationen.
+Grundsätzlich empfiehlt es sich, für jeden Dienst eine separate Datei
+anzulegen, um die Konfiguration übersichtlich zu halten.</p>
+<p>Mehr Informationen können dem Kapitel <a href="#strukturierung-der-nixos-konfiguration">Strukturierung der NixOS Konfiguration</a> im zweiten Teil entnommen werden.</p>
+</div>
+<!-- TODO fix link after part 2 has been published -->
+
+<h3 id="minimalkonfiguration">Minimalkonfiguration<a class="headerlink" href="#minimalkonfiguration" title="Permanent link">&para;</a></h3>
+<p>Das NixOS-Modul für HedgeDoc lässt sich zunächst mit nur einer Option aktivieren.
+Grundsätzlich ist es egal, in welcher Datei die Konfiguration definiert wird,
+solange diese im System (in der flake.nix) importiert wird. Im Folgenden wird
+die Konfiguration in der bislang leeren Datei <code>hedgedoc.nix</code> vorgenommen.
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+  services<span class="o">.</span>hedgedoc<span class="o">.</span><span class="ss">enable</span> <span class="o">=</span> <span class="no">true</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+Nachdem die Änderungen mit <code>sudo nixos-rebuild switch --flake /etc/nixos#server</code>
+übernommen wurden, ist feststellbar, dass der systemd-Service <code>hedgedoc</code> läuft und
+HedgeDoc auf der IPv6-Loopback-Adresse ([::1]) auf Port 3000 zur Verfügung steht
+(siehe <code>systemctl status hedgedoc</code> sowie <code>ss -tlpn</code>).</p>
+<h3 id="hedgedoc-direkt-erreichbar-machen">HedgeDoc direkt erreichbar machen<a class="headerlink" href="#hedgedoc-direkt-erreichbar-machen" title="Permanent link">&para;</a></h3>
+<p>Eine Möglichkeit um den Zugriff von anderen Computern auf HedgeDoc zu ermöglichen,
+wäre die Anpassung der "Listen Address" auf allen Netzwerkadressen:
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+  services<span class="o">.</span><span class="ss">hedgedoc</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="ss">enable</span> <span class="o">=</span> <span class="no">true</span><span class="p">;</span>
+    settings<span class="o">.</span><span class="ss">host</span> <span class="o">=</span> <span class="s2">"0.0.0.0"</span><span class="p">;</span>  <span class="c1"># &lt;----</span>
+  <span class="p">};</span>
+<span class="p">}</span>
+</code></pre></div>
+Die Adresse 0.0.0.0 steht dabei für alle IPv4-Netzwerkinterfaces des Servers. Nach
+einem erneuten Deployment ist HedgeDoc beispielsweise über die URL
+<code>http://192.168.0.100:3000</code> erreichbar.</p>
+<p>Für einen produktiven Betrieb ist diese Variante allerdings nicht ideal. Der interne
+Webserver der Anwendung wird dadurch direkt dem Netzwerk beziehungsweise dem Internet
+ausgesetzt. Außerdem müsste sich die Anwendung selbst um Themen wie TLS-Terminierung
+(hier: https), HTTP-Weiterleitungen und gegebenenfalls weitere
+Sicherheits- und Proxy-Einstellungen kümmern.</p>
+<p>Stattdessen setzen wir einen Reverse Proxy vor HedgeDoc. Der Reverse Proxy nimmt die
+externen Verbindungen entgegen und leitet sie intern an HedgeDoc weiter. Dadurch kann
+der eigentliche Dienst weiterhin nur auf einer lokalen Adresse lauschen. Nginx übernimmt
+später unter anderem die Entgegennahme der HTTP-Verbindungen und die TLS-Terminierung.
+Bei HedgeDoc müssen außerdem WebSocket-Verbindungen korrekt weitergereicht werden, da
+sie beispielsweise für die Echtzeitkommunikation verwendet werden.</p>
+<h3 id="nginx-als-reverse-proxy-konfigurieren">nginx als Reverse Proxy konfigurieren<a class="headerlink" href="#nginx-als-reverse-proxy-konfigurieren" title="Permanent link">&para;</a></h3>
+<p>Damit der Reverse Proxy sinnvoll konfiguriert werden kann, benötigen wir zunächst
+einen DNS-Namen. In diesem Beispiel verwenden wir <code>notes.example.com</code></p>
+<p>Das HedgeDoc-Modul kann die passende nginx-Konfiguration automatisch erzeugen:
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+  services<span class="o">.</span><span class="ss">hedgedoc</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="ss">enable</span> <span class="o">=</span> <span class="no">true</span><span class="p">;</span>
+    <span class="ss">configureNginx</span> <span class="o">=</span> <span class="no">true</span><span class="p">;</span>  <span class="c1"># &lt;----</span>
+    settings<span class="o">.</span><span class="ss">domain</span> <span class="o">=</span> <span class="s2">"notes.example.com"</span><span class="p">;</span>  <span class="c1"># &lt;----</span>
+  <span class="p">};</span>
+<span class="p">}</span>
+</code></pre></div>
+Mit <code>configureNginx = true</code> wird nginx als Abhängigkeit aktiviert und ein virtueller
+Host für die angegebene Domain angelegt. Beim Aktivieren der Konfiguration erhalten
+wir jedoch eine Fehlermeldung, die uns darüber Informiert, dass kein TLS Zertifikat
+für diesen vHost verfügbar ist. Dies hängt damit zusammen, dass das hedgedoc
+NixOS-Modul die Option forceSSL im nginx vHost auf true setzt, welche dann ein für
+diese Domain gültiges TLS Zertifkat erfordert. Zunächst deaktivieren wir dieses
+verhalten des Moduls, um den Dienst über nginx mittels http bereitzustellen.</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+  <span class="ss">services</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="ss">hedgedoc</span> <span class="o">=</span> <span class="p">{</span>
+      <span class="ss">enable</span> <span class="o">=</span> <span class="no">true</span><span class="p">;</span>
+      <span class="ss">configureNginx</span> <span class="o">=</span> <span class="no">true</span><span class="p">;</span>
+      settings<span class="o">.</span><span class="ss">domain</span> <span class="o">=</span> <span class="s2">"notes.example.com"</span><span class="p">;</span>
+    <span class="p">};</span>
+    nginx<span class="o">.</span>virtualHosts<span class="o">.</span><span class="s2">"notes.example.com"</span><span class="o">.</span><span class="ss">forceSSL</span> <span class="o">=</span> <span class="no">false</span><span class="p">;</span>  <span class="c1"># &lt;----</span>
+  <span class="p">};</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>Auch dies führt zu einer Fehlermeldung, da die Option bereits definiert ist.
+Die Lösung für dieses Problem wird im nächsten Kapitel erläutert.</p>
+<h3 id="nixos-config-merge">NixOS config merge<a class="headerlink" href="#nixos-config-merge" title="Permanent link">&para;</a></h3>
+<p>An dieser Stelle kommt eine wichtige Eigenschaft von NixOS zum Einsatz:
+Mehrere Konfigurationsfragmente können dieselbe Option setzen. NixOS muss
+deshalb entscheiden welcher Wert verwendet wird. Dafür gibt es nummerische
+Prioritäten. Der normale Standardwert einer Option wird mit der Priorität 100
+behandelt. Mit lib.mkOverride können wir einen Wert mit einer anderen Priorität
+definieren. Eine niedrigere Zahl hat dabei eine höhere Priorität.
+<div class="highlight"><pre><span></span><code><span class="p">{</span> lib<span class="p">,</span> <span class="o">...</span> <span class="p">}:</span>
+<span class="p">{</span>
+  <span class="ss">services</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="ss">hedgedoc</span> <span class="o">=</span> <span class="p">{</span>
+      <span class="ss">enable</span> <span class="o">=</span> <span class="no">true</span><span class="p">;</span>
+      <span class="ss">configureNginx</span> <span class="o">=</span> <span class="no">true</span><span class="p">;</span>
+      settings<span class="o">.</span><span class="ss">domain</span> <span class="o">=</span> <span class="s2">"notes.example.com"</span><span class="p">;</span>
+    <span class="p">};</span>
+    nginx<span class="o">.</span>virtualHosts<span class="o">.</span><span class="s2">"notes.example.com"</span><span class="o">.</span><span class="ss">forceSSL</span> <span class="o">=</span> lib<span class="o">.</span>mkOverride <span class="mi">99</span> <span class="no">false</span><span class="p">;</span>
+  <span class="p">};</span>
+<span class="p">}</span>
+</code></pre></div>
+Nachdem dieser Konfiguration übernommen wurde, ist feststellbar dass nginx
+HedgeDoc zwar auf Port 80 zur Verfügung stellt, es von außen aber dennoch
+nicht erreichbar ist. Dies hängt mit der fehlenden Firewall für Port 80 zusammen,
+welche durch folgenden Codeblock entsprechend angepasst wird.
+<div class="highlight"><pre><span></span><code><span class="p">{</span> lib<span class="p">,</span> <span class="o">...</span> <span class="p">}:</span>
+<span class="p">{</span>
+  <span class="ss">services</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="ss">hedgedoc</span> <span class="o">=</span> <span class="p">{</span>
+      <span class="ss">enable</span> <span class="o">=</span> <span class="no">true</span><span class="p">;</span>
+      <span class="ss">configureNginx</span> <span class="o">=</span> <span class="no">true</span><span class="p">;</span>
+      settings<span class="o">.</span><span class="ss">domain</span> <span class="o">=</span> <span class="s2">"notes.example.com"</span><span class="p">;</span>
+    <span class="p">};</span>
+    nginx<span class="o">.</span>virtualHosts<span class="o">.</span><span class="s2">"notes.example.com"</span><span class="o">.</span><span class="ss">forceSSL</span> <span class="o">=</span> lib<span class="o">.</span>mkOverride <span class="mi">99</span> <span class="no">false</span><span class="p">;</span>
+  <span class="p">};</span>
+  networking<span class="o">.</span>firewall<span class="o">.</span><span class="ss">allowedTCPPorts</span> <span class="o">=</span> <span class="p">[</span> <span class="mi">80</span> <span class="p">];</span>  <span class="c1"># &lt;----</span>
+<span class="p">}</span>
+</code></pre></div>
+Die Kommunikation zwischen nginx und hedgedoc läuft nun nicht mehr über
+TCP/IP ports die lokal gebindet sind, sondern über <a href="https://openbook.rheinwerk-verlag.de/linux_unix_programmierung/Kap11-017.htm">unix sockets</a>.
+Dies ist im HedgeDoc Modul von NixOS festgelegt und wird als Best Practice
+angesehen.</p>
+<h3 id="tls">TLS<a class="headerlink" href="#tls" title="Permanent link">&para;</a></h3>
+<p>HedgeDoc ist nun über nginx von anderen Computern aus erreichbar. Die Verbindung
+verwendet allerdings das unverschlüsselte HTTP Protokoll. Für den produktiven
+Betrieb sollten wir TLS aktivieren, damit Anmeldedaten, Dokumentinhalte und
+Sitzungen nicht unverschlüsselt übertragen werden.</p>
+<p>Für Zertifikate gibt es verschiedene Möglichkeiten. Für die interne Nutzung
+in einer Umgebung wie beispielsweise einem Unternehmen kann man eine eigene PKI
+Infrasturktur aufbauen und eigene Zertifikate erstellen. Auf allen Systemen
+welche den Dienst nutzen sollen, muss dann ein root CA hinterlegt werden, durch
+welches die Gültigkeit des Zertifikats geprüft werden kann. Mehr dazu im Kapitel
+<a href="#pki">Fortgeschrittene Konzepte -&gt; PKI</a>.</p>
+<p>Alternativ können Zertifikate über externe Zertifizierungsstellen wie DigiCert,
+GlobalSign oder GoDaddy bezogen werden. Unternehmen nutzen diese Anbieter häufig,
+um von zusätzlichen Garantieleistungen, erweiterten Validierungsstufen (OV/EV)
+oder umfassenden Supportangeboten zu profitieren.</p>
+<p>Einige Organisationen bieten kostenlose TLS-Zertifikate an. Der bekannteste Anbieter
+ist Let’s Encrypt, eine von der gemeinnützigen Internet Security Research Group (ISRG)
+betriebene Zertifizierungsstelle. Das Projekt wurde 2015 gestartet und stellt kostenlose
+und automatisiert ausgestellte TLS-Zertifikate bereit, um verschlüsselte Verbindungen per
+HTTPs zu fördern und deren Nutzung als Standard im Internet voranzutreiben.</p>
+<p>Neben Let’s Encrypt bieten auch Anbieter wie ZeroSSL und Actalis kostenlose Zertifizierungsdienste
+an. Sie unterstützen das ACME-Protokoll (Automatic Certificate Management Environment),
+mit dem sich Zertifikate automatisiert ausstellen und verlängern lassen.</p>
+<p>Diese kostenlosen Zertifikate sind von den gängigen Browsern als vertrauenswürdig anerkannt
+und eignen sich hervorragend für öffentliche Websites, Webanwendungen und APIs. Im Vergleich
+zu kommerziellen Angeboten bieten sie zwar keine zusätzlichen Garantieleistungen oder
+erweiterte Validierung (z. B. EV-Zertifikate), erfüllen aber auf technischer Ebene die
+selben Sicherheitsstandards.</p>
+<p>Das ACME-Protokoll definiert verschiedene <a href="https://letsencrypt.org/docs/challenge-types/">Challenges</a>,
+die zur Validierung der Domainkontrolle verwendet werden. Diese Validierung ist Voraussetzung für
+die Ausstellung eines Zertifikats. Das ACME-Modul von NixOS unterstützt derzeit die Challenges
+ACME-HTTP-01 und ACME-DNS-01. Im folgenden Beispiel wird die ACME-HTTP-01-Challenge verwendet.
+Dabei wird eine Datei im Verzeichnis <code>.well-known/acme-challenge/</code> des Webroots bereitgestellt.
+Die Zertifizierungsstelle ruft diese Datei anschließend über HTTP auf. Ist die Datei unter der
+erwarteten URL erreichbar, gilt damit als nachgewiesen, dass der Antragsteller die Domain
+kontrolliert beziehungsweise den Webserver für diese Domain konfigurieren kann.</p>
+<p>Wir entfernen das Überschreiben des Parameters forceSSL, aktivieren enableACME für den nginx
+VirtualHost, akzeptieren die Terms of Service des verwendeten Zertifikatsdienstleisters
+und geben den für HTTPs genutzten Port 443 in der Firewall frei.
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+  <span class="ss">services</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="ss">hedgedoc</span> <span class="o">=</span> <span class="p">{</span>
+      <span class="ss">enable</span> <span class="o">=</span> <span class="no">true</span><span class="p">;</span>
+      <span class="ss">configureNginx</span> <span class="o">=</span> <span class="no">true</span><span class="p">;</span>
+      settings<span class="o">.</span><span class="ss">domain</span> <span class="o">=</span> <span class="s2">"notes.example.com"</span><span class="p">;</span>
+    <span class="p">};</span>
+    nginx<span class="o">.</span>virtualHosts<span class="o">.</span><span class="s2">"notes.example.com"</span><span class="o">.</span><span class="ss">enableACME</span> <span class="o">=</span> <span class="no">true</span><span class="p">;</span>  <span class="c1"># &lt;----</span>
+  <span class="p">};</span>
+  security<span class="o">.</span>acme<span class="o">.</span><span class="ss">acceptTerms</span> <span class="o">=</span> <span class="no">true</span><span class="p">;</span>
+  networking<span class="o">.</span>firewall<span class="o">.</span><span class="ss">allowedTCPPorts</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="mi">80</span>
+    <span class="mi">443</span>  <span class="c1"># &lt;----</span>
+  <span class="p">];</span>
+<span class="p">}</span>
+</code></pre></div>
+Aufgrund des standardmäßig vom HedgeDoc Module gesetzten forceSSL Parameters werden
+anschließend sämtliche Requests von HTTP auf HTTPs angehoben.</p>
+<h3 id="postgresql">PostgreSQL<a class="headerlink" href="#postgresql" title="Permanent link">&para;</a></h3>
+<p>Standardmäßig verwendet HedgeDoc SQLite um Daten persistent zu speichern. Das ist
+für eine minimale Installation praktisch, weil keine zusätzliche Datenbank eingerichtet
+werden muss. Für einen produktiven Betrieb ist eine separate Datenbank wie PostgreSQL
+jedoch die bessere Wahl, da bei mehreren gleichzeitigen Zugriffen und schreibintensiven
+Anwendungen eine dateibasierte Datenbank an ihre Grenzen stößt.
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+  <span class="ss">services</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="ss">postgresql</span> <span class="o">=</span> <span class="p">{</span>  <span class="c1"># &lt;----</span>
+      <span class="ss">enable</span> <span class="o">=</span> <span class="no">true</span><span class="p">;</span>
+      <span class="ss">ensureDatabases</span> <span class="o">=</span> <span class="p">[</span> <span class="s2">"hedgedoc"</span> <span class="p">];</span>
+      <span class="ss">ensureUsers</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">{</span>
+          <span class="ss">name</span> <span class="o">=</span> <span class="s2">"hedgedoc"</span><span class="p">;</span>
+          <span class="ss">ensureDBOwnership</span> <span class="o">=</span> <span class="no">true</span><span class="p">;</span>
+        <span class="p">}</span>
+      <span class="p">];</span>
+    <span class="p">};</span>
+    <span class="ss">hedgedoc</span> <span class="o">=</span> <span class="p">{</span>
+      <span class="ss">enable</span> <span class="o">=</span> <span class="no">true</span><span class="p">;</span>
+      <span class="ss">configureNginx</span> <span class="o">=</span> <span class="no">true</span><span class="p">;</span>
+      <span class="ss">settings</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="ss">domain</span> <span class="o">=</span> <span class="s2">"notes.example.com"</span><span class="p">;</span>
+        <span class="ss">db</span> <span class="o">=</span> <span class="p">{</span>  <span class="c1"># &lt;----</span>
+          <span class="ss">dialect</span> <span class="o">=</span> <span class="s2">"postgresql"</span><span class="p">;</span>
+          <span class="ss">host</span> <span class="o">=</span> <span class="s2">"/run/postgresql"</span><span class="p">;</span>
+        <span class="p">};</span>
+      <span class="p">};</span>
+    <span class="p">};</span>
+    nginx<span class="o">.</span>virtualHosts<span class="o">.</span><span class="s2">"notes.example.com"</span><span class="o">.</span><span class="ss">enableACME</span> <span class="o">=</span> <span class="no">true</span><span class="p">;</span>
+  <span class="p">};</span>
+  security<span class="o">.</span>acme<span class="o">.</span><span class="ss">acceptTerms</span> <span class="o">=</span> <span class="no">true</span><span class="p">;</span>
+  networking<span class="o">.</span>firewall<span class="o">.</span><span class="ss">allowedTCPPorts</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="mi">80</span>
+    <span class="mi">443</span>
+  <span class="p">];</span>
+<span class="p">}</span>
+</code></pre></div>
+Ähnlich wie zuvor nginx verwendet auch hedgedoc den Unix-Domain-Socket für die
+Kommunikation mit der PostgreSQL Datenbank. Die zuvor verwendete SQLite Datenbank
+(/var/lib/hedgedoc/db.sqlite) wird nicht mehr benötigt und kann nun gelöscht werden.</p>
+<h3 id="web-application-firewall">Web Application Firewall<a class="headerlink" href="#web-application-firewall" title="Permanent link">&para;</a></h3>
+<p>Eine Web Application Firewall (WAF) schützt Webanwendungen auf HTTP-Ebene, indem
+sie nicht nur IP-Adressen und Ports, sondern auch die Inhalte von HTTP-Anfragen
+analysiert. Dadurch kann sie verdächtige Muster erkennen und beispielsweise SQL-,
+SSTI- und Command-Injection-Versuche sowie Cross-Site-Scripting blockieren.</p>
+<p>Im folgenden wird <a href="https://github.com/owasp-modsecurity/ModSecurity">ModSecurity</a> mit
+dem OWASP Core Ruleset (CRS) in Nginx integriert. Requests, die einen zuvor
+definierten Anomaly Score überschreiten, werden automatisch protokolliert
+(<code>SecRuleEngine DetectionOnly</code>) oder abgelehnt (<code>SecRuleEngine On</code>).
+Dadurch lassen sich bestimmte Angriffe auf HedgeDoc oder verwendete Bibliotheken
+bereits vor ihrer Verarbeitung durch die Anwendung abfangen.</p>
+<p>Für die meisten Anwendungen müssen einzelne Regeln des CRS deaktiviert oder angepasst
+werden, da sie andernfalls legitime Anfragen blockieren können. Bei HedgeDoc betrifft
+dies beispielsweise die für die kollaborative Bearbeitung erforderliche WebSocket
+basierte Kommunikation (<code>/socket.io/</code>) sowie die Funktion zum Löschen von Notes
+(<code>/history/</code>).</p>
+<p>Dazu laden wir <a href="https://github.com/coreruleset/coreruleset">github:coreruleset/coreruleset</a>
+in der derzeit aktuellsten Version v4.29.0 in den Nix Store, erstellen die
+ModSecurity Konfiguration im Nix Store und passen die Konfiguration von nginx
+entsprechend an, sodass Modsecurity als zusätzliches Modul geladen und mit der
+zuvor erstellten Konfiguration aktiviert wird:
+<div class="highlight"><pre><span></span><code><span class="p">{</span> pkgs<span class="p">,</span> <span class="o">...</span> <span class="p">}:</span>
+<span class="p">{</span>
+  <span class="ss">services</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="ss">postgresql</span> <span class="o">=</span> <span class="p">{</span>
+      <span class="ss">enable</span> <span class="o">=</span> <span class="no">true</span><span class="p">;</span>
+      <span class="ss">ensureDatabases</span> <span class="o">=</span> <span class="p">[</span> <span class="s2">"hedgedoc"</span> <span class="p">];</span>
+      <span class="ss">ensureUsers</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">{</span>
+          <span class="ss">name</span> <span class="o">=</span> <span class="s2">"hedgedoc"</span><span class="p">;</span>
+          <span class="ss">ensureDBOwnership</span> <span class="o">=</span> <span class="no">true</span><span class="p">;</span>
+        <span class="p">}</span>
+      <span class="p">];</span>
+    <span class="p">};</span>
+    <span class="ss">hedgedoc</span> <span class="o">=</span> <span class="p">{</span>
+      <span class="ss">enable</span> <span class="o">=</span> <span class="no">true</span><span class="p">;</span>
+      <span class="ss">configureNginx</span> <span class="o">=</span> <span class="no">true</span><span class="p">;</span>
+      <span class="ss">settings</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="ss">domain</span> <span class="o">=</span> <span class="s2">"notes.example.com"</span><span class="p">;</span>
+        <span class="ss">db</span> <span class="o">=</span> <span class="p">{</span>
+          <span class="ss">dialect</span> <span class="o">=</span> <span class="s2">"postgresql"</span><span class="p">;</span>
+          <span class="ss">host</span> <span class="o">=</span> <span class="s2">"/run/postgresql"</span><span class="p">;</span>
+        <span class="p">};</span>
+      <span class="p">};</span>
+    <span class="p">};</span>
+    <span class="ss">nginx</span> <span class="o">=</span>  <span class="c1"># &lt;----</span>
+      <span class="k">let</span>
+        <span class="ss">modsecurity_crs</span> <span class="o">=</span> pkgs<span class="o">.</span>fetchFromGitHub <span class="p">{</span>
+          <span class="ss">owner</span> <span class="o">=</span> <span class="s2">"coreruleset"</span><span class="p">;</span>
+          <span class="ss">repo</span> <span class="o">=</span> <span class="s2">"coreruleset"</span><span class="p">;</span>
+          <span class="ss">rev</span> <span class="o">=</span> <span class="s2">"v4.29.0"</span><span class="p">;</span>
+          <span class="ss">hash</span> <span class="o">=</span> <span class="s2">"sha256-NvBwGFgch+7tnGjcpm47n0mGy0vj5i+JWtb7d033u2s="</span><span class="p">;</span>
+        <span class="p">};</span>
+        <span class="ss">modsecurity_conf</span> <span class="o">=</span> pkgs<span class="o">.</span>writeText <span class="s2">"modsecurity.conf"</span> <span class="s s-Multiline">''</span>
+<span class="s s-Multiline">          SecAuditEngine RelevantOnly</span>
+<span class="s s-Multiline">          SecAuditLog /var/log/nginx/modsec.json</span>
+<span class="s s-Multiline">          SecAuditLogFormat JSON</span>
+<span class="s s-Multiline">          SecAuditLogParts ABIJDEFHZ</span>
+
+<span class="s s-Multiline">          SecRuleEngine On</span>
+
+<span class="s s-Multiline">          SecDefaultAction "phase:1,log,auditlog,pass"</span>
+<span class="s s-Multiline">          SecDefaultAction "phase:2,log,auditlog,pass"</span>
+
+<span class="s s-Multiline">          SecRuleRemoveByTag "platform-iis"</span>
+<span class="s s-Multiline">          SecRuleRemoveByTag "platform-windows"</span>
+
+<span class="s s-Multiline">          # socket.io endpoint: Request content type is not allowed by policy</span>
+<span class="s s-Multiline">          SecRule REQUEST_HEADERS:Host "@streq notes.example.com" \</span>
+<span class="s s-Multiline">            "chain, id:10000, phase:1, pass, nolog"</span>
+<span class="s s-Multiline">            SecRule REQUEST_URI "@beginsWith /socket.io/" \</span>
+<span class="s s-Multiline">              "ctl:ruleRemoveById=920420"</span>
+
+<span class="s s-Multiline">          # Delete note: Method is not allowed by policy</span>
+<span class="s s-Multiline">          SecRule REQUEST_HEADERS:Host "@streq notes.example.com" \</span>
+<span class="s s-Multiline">            "chain, id:10001, phase:1, pass, nolog"</span>
+<span class="s s-Multiline">            SecRule REQUEST_URI "@beginsWith /history/" \</span>
+<span class="s s-Multiline">              "ctl:ruleRemoveById=911100"</span>
+
+<span class="s s-Multiline">          SecAction "id:900000,phase:1,pass,t:none,nolog,setvar:tx.blocking_paranoia_level=2"</span>
+<span class="s s-Multiline">          SecAction "id:900010,phase:1,pass,t:none,nolog,setvar:tx.enforce_bodyproc_urlencoded=1"</span>
+<span class="s s-Multiline">          SecAction "id:900990,phase:1,pass,t:none,nolog,setvar:tx.crs_setup_version=400"</span>
+
+<span class="s s-Multiline">          Include </span><span class="si">${</span>modsecurity_crs<span class="si">}</span><span class="s s-Multiline">/rules/*.conf</span>
+<span class="s s-Multiline">        ''</span><span class="p">;</span>
+      <span class="k">in</span>
+      <span class="p">{</span>
+        virtualHosts<span class="o">.</span><span class="s2">"notes.example.com"</span><span class="o">.</span><span class="ss">enableACME</span> <span class="o">=</span> <span class="no">true</span><span class="p">;</span>
+        <span class="ss">additionalModules</span> <span class="o">=</span> <span class="p">[</span> pkgs<span class="o">.</span>nginxModules<span class="o">.</span>modsecurity <span class="p">];</span>
+        <span class="ss">appendHttpConfig</span> <span class="o">=</span> <span class="s s-Multiline">''</span>
+<span class="s s-Multiline">          modsecurity on;</span>
+<span class="s s-Multiline">          modsecurity_rules_file </span><span class="si">${</span>modsecurity_conf<span class="si">}</span><span class="s s-Multiline">;</span>
+<span class="s s-Multiline">        ''</span><span class="p">;</span>
+      <span class="p">};</span>
+  <span class="p">};</span>
+  security<span class="o">.</span>acme<span class="o">.</span><span class="ss">acceptTerms</span> <span class="o">=</span> <span class="no">true</span><span class="p">;</span>
+  networking<span class="o">.</span>firewall<span class="o">.</span><span class="ss">allowedTCPPorts</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="mi">80</span>
+    <span class="mi">443</span>
+  <span class="p">];</span>
+<span class="p">}</span>
+</code></pre></div></p>
+<h3 id="secrets-management">Secrets Management<a class="headerlink" href="#secrets-management" title="Permanent link">&para;</a></h3>
+<p>Beim Blick in die HedgeDoc-Logs (<code>systemctl status hedgedoc</code> bzw.
+<code>journalctl -u hedgedoc</code>) fällt folgende Meldung auf:</p>
+<blockquote>
+<p>Session secret not set. Using random generated one.</p>
+<p>Please set <code>sessionSecret</code> in your config.json file.</p>
+<p>All users will be logged out.</p>
+</blockquote>
+<p>HedgeDoc verwendet ein Session-Secret, um die Sitzungs-Cookies der Benutzer zu
+signieren beziehungsweise zu validieren. Wird bei jedem Start ein neues zufälliges
+Secret erzeugt, können bereits vorhandene Cookies nach einem Neustart nicht mehr
+überprüft werden. Dadurch werden alle aktiven Benutzer abgemeldet.</p>
+<p>Das Session-Secret muss daher dauerhaft gespeichert und bei jedem Start erneut
+verwendet werden.</p>
+<p>Grundsätzlich ließe sich das Secret direkt über die NixOS-Option
+<code>services.hedgedoc.settings.sessionSecret</code> setzen. Sensible Werte sollten jedoch
+nicht unmittelbar in der Nix-Konfiguration hinterlegt werden, da diese im Nix Store,
+welcher von allen Benutzern des Systems gelesen werden kann, gespeichert werden.</p>
+<p>Stattdessen speichern wir Secrets in verschlüsselten Dateien außerhalb des Nix Stores.
+Für diesen Zweck verwenden wir <a href="https://github.com/getsops/sops">sops</a> zusammen mit
+<a href="https://github.com/mic92/sops-nix">sops-nix</a>. Die Secrets bleiben dabei verschlüsselt
+im Repository und werden erst während der Aktivierung der NixOS-Konfiguration auf dem
+Zielsystem entschlüsselt. sops-nix legt die einzelnen Werte anschließend als
+geschützte Dateien im Dateisystem ab und kann deren Besitzer und Zugriffsrechte deklarativ
+festlegen.</p>
+<p>Jedoch bietet HedgeDoc nicht die Möglichkeit das Secret direkt aus einer von
+sops-nix bereitgestellten Datei einzulesen. Die Anwendung erwartet stattdessen
+den entsprechenden Konfigurationswert beziehungsweise die Umgebungsvariable
+<code>CMD_SESSION_SECRET</code> (HedgeDoc hieß früher CodiMD, daher das <code>CMD</code>).</p>
+<p>Zunächst wird die flake.nix um sops-nix erweitert:
+<div class="highlight"><pre><span></span><code><span class="c1"># flake.nix</span>
+<span class="p">{</span>
+  <span class="ss">inputs</span> <span class="o">=</span> <span class="p">{</span>
+    nixpkgs<span class="o">.</span><span class="ss">url</span> <span class="o">=</span> <span class="s2">"github:nixos/nixpkgs/nixos-unstable"</span><span class="p">;</span>
+    disko<span class="o">.</span><span class="ss">url</span> <span class="o">=</span> <span class="s2">"github:nix-community/disko"</span><span class="p">;</span>
+    sops-nix<span class="o">.</span><span class="ss">url</span> <span class="o">=</span> <span class="s2">"github:Mic92/sops-nix"</span><span class="p">;</span>  <span class="c1"># &lt;----</span>
+  <span class="p">};</span>
+  <span class="ss">outputs</span> <span class="o">=</span> <span class="p">{</span> nixpkgs<span class="p">,</span> disko<span class="p">,</span> sops-nix<span class="p">,</span> <span class="o">...</span> <span class="p">}:</span> <span class="p">{</span>  <span class="c1"># &lt;----</span>
+    <span class="ss">nixosConfigurations</span> <span class="o">=</span> <span class="p">{</span>
+      <span class="ss">server</span> <span class="o">=</span> nixpkgs<span class="o">.</span>lib<span class="o">.</span>nixosSystem <span class="p">{</span>
+        <span class="ss">modules</span> <span class="o">=</span> <span class="p">[</span>
+          <span class="c1"># ...</span>
+          sops-nix<span class="o">.</span>nixosModules<span class="o">.</span>default  <span class="c1"># &lt;----</span>
+        <span class="p">];</span>
+      <span class="p">};</span>
+    <span class="p">};</span>
+  <span class="p">};</span>
+<span class="p">}</span>
+</code></pre></div>
+Anschließend erzeugen wir die Schlüsselpaare für die Administratoren
+sowie die Systeme, die auf diese Zugreifen müssen. Neben
+<a href="https://github.com/filosottile/age">age Keys</a> unterstützt sops auch
+GPG Keys. Darüber hinaus können SSH Keys verwendet werden, sofern sie
+zuvor mit <code>ssh-to-age</code> zu einem age Public Key konvertiert wurden.
+Grundsätzlich sollte Schlüsselmaterial nicht mehrfach verwendet werden.
+Abhängig von der jeweiligen Systemkonfiguration kann dies in diesem Fall
+jedoch vertretbar sein.</p>
+<p>Da wir das <code>age</code> Paket bisher nicht installiert haben, können wir ein
+weiteres Feature von NixOS nutzen: DevShells. Mithilfe von
+<code>nix shell nixpkgs#age --extra-experimental-features "nix-command flakes"</code>
+können wir diese in der aktuellen Shell verfügbar machen. Alternativ
+besteht natürlich die Möglichkeit das Paket permanent zu installieren,
+da dieses jedoch im weiteren Verlauf nicht nötig ist und grundsätzlich
+auf Serversystemen nur notwendige Pakete installiert sein sollten, wird
+darauf bewusst verzichtet.</p>
+<p>Ein age Keypair mit sicheren Unix Zugriffsrechten kann mithilfe der
+folgenden Befehle erstellt werden:
+<div class="highlight"><pre><span></span><code><span class="nv">OLD_UMASK</span><span class="o">=</span><span class="k">$(</span><span class="nb">umask</span><span class="k">)</span>
+<span class="nb">umask</span><span class="w"> </span><span class="m">0177</span>
+age-keygen<span class="w"> </span>&gt;<span class="w"> </span>~root/private.key
+<span class="nb">umask</span><span class="w"> </span><span class="si">${</span><span class="nv">OLD_UMASK</span><span class="si">}</span>
+</code></pre></div></p>
+<p>Danach kann die .sops.yaml angelegt werden, in welcher die Schlüssel
+mit den jeweiligen Secret-Dateien verknüpft werden.
+<div class="highlight"><pre><span></span><code><span class="c1"># .sops.yaml</span>
+<span class="nt">keys</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nl">&amp;nico</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">age1x0hr45ueh3nu4xypjltmlssz9jexyalzwu4296600gs9mlpl95rq2ny2es</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nl">&amp;notes</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">age12lasmrsaj50hanwq743lljq94x0ax2ht5jf9dysauqt5s22263vs5ql6f0</span>
+
+<span class="nt">creation_rules</span><span class="p">:</span>
+<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">path_regex</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">secrets.yaml</span>
+<span class="w">    </span><span class="nt">key_groups</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">age</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="w"> </span><span class="nv">*nico</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">*notes</span><span class="w"> </span><span class="p p-Indicator">]</span>
+</code></pre></div>
+Nun kann die entsprechende secrets.yaml mit <code>sops secrets.yaml</code> angelegt werden.
+Wie bereits zuvor bei <code>age</code> ist auch sops derzeit nicht auf dem System hinterlegt.
+Wieder kann eine Nix DevShell verwendet werden um den Befehl verfügbar zu machen.
+Da dieser Befehl im weiteren Verlauf des Blogartikels häufiger benötigt wird
+können wir ihn alternativ permanent verfügbar machen, in dem wir unsere Nix
+Konfiguration um <code>environment.systemPackages = [ pkgs.sops ];</code> erweitern.
+In der Datei secrets.yaml fügen wir folgenden Inhalt mit zufallsgeneriertem Passwort hinzu:
+<div class="highlight"><pre><span></span><code><span class="nt">hedgedoc</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">sessionSecret</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">My_S3cure-R4nd0m-S3cr3t</span>
+</code></pre></div>
+Abschließend lässt sich die Nix-Konfiguration so anpassen, dass das Secret
+geladen und entschlüsselt als Datei bereitgestellt wird. Unterstützt eine
+Anwendung das Einlesen von Secrets aus Dateien nicht, können diese mit SOPS
+in einem Template formatiert und anschließend beispielsweise als
+Umgebungsvariablendatei eingebunden werden.
+<div class="highlight"><pre><span></span><code><span class="p">{</span> pkgs<span class="p">,</span> config<span class="p">,</span> <span class="o">...</span> <span class="p">}:</span>
+<span class="p">{</span>
+  <span class="ss">sops</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="ss">defaultSopsFile</span> <span class="o">=</span> <span class="l">./secrets.yaml</span><span class="p">;</span>
+    <span class="ss">age</span> <span class="o">=</span> <span class="p">{</span>
+      <span class="ss">keyFile</span> <span class="o">=</span> <span class="s2">"/root/private.key"</span><span class="p">;</span>
+      <span class="ss">sshKeyPaths</span> <span class="o">=</span> <span class="p">[</span> <span class="p">];</span>
+    <span class="p">};</span>
+    secrets<span class="o">.</span><span class="s2">"hedgedoc/sessionSecret"</span> <span class="o">=</span> <span class="p">{</span> <span class="p">};</span>
+    templates<span class="o">.</span><span class="s2">"hedgedoc/environment"</span><span class="o">.</span><span class="ss">content</span> <span class="o">=</span> <span class="s s-Multiline">''</span>
+<span class="s s-Multiline">      CMD_SESSION_SECRET=</span><span class="si">${</span>config<span class="o">.</span>sops<span class="o">.</span>placeholder<span class="o">.</span><span class="s2">"hedgedoc/sessionSecret"</span><span class="si">}</span>
+<span class="s s-Multiline">    ''</span><span class="p">;</span>
+  <span class="p">};</span>
+
+  <span class="ss">services</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="ss">postgresql</span> <span class="o">=</span> <span class="p">{</span>
+      <span class="ss">enable</span> <span class="o">=</span> <span class="no">true</span><span class="p">;</span>
+      <span class="ss">ensureDatabases</span> <span class="o">=</span> <span class="p">[</span> <span class="s2">"hedgedoc"</span> <span class="p">];</span>
+      <span class="ss">ensureUsers</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">{</span>
+          <span class="ss">name</span> <span class="o">=</span> <span class="s2">"hedgedoc"</span><span class="p">;</span>
+          <span class="ss">ensureDBOwnership</span> <span class="o">=</span> <span class="no">true</span><span class="p">;</span>
+        <span class="p">}</span>
+      <span class="p">];</span>
+    <span class="p">};</span>
+    <span class="ss">hedgedoc</span> <span class="o">=</span> <span class="p">{</span>
+      <span class="ss">enable</span> <span class="o">=</span> <span class="no">true</span><span class="p">;</span>
+      <span class="ss">configureNginx</span> <span class="o">=</span> <span class="no">true</span><span class="p">;</span>
+      <span class="ss">settings</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="ss">domain</span> <span class="o">=</span> <span class="s2">"notes.example.com"</span><span class="p">;</span>
+        <span class="ss">db</span> <span class="o">=</span> <span class="p">{</span>
+          <span class="ss">dialect</span> <span class="o">=</span> <span class="s2">"postgresql"</span><span class="p">;</span>
+          <span class="ss">host</span> <span class="o">=</span> <span class="s2">"/run/postgresql"</span><span class="p">;</span>
+        <span class="p">};</span>
+      <span class="p">};</span>
+      <span class="ss">environmentFile</span> <span class="o">=</span> config<span class="o">.</span>sops<span class="o">.</span>templates<span class="o">.</span><span class="s2">"hedgedoc/environment"</span><span class="o">.</span>path<span class="p">;</span>
+    <span class="p">};</span>
+    <span class="ss">nginx</span> <span class="o">=</span>
+      <span class="k">let</span>
+        <span class="ss">modsecurity_crs</span> <span class="o">=</span> pkgs<span class="o">.</span>fetchFromGitHub <span class="p">{</span>
+          <span class="ss">owner</span> <span class="o">=</span> <span class="s2">"coreruleset"</span><span class="p">;</span>
+          <span class="ss">repo</span> <span class="o">=</span> <span class="s2">"coreruleset"</span><span class="p">;</span>
+          <span class="ss">rev</span> <span class="o">=</span> <span class="s2">"v4.29.0"</span><span class="p">;</span>
+          <span class="ss">hash</span> <span class="o">=</span> <span class="s2">"sha256-NvBwGFgch+7tnGjcpm47n0mGy0vj5i+JWtb7d033u2s="</span><span class="p">;</span>
+        <span class="p">};</span>
+        <span class="ss">modsecurity_conf</span> <span class="o">=</span> pkgs<span class="o">.</span>writeText <span class="s2">"modsecurity.conf"</span> <span class="s s-Multiline">''</span>
+<span class="s s-Multiline">          SecAuditEngine RelevantOnly</span>
+<span class="s s-Multiline">          SecAuditLog /var/log/nginx/modsec.json</span>
+<span class="s s-Multiline">          SecAuditLogFormat JSON</span>
+<span class="s s-Multiline">          SecAuditLogParts ABIJDEFHZ</span>
+
+<span class="s s-Multiline">          SecRuleEngine On</span>
+
+<span class="s s-Multiline">          SecDefaultAction "phase:1,log,auditlog,pass"</span>
+<span class="s s-Multiline">          SecDefaultAction "phase:2,log,auditlog,pass"</span>
+
+<span class="s s-Multiline">          SecRuleRemoveByTag "platform-iis"</span>
+<span class="s s-Multiline">          SecRuleRemoveByTag "platform-windows"</span>
+
+<span class="s s-Multiline">          # socket.io endpoint: Request content type is not allowed by policy</span>
+<span class="s s-Multiline">          SecRule REQUEST_HEADERS:Host "@streq notes.example.com" \</span>
+<span class="s s-Multiline">            "chain, id:10000, phase:1, pass, nolog"</span>
+<span class="s s-Multiline">            SecRule REQUEST_URI "@beginsWith /socket.io/" \</span>
+<span class="s s-Multiline">              "ctl:ruleRemoveById=920420"</span>
+
+<span class="s s-Multiline">          # Delete note: Method is not allowed by policy</span>
+<span class="s s-Multiline">          SecRule REQUEST_HEADERS:Host "@streq notes.example.com" \</span>
+<span class="s s-Multiline">            "chain, id:10001, phase:1, pass, nolog"</span>
+<span class="s s-Multiline">            SecRule REQUEST_URI "@beginsWith /history/" \</span>
+<span class="s s-Multiline">              "ctl:ruleRemoveById=911100"</span>
+
+<span class="s s-Multiline">          SecAction "id:900000,phase:1,pass,t:none,nolog,setvar:tx.blocking_paranoia_level=2"</span>
+<span class="s s-Multiline">          SecAction "id:900010,phase:1,pass,t:none,nolog,setvar:tx.enforce_bodyproc_urlencoded=1"</span>
+<span class="s s-Multiline">          SecAction "id:900990,phase:1,pass,t:none,nolog,setvar:tx.crs_setup_version=400"</span>
+
+<span class="s s-Multiline">          Include </span><span class="si">${</span>modsecurity_crs<span class="si">}</span><span class="s s-Multiline">/rules/*.conf</span>
+<span class="s s-Multiline">        ''</span><span class="p">;</span>
+      <span class="k">in</span>
+      <span class="p">{</span>
+        virtualHosts<span class="o">.</span><span class="s2">"notes.example.com"</span><span class="o">.</span><span class="ss">enableACME</span> <span class="o">=</span> <span class="no">true</span><span class="p">;</span>
+        <span class="ss">additionalModules</span> <span class="o">=</span> <span class="p">[</span> pkgs<span class="o">.</span>nginxModules<span class="o">.</span>modsecurity <span class="p">];</span>
+        <span class="ss">appendHttpConfig</span> <span class="o">=</span> <span class="s s-Multiline">''</span>
+<span class="s s-Multiline">          modsecurity on;</span>
+<span class="s s-Multiline">          modsecurity_rules_file </span><span class="si">${</span>modsecurity_conf<span class="si">}</span><span class="s s-Multiline">;</span>
+<span class="s s-Multiline">        ''</span><span class="p">;</span>
+      <span class="p">};</span>
+  <span class="p">};</span>
+  security<span class="o">.</span>acme<span class="o">.</span><span class="ss">acceptTerms</span> <span class="o">=</span> <span class="no">true</span><span class="p">;</span>
+  networking<span class="o">.</span>firewall<span class="o">.</span><span class="ss">allowedTCPPorts</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="mi">80</span>
+    <span class="mi">443</span>
+  <span class="p">];</span>
+<span class="p">}</span>
+</code></pre></div>
+Wird ein Key in der .sops.yaml aktualisiert, muss die secrets.yaml mit
+<code>sops updatekeys secrets.yaml</code> aktualisiert werden.</p>
+<p>Die Verwendung einer Umgebungsvariablen ist zwar sicherer, als das Secret direkt
+in der Nix-Konfiguration zu hinterlegen. Sie bringt jedoch einen weiteren Nachteil
+mit sich: Umgebungsvariablen sind an den jeweiligen Prozess gebunden und können je
+nach Systemkonfiguration über das proc-Dateisystem ausgelesen werden
+(<code>/proc/{pid}/environ</code>). Ein Prozess mit ausreichenden Berechtigungen (z. B.
+ptrace) kann dadurch auf die Umgebungsvariablen anderer Prozesse zugreifen und
+somit auch das Session-Secret einsehen.</p>
+<p>Mit <code>LoadCredential</code> bietet das verwendete Init-System <code>systemd</code> zwar einen
+geeigneteren Mechanismus, der Zugangsdaten beim Start des Dienstes in einem
+geschützten temporären Verzeichnis bereitstellt – HedgeDoc unterstützt jedoch
+nach wie vor das Auslesen von Secrets aus Dateien nicht, weshalb sich dieser
+Ansatz hier nicht nutzen lässt.</p>
+<!--  TODO
+      Der notwendige Schritt wäre, das preStart-Skript des systemd-Dienstes so anzupassen,
+      dass es die betreffenden Werte mithilfe von jq durch den Inhalt der Secret-Dateien
+      ersetzt. Da dies Kenntnisse in systemd, jq und Nix erfordert, lassen wir die Umsetzung
+      an dieser Stelle aus. Vielleicht ergänze ich sie in einem späteren Teil.
+      https://github.com/NixOS/nixpkgs/blob/9bb52223f4f6a0cc606fd0852d8784f896c137d5/nixos/modules/services/web-apps/hedgedoc.nix#L294-L305
+-->
+
+<h3 id="single-sign-on-sso">Single Sign-On (SSO)<a class="headerlink" href="#single-sign-on-sso" title="Permanent link">&para;</a></h3>
+<p>HedgeDoc kann die Authentifizierung an einen externen Identity Provider (IdP)
+auslagern. Benutzerkonte und Passwörter müssen dadurch nicht mehr ausschließlich
+in HedgeDoc verwaltet werden, sondern können zentral über den IdP gepflegt werden.</p>
+<p>Ein weiterer Vorteil ist Single Sign-on (SSO): Nach einer erfolgreichen Anmeldung
+am Identity Provider können Benutzer auf alle angebundenen Anwendungen zugreifen,
+ohne sich dort erneut anmelden zu müssen. Die Anwendungen leiten den Benutzer zur
+Anmeldung an den IdP weiter und erhalten anschließend die für die eigene Sitzung
+benötigten Authentifizierungsinformationen.</p>
+<p>Im zweiten Teil dieses Blogartikels konfigurieren wir HedgeDoc so, dass die
+Authentifizierung über OpenID Connect (OIDC) und Keycloak erfolgt. Keycloak ist
+eine Open-Source-Plattform für Identity- und Access-Management und übernimmt in
+diesem Aufbau die zentrale Verwaltung der Benutzer sowie deren Anmeldung.</p>
+<p>Während sich einige Anwendungen wie HedgeDoc vollständig über Nix konfigurieren lassen,
+gibt es auch Ausnahmen. Keycloak ist ein Beispiel dafür: Zwar kann NixOS Keycloak auf
+dem System installieren und als Dienst betreiben, die eigentliche Konfiguration von
+Benutzern und OIDC-Clients erfolgt standardmäßig jedoch manuell über die Weboberfläche.</p>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
+<p>Das NixOS-Modul für Keycloak unterstützt die Konfiguration von Realms über
+JSON-Dateien (<code>services.keycloak.realmFiles</code>). Damit ließen sich die
+Realm-Einstellungen ebenfalls deklarativ verwalten. Auf diese Variante gehen
+wir hier jedoch nicht näher ein, da sie ein genaueres Verständnis der
+Keycloak-Datenstruktur und der Realm-Konfiguration erfordert. Stattdessen
+nehmen wir die erforderlichen Einstellungen zunächst über die Weboberfläche vor.</p>
+</div>
+<!--
+TODO
+Wird keycloak lediglich mit `services.keycloak.enable = true;` aktiviert, erhalten
+wir verschiedene Fehlermeldungen. Anders als HedgeDoc nutzt Keycloak keine SQLite
+Datenbank, sondern erfordert von Anfang an die Konfiguration einer PostgreSQL Datenbank.
+Des Weiteren muss ein Hostname gesetzt und TLS aktiviert werden.
+
+Für ein einfacheres Verständnis der Zusammenhänge in diesem Blogartikel wird die
+ModSecurity Konfiguration um eine Regel erweitert, die die WAF für alle Anfragen an
+Keycloak deaktiviert.
+<div class="highlight"><pre><span></span><code><span class="p">{</span> pkgs<span class="p">,</span> config<span class="p">,</span> <span class="o">...</span> <span class="p">}:</span>
+<span class="p">{</span>
+  <span class="ss">sops</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="ss">defaultSopsFile</span> <span class="o">=</span> <span class="l">./secrets.yaml</span><span class="p">;</span>
+    <span class="ss">age</span> <span class="o">=</span> <span class="p">{</span>
+      <span class="ss">keyFile</span> <span class="o">=</span> <span class="s2">"/root/private.key"</span><span class="p">;</span>
+      <span class="ss">sshKeyPaths</span> <span class="o">=</span> <span class="p">[</span> <span class="p">];</span>
+    <span class="p">};</span>
+    <span class="ss">secrets</span> <span class="o">=</span> <span class="p">{</span>
+      <span class="s2">"hedgedoc/sessionSecret"</span> <span class="o">=</span> <span class="p">{</span> <span class="p">};</span>
+      <span class="s2">"keycloak/databasePassword"</span> <span class="o">=</span> <span class="p">{</span> <span class="p">};</span>
+    <span class="p">};</span>
+    templates<span class="o">.</span><span class="s2">"hedgedoc/environment"</span><span class="o">.</span><span class="ss">content</span> <span class="o">=</span> <span class="s s-Multiline">''</span>
+<span class="s s-Multiline">      CMD_SESSION_SECRET=</span><span class="si">${</span>config<span class="o">.</span>sops<span class="o">.</span>placeholder<span class="o">.</span><span class="s2">"hedgedoc/sessionSecret"</span><span class="si">}</span>
+<span class="s s-Multiline">    ''</span><span class="p">;</span>
+  <span class="p">};</span>
+
+  <span class="ss">services</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="ss">postgresql</span> <span class="o">=</span> <span class="p">{</span>
+      <span class="ss">enable</span> <span class="o">=</span> <span class="no">true</span><span class="p">;</span>
+      <span class="ss">ensureDatabases</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s2">"hedgedoc"</span>
+        <span class="s2">"keycloak"</span>
+      <span class="p">];</span>
+      <span class="ss">ensureUsers</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">{</span>
+          <span class="ss">name</span> <span class="o">=</span> <span class="s2">"hedgedoc"</span><span class="p">;</span>
+          <span class="ss">ensureDBOwnership</span> <span class="o">=</span> <span class="no">true</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="p">{</span>
+          <span class="ss">name</span> <span class="o">=</span> <span class="s2">"keycloak"</span><span class="p">;</span>
+          <span class="ss">ensureDBOwnership</span> <span class="o">=</span> <span class="no">true</span><span class="p">;</span>
+        <span class="p">}</span>
+      <span class="p">];</span>
+    <span class="p">};</span>
+    <span class="ss">hedgedoc</span> <span class="o">=</span> <span class="p">{</span>
+      <span class="ss">enable</span> <span class="o">=</span> <span class="no">true</span><span class="p">;</span>
+      <span class="ss">configureNginx</span> <span class="o">=</span> <span class="no">true</span><span class="p">;</span>
+      <span class="ss">settings</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="ss">domain</span> <span class="o">=</span> <span class="s2">"notes.example.com"</span><span class="p">;</span>
+        <span class="ss">db</span> <span class="o">=</span> <span class="p">{</span>
+          <span class="ss">dialect</span> <span class="o">=</span> <span class="s2">"postgresql"</span><span class="p">;</span>
+          <span class="ss">host</span> <span class="o">=</span> <span class="s2">"/run/postgresql"</span><span class="p">;</span>
+        <span class="p">};</span>
+      <span class="p">};</span>
+    <span class="p">};</span>
+    <span class="ss">nginx</span> <span class="o">=</span>
+      <span class="k">let</span>
+        <span class="ss">modsecurity_crs</span> <span class="o">=</span> pkgs<span class="o">.</span>fetchFromGitHub <span class="p">{</span>
+          <span class="ss">owner</span> <span class="o">=</span> <span class="s2">"coreruleset"</span><span class="p">;</span>
+          <span class="ss">repo</span> <span class="o">=</span> <span class="s2">"coreruleset"</span><span class="p">;</span>
+          <span class="ss">rev</span> <span class="o">=</span> <span class="s2">"v4.29.0"</span><span class="p">;</span>
+          <span class="ss">hash</span> <span class="o">=</span> <span class="s2">"sha256-NvBwGFgch+7tnGjcpm47n0mGy0vj5i+JWtb7d033u2s="</span><span class="p">;</span>
+        <span class="p">};</span>
+        <span class="ss">modsecurity_conf</span> <span class="o">=</span> pkgs<span class="o">.</span>writeText <span class="s2">"modsecurity.conf"</span> <span class="s s-Multiline">''</span>
+<span class="s s-Multiline">          SecAuditEngine RelevantOnly</span>
+<span class="s s-Multiline">          SecAuditLog /var/log/nginx/modsec.json</span>
+<span class="s s-Multiline">          SecAuditLogFormat JSON</span>
+<span class="s s-Multiline">          SecAuditLogParts ABIJDEFHZ</span>
+
+<span class="s s-Multiline">          SecRuleEngine On</span>
+
+<span class="s s-Multiline">          SecDefaultAction "phase:1,log,auditlog,pass"</span>
+<span class="s s-Multiline">          SecDefaultAction "phase:2,log,auditlog,pass"</span>
+
+<span class="s s-Multiline">          SecRuleRemoveByTag "platform-iis"</span>
+<span class="s s-Multiline">          SecRuleRemoveByTag "platform-windows"</span>
+
+<span class="s s-Multiline">          # socket.io endpoint: Request content type is not allowed by policy</span>
+<span class="s s-Multiline">          SecRule REQUEST_HEADERS:Host "@streq notes.example.com" \</span>
+<span class="s s-Multiline">            "chain, id:10000, phase:1, pass, nolog"</span>
+<span class="s s-Multiline">            SecRule REQUEST_URI "@beginsWith /socket.io/" \</span>
+<span class="s s-Multiline">              "ctl:ruleRemoveById=920420"</span>
+
+<span class="s s-Multiline">          # Delete note: Method is not allowed by policy</span>
+<span class="s s-Multiline">          SecRule REQUEST_HEADERS:Host "@streq notes.example.com" \</span>
+<span class="s s-Multiline">            "chain, id:10001, phase:1, pass, nolog"</span>
+<span class="s s-Multiline">            SecRule REQUEST_URI "@beginsWith /history/" \</span>
+<span class="s s-Multiline">              "ctl:ruleRemoveById=911100"</span>
+
+<span class="s s-Multiline">          # disable for keycloak</span>
+<span class="s s-Multiline">          SecRule REQUEST_HEADERS:Host "@streq auth.example.com" \</span>
+<span class="s s-Multiline">            "chain, id:10002, pass, nolog, ctl:ruleEngine=off"</span>
+
+<span class="s s-Multiline">          SecAction "id:900000,phase:1,pass,t:none,nolog,setvar:tx.blocking_paranoia_level=2"</span>
+<span class="s s-Multiline">          SecAction "id:900010,phase:1,pass,t:none,nolog,setvar:tx.enforce_bodyproc_urlencoded=1"</span>
+<span class="s s-Multiline">          SecAction "id:900990,phase:1,pass,t:none,nolog,setvar:tx.crs_setup_version=400"</span>
+
+<span class="s s-Multiline">          Include </span><span class="si">${</span>modsecurity_crs<span class="si">}</span><span class="s s-Multiline">/rules/*.conf</span>
+<span class="s s-Multiline">        ''</span><span class="p">;</span>
+      <span class="k">in</span>
+      <span class="p">{</span>
+        virtualHosts<span class="o">.</span><span class="s2">"notes.example.com"</span><span class="o">.</span><span class="ss">enableACME</span> <span class="o">=</span> <span class="no">true</span><span class="p">;</span>
+        virtualHosts<span class="o">.</span><span class="s2">"auth.example.com"</span> <span class="o">=</span> <span class="p">{</span>
+          <span class="ss">locations</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">"= /"</span><span class="o">.</span><span class="ss">return</span> <span class="o">=</span> <span class="s2">"307 https://auth.example.com/realms/main/account/"</span><span class="p">;</span>
+            <span class="s2">"/"</span> <span class="o">=</span> <span class="p">{</span>
+              <span class="ss">proxyPass</span> <span class="o">=</span> <span class="s2">"https://127.0.0.1:8000/"</span><span class="p">;</span>
+              <span class="ss">proxyWebsockets</span> <span class="o">=</span> <span class="no">true</span><span class="p">;</span>
+            <span class="p">};</span>
+            <span class="s2">"~* (/admin|/realms/master)"</span> <span class="o">=</span> <span class="p">{</span>
+              <span class="ss">proxyPass</span> <span class="o">=</span> <span class="s2">"https://127.0.0.1:8000"</span><span class="p">;</span>
+              <span class="ss">proxyWebsockets</span> <span class="o">=</span> <span class="no">true</span><span class="p">;</span>
+            <span class="p">};</span>
+          <span class="p">};</span>
+          <span class="ss">forceSSL</span> <span class="o">=</span> <span class="no">true</span><span class="p">;</span>
+          <span class="ss">enableACME</span> <span class="o">=</span> <span class="no">true</span><span class="p">;</span>
+        <span class="p">};</span>
+        <span class="ss">additionalModules</span> <span class="o">=</span> <span class="p">[</span> pkgs<span class="o">.</span>nginxModules<span class="o">.</span>modsecurity <span class="p">];</span>
+        <span class="ss">appendHttpConfig</span> <span class="o">=</span> <span class="s s-Multiline">''</span>
+<span class="s s-Multiline">          modsecurity on;</span>
+<span class="s s-Multiline">          modsecurity_rules_file </span><span class="si">${</span>modsecurity_conf<span class="si">}</span><span class="s s-Multiline">;</span>
+<span class="s s-Multiline">        ''</span><span class="p">;</span>
+      <span class="p">};</span>
+    <span class="ss">keycloak</span> <span class="o">=</span> <span class="k">let</span>
+      <span class="ss">hostname</span> <span class="o">=</span> <span class="s2">"auth.example.com"</span><span class="p">;</span>
+    <span class="k">in</span> <span class="p">{</span>
+      <span class="ss">enable</span> <span class="o">=</span> <span class="no">true</span><span class="p">;</span>
+      <span class="ss">settings</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="k">inherit</span> hostname<span class="p">;</span>
+        <span class="ss">proxy-headers</span> <span class="o">=</span> <span class="s2">"forwarded"</span><span class="p">;</span>
+        <span class="ss">https-port</span> <span class="o">=</span> <span class="mi">8000</span><span class="p">;</span>
+      <span class="p">};</span>
+      database<span class="o">.</span><span class="ss">passwordFile</span> <span class="o">=</span> config<span class="o">.</span>sops<span class="o">.</span>secrets<span class="o">.</span><span class="s2">"keycloak/databasePassword"</span><span class="o">.</span>path<span class="p">;</span>
+      <span class="ss">sslCertificateKey</span> <span class="o">=</span> <span class="s2">"/var/lib/acme/</span><span class="si">${</span>hostname<span class="si">}</span><span class="s2">/key.pem"</span><span class="p">;</span>
+      <span class="ss">sslCertificate</span> <span class="o">=</span> <span class="s2">"/var/lib/acme/</span><span class="si">${</span>hostname<span class="si">}</span><span class="s2">/fullchain.pem"</span><span class="p">;</span>
+    <span class="p">};</span>
+  <span class="p">};</span>
+  security<span class="o">.</span>acme<span class="o">.</span><span class="ss">acceptTerms</span> <span class="o">=</span> <span class="no">true</span><span class="p">;</span>
+  networking<span class="o">.</span>firewall<span class="o">.</span><span class="ss">allowedTCPPorts</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="mi">80</span>
+    <span class="mi">443</span>
+  <span class="p">];</span>
+<span class="p">}</span>
+</code></pre></div>
+TODO: PostgreSQL keycloak user password needs to be set manually at this point, maybe fix with initial script for now, later another module can be included
+Mit `kc.sh bootstrap-admin user` wird ein lokaler Admin Account erzeugt. -> resultiert aber in fehlermeldung, ggf. doch via nix deklarativ definieren?
+TODO:
+- show pictures of keycloak setup (webgui)
+- adjust hedgedoc in separate codeblock for oidc login
+
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+  <span class="ss">sops</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="ss">defaultSopsFile</span> <span class="o">=</span> <span class="l">./secrets.yaml</span><span class="p">;</span>
+    <span class="ss">age</span> <span class="o">=</span> <span class="p">{</span>
+      <span class="ss">keyFile</span> <span class="o">=</span> <span class="s2">"/root/private.key"</span><span class="p">;</span>
+      <span class="ss">sshKeyPaths</span> <span class="o">=</span> <span class="p">[</span> <span class="p">];</span>
+    <span class="p">};</span>
+    <span class="ss">secrets</span> <span class="o">=</span> <span class="p">{</span>
+      <span class="s2">"hedgedoc/sessionSecret"</span> <span class="o">=</span> <span class="p">{</span> <span class="p">};</span>
+      <span class="s2">"hedgedoc/oidcSecret"</span> <span class="o">=</span> <span class="p">{</span> <span class="p">};</span>
+      <span class="s2">"keycloak/databasePassword"</span> <span class="o">=</span> <span class="p">{</span> <span class="p">};</span>
+    <span class="p">};</span>
+    templates<span class="o">.</span><span class="s2">"hedgedoc/environment"</span><span class="o">.</span><span class="ss">content</span> <span class="o">=</span> <span class="s s-Multiline">''</span>
+<span class="s s-Multiline">      CMD_SESSION_SECRET=</span><span class="si">${</span>config<span class="o">.</span>sops<span class="o">.</span>placeholder<span class="o">.</span><span class="s2">"hedgedoc/sessionSecret"</span><span class="si">}</span>
+<span class="s s-Multiline">      CMD_OAUTH2_CLIENT_SECRET=</span><span class="si">${</span>config<span class="o">.</span>sops<span class="o">.</span>placeholder<span class="o">.</span><span class="s2">"hedgedoc/oidcSecret"</span><span class="si">}</span>
+<span class="s s-Multiline">    ''</span><span class="p">;</span>
+  <span class="p">};</span>
+
+  <span class="ss">services</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="ss">hedgedoc</span> <span class="o">=</span> <span class="p">{</span>
+      <span class="ss">settings</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="ss">oauth2</span> <span class="o">=</span> <span class="p">{</span>
+          <span class="ss">userProfileURL</span> <span class="o">=</span> <span class="s2">"https://auth.example.com/realms/example/protocol/openid-connect/userinfo"</span><span class="p">;</span>
+          <span class="ss">userProfileUsernameAttr</span> <span class="o">=</span> <span class="s2">"preferred_username"</span><span class="p">;</span>
+          <span class="ss">userProfileDisplayNameAttr</span> <span class="o">=</span> <span class="s2">"name"</span><span class="p">;</span>
+          <span class="ss">userProfileEmailAttr</span> <span class="o">=</span> <span class="s2">"email"</span><span class="p">;</span>
+          <span class="ss">tokenURL</span> <span class="o">=</span> <span class="s2">"https://auth.example.com/realms/example/protocol/openid-connect/token"</span><span class="p">;</span>
+          <span class="ss">authorizationURL</span> <span class="o">=</span> <span class="s2">"https://auth.example.com/realms/example/protocol/openid-connect/auth"</span><span class="p">;</span>
+          <span class="ss">clientID</span> <span class="o">=</span> <span class="s2">"notes.example.com"</span><span class="p">;</span>
+          <span class="ss">clientSecret</span> <span class="o">=</span> <span class="s2">""</span><span class="p">;</span> <span class="c1"># defined in secrets, but needs to be configured for login button to show</span>
+          <span class="ss">providerName</span> <span class="o">=</span> <span class="s2">"Keycloak"</span><span class="p">;</span>
+          <span class="ss">scope</span> <span class="o">=</span> <span class="s2">"openid email profile"</span><span class="p">;</span>
+        <span class="p">};</span>
+      <span class="p">};</span>
+    <span class="p">};</span>
+  <span class="p">};</span>
+<span class="p">}</span>
+</code></pre></div>
+-->
+
+<h2 id="systemhartung">Systemhärtung<a class="headerlink" href="#systemhartung" title="Permanent link">&para;</a></h2>
+<p>Unter Systemhärtung versteht man alle Maßnahmen, die darauf abzielen,
+die Angriffsfläche eines Systems zu reduzieren und dessen Sicherheit zu
+erhöhen. Dazu gehören beispielsweise das Deaktivieren nicht benötigter Dienste,
+die Einschränkung von Zugriffsrechten, eine gezielte Konfiguration von
+Netzwerkfunktionen sowie die Absicherung administrativer Zugänge.</p>
+<p>Die folgenden Kapitel beschreiben ausgewählte technische Härtungsmaßnahmen
+unter NixOS. Sie sind als Beispiele und Anregungen zu verstehen und stellen
+keine allgemeingültige Konfiguration für jedes System dar.</p>
+<p>Der wichtigste Hinweis lautet daher: Systemhärtung ist immer systemspezifisch.
+Die erforderlichen Einstellungen hängen von der jeweiligen Aufgabe, der
+Netzwerkumgebung und dem individuellen Bedrohungsmodell ab. Ein System, das
+als Router eingesetzt wird, benötigt beispielsweise IP-Forwarding. Wird diese
+Funktion aus Sicherheitsgründen deaktiviert, kann es seine eigentliche Aufgabe
+nicht erfüllen. Ein SSH-Jump-Host kann wiederum Agent-Forwarding oder andere
+spezielle SSH-Funktionen benötigen, die auf einem gewöhnlichen Server
+möglicherweise bewusst abgeschaltet werden sollten.</p>
+<p>Eine sinnvolle Härtung besteht deshalb nicht darin, möglichst viele Funktionen
+pauschal zu deaktivieren. Entscheidend ist vielmehr, nur die tatsächlich benötigten
+Dienste und Berechtigungen zu aktivieren, ihre Verwendung gezielt einzuschränken
+und die Konfiguration regelmäßig zu überprüfen. Sicherheit, Funktionalität und
+Wartbarkeit müssen dabei stets gemeinsam betrachtet werden.</p>
+<h3 id="benutzer">Benutzer<a class="headerlink" href="#benutzer" title="Permanent link">&para;</a></h3>
+<p>Bisher erfolgte der Zugriff auf den Server über den Benutzer root, dessen
+Anmeldung per SSH ausdrücklich erlaubt war. Da root über uneingeschränkte
+Rechte verfügt, werden alle ausgeführten Befehle unmittelbar mit den höchstmöglichen
+Privilegien ausgeführt. Für viele administrative Aufgaben ist das jedoch nicht
+erforderlich. Ein Fehler bei der Eingabe oder Ausführung eines Befehls kann dadurch
+weitreichende Auswirkungen auf das gesamte System haben. Insbesondere in Umgebungen
+mit mehreren Administratoren ist die Verwendung personalisierter Benutzerkonten
+empfehlenswert. So können Zugriffe und Änderungen eindeutig einzelnen Personen
+zugeordnet werden.</p>
+<p>Für jeden Administrator wird zunächst ein eigener Benutzeraccount angelegt,
+dass Passwort kann mithilfe von Secrets ebenfalls deklarativ festgelegt werden.
+Dieser wird der Gruppe wheel hinzugefügt, wodurch er administrative Befehle
+über sudo ausführen kann. Die erhöhten Rechte werden somit nur gezielt und für
+einzelne Befehle verwendet. Anschließend wird die direkte Anmeldung von root
+über SSH deaktiviert.
+<div class="highlight"><pre><span></span><code><span class="p">{</span> config<span class="p">,</span> <span class="o">...</span> <span class="p">}:</span>
+<span class="p">{</span>
+  sops<span class="o">.</span>secrets<span class="o">.</span><span class="s2">"passwords/nico"</span><span class="o">.</span><span class="ss">neededForUsers</span> <span class="o">=</span> <span class="no">true</span><span class="p">;</span>
+
+  users<span class="o">.</span>users<span class="o">.</span><span class="ss">nico</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="ss">isNormalUser</span> <span class="o">=</span> <span class="no">true</span><span class="p">;</span>
+    <span class="ss">extraGroups</span> <span class="o">=</span> <span class="p">[</span> <span class="s2">"wheel"</span> <span class="p">];</span>
+    <span class="ss">hashedPasswordFile</span> <span class="o">=</span> config<span class="o">.</span>sops<span class="o">.</span>secrets<span class="o">.</span><span class="s2">"passwords/nico"</span><span class="o">.</span>path<span class="p">;</span>
+  <span class="p">};</span>
+
+  services<span class="o">.</span>openssh<span class="o">.</span>settings<span class="o">.</span><span class="ss">PermitRootLogin</span> <span class="o">=</span> <span class="s2">"no"</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></p>
+<h4 id="mutable-users">Mutable Users<a class="headerlink" href="#mutable-users" title="Permanent link">&para;</a></h4>
+<p>Wenn das System ausschließlich von Administratoren genutzt und vollständig
+deklarativ über NixOS verwaltet wird, kann es sinnvoll sein, veränderliche
+Nutzer zu deaktivieren. Dadurch wird verhindert, dass Benutzer außerhalb der
+NixOS-Konfiguration angelegt, geändert oder gelöscht werden. Auch Änderungen
+wie Passwortänderungen über klassische Systemwerkzeuge sind anschließend
+nicht mehr dauerhaft möglich.
+<div class="highlight"><pre><span></span><code><span class="o">{</span>
+<span class="w">  </span>users.mutableUsers<span class="w"> </span><span class="o">=</span><span class="w"> </span>false<span class="p">;</span>
+<span class="o">}</span>
+</code></pre></div></p>
+<h4 id="password-policy">Password policy<a class="headerlink" href="#password-policy" title="Permanent link">&para;</a></h4>
+<p>Andernfalls ist eine Passwortrichtlinie empfehlenswert, welche die Verwendung
+von trivialen oder bereits zuvor verwendete Passwörter verhindert. Die für das
+PAM Modul pwquality verwendbaren Parameter können der
+<a href="https://linux.die.net/man/8/pam_pwquality">manpage</a> entnommen werden.
+<div class="highlight"><pre><span></span><code><span class="p">{</span> pkgs<span class="p">,</span> config<span class="p">,</span> lib<span class="p">,</span> <span class="o">...</span> <span class="p">}:</span>
+<span class="p">{</span>
+  security<span class="o">.</span>pam<span class="o">.</span>services<span class="o">.</span>passwd<span class="o">.</span>rules<span class="o">.</span><span class="ss">password</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="ss">pwquality</span> <span class="o">=</span> <span class="p">{</span>
+      <span class="ss">control</span> <span class="o">=</span> <span class="s2">"required"</span><span class="p">;</span>
+      <span class="ss">modulePath</span> <span class="o">=</span> <span class="s2">"</span><span class="si">${</span>pkgs<span class="o">.</span>libpwquality<span class="o">.</span>lib<span class="si">}</span><span class="s2">/lib/security/pam_pwquality.so"</span><span class="p">;</span>
+      <span class="c1"># order BEFORE pam_unix.so</span>
+      <span class="ss">order</span> <span class="o">=</span> config<span class="o">.</span>security<span class="o">.</span>pam<span class="o">.</span>services<span class="o">.</span>passwd<span class="o">.</span>rules<span class="o">.</span>password<span class="o">.</span>unix<span class="o">.</span>order <span class="o">-</span> <span class="mi">10</span><span class="p">;</span>
+      <span class="ss">settings</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="ss">minlen</span> <span class="o">=</span> <span class="mi">24</span><span class="p">;</span>
+        <span class="ss">dcredit</span> <span class="o">=</span> <span class="p">(</span><span class="mi">-2</span><span class="p">);</span>  <span class="c1"># digits</span>
+        <span class="ss">lcredit</span> <span class="o">=</span> <span class="p">(</span><span class="mi">-3</span><span class="p">);</span>  <span class="c1"># lowercase</span>
+        <span class="ss">ucredit</span> <span class="o">=</span> <span class="p">(</span><span class="mi">-3</span><span class="p">);</span>  <span class="c1"># uppercase</span>
+        <span class="ss">ocredit</span> <span class="o">=</span> <span class="p">(</span><span class="mi">-1</span><span class="p">);</span>  <span class="c1"># other</span>
+        <span class="ss">maxrepeat</span> <span class="o">=</span> <span class="mi">3</span><span class="p">;</span>   <span class="c1"># amount of consecutive characters</span>
+        <span class="ss">enforce_for_root</span> <span class="o">=</span> <span class="no">true</span><span class="p">;</span>
+      <span class="p">};</span>
+    <span class="p">};</span>
+    <span class="ss">unix</span> <span class="o">=</span> <span class="p">{</span>
+      <span class="ss">control</span> <span class="o">=</span> lib<span class="o">.</span>mkForce <span class="s2">"required"</span><span class="p">;</span>
+      settings<span class="o">.</span><span class="ss">use_authtok</span> <span class="o">=</span> <span class="no">true</span><span class="p">;</span>
+    <span class="p">};</span>
+  <span class="p">};</span>
+<span class="p">}</span>
+</code></pre></div>
+Negative Werte bei *credit legen eine Mindestanzahl der jeweiligen Zeichenart
+fest. Ein positiver Wert würde dagegen lediglich die Anzahl der zulässigen Zeichen
+dieser Kategorie beeinflussen und kein Sonderzeichen erzwingen.</p>
+<h4 id="ssh-keys">SSH Keys<a class="headerlink" href="#ssh-keys" title="Permanent link">&para;</a></h4>
+<p>Die Authentifizierung über SSH-Schlüssel bietet gegenüber der passwortbasierten
+Anmeldung sowohl Sicherheits- als auch Komfortvorteile, da sie das Risiko von
+Phishing, Keyloggern und wiederverwendeten Passwörtern reduziert und der private
+Schlüssel nach dem einmaligen Entsperren für die Dauer der Sitzung genutzt werden
+kann, ohne die Passphrase bei jeder Verbindung erneut eingeben zu müssen.
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+  services<span class="o">.</span>openssh<span class="o">.</span>settings<span class="o">.</span><span class="ss">PasswordAuthentication</span> <span class="o">=</span> <span class="no">false</span><span class="p">;</span>
+  users<span class="o">.</span>users<span class="o">.</span>nico<span class="o">.</span>openssh<span class="o">.</span>authorizedKeys<span class="o">.</span><span class="ss">keys</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">"ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBhgHhBf2mK4BwbrBsJREYMfQJ2jNfhOtRt61EV/hsxV"</span>
+  <span class="p">];</span>
+<span class="p">}</span>
+</code></pre></div>
+Der private Schlüssel sollte ausschließlich auf dem eigenen Endgerät gespeichert
+und mit einer Passphrase geschützt werden. Auf dem Server beziehungsweise in der Nix
+Konfiguration wird nur der zugehörige öffentliche Schlüssel hinterlegt. Noch besser ist
+es, den privaten Schlüssel auf einem dedizierten Hardware-Sicherheitsschlüssel zu speichern,
+beispielsweise einem FIDO2- oder OpenPGP-kompatiblen Security Key (z. B. einem YubiKey).
+Dadurch verlässt der private Schlüssel das Gerät nicht und kann in der Regel auch
+nicht ausgelesen werden. Für die Authentifizierung muss der Sicherheitsschlüssel physisch
+angeschlossen und gegebenenfalls durch eine PIN oder eine Berührung bestätigt werden.</p>
+<h4 id="fail2ban">fail2ban<a class="headerlink" href="#fail2ban" title="Permanent link">&para;</a></h4>
+<p>Ist das System aus nicht vertrauenswürdigen Netzwerken erreichbar (z. B. Internet),
+ist der Einsatz von fail2ban empfehlenswert. Der Dienst überwacht fehlgeschlagene
+Anmeldeversuche und sperrt IP-Adressen, von denen innerhalb eines bestimmten
+Zeitraums wiederholt verdächtige Zugriffe ausgehen.
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+  services<span class="o">.</span><span class="ss">fail2ban</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="ss">enable</span> <span class="o">=</span> <span class="no">true</span><span class="p">;</span>
+    <span class="ss">maxretry</span> <span class="o">=</span> <span class="mi">5</span><span class="p">;</span>
+    <span class="ss">bantime</span> <span class="o">=</span> <span class="s2">"8h"</span><span class="p">;</span>
+  <span class="p">};</span>
+<span class="p">}</span>
+</code></pre></div></p>
+<h3 id="ssh">SSH<a class="headerlink" href="#ssh" title="Permanent link">&para;</a></h3>
+<p>Neben den im vorherigen Kapitel beschriebenen Einstellungen bietet SSH zahlreiche
+weitere Konfigurationsoptionen, die abhängig vom Einsatzzweck des Systems geprüft
+und angepasst werden sollten. Auf den meisten Anwendungsservern wird beispielsweise
+kein TCP/SSH Forwarding benötigen und können somit
+deaktiviert werden:
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+  services<span class="o">.</span>openssh<span class="o">.</span><span class="ss">settings</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="ss">AllowTcpForwarding</span> <span class="o">=</span> <span class="no">false</span><span class="p">;</span>
+    <span class="ss">AllowAgentForwarding</span> <span class="o">=</span> <span class="no">false</span><span class="p">;</span>
+  <span class="p">};</span>
+<span class="p">}</span>
+</code></pre></div></p>
+<h3 id="nix_1">Nix<a class="headerlink" href="#nix_1" title="Permanent link">&para;</a></h3>
+<p>Der Nix-Daemon unseres Systems erlaubt standardmäßig die Interaktion mit allen
+Benutzern. Dadurch können diese beispielsweise dynamisch Software mit nix shell
+oder nix run nachladen und ausführen. Auf einem Server ist dieses Verhalten in
+der Regel nicht erforderlich und kann einem Angreifer zusätzliche Möglichkeiten
+bieten, eigene Software auf das System zu bringen. Daher empfiehlt es sich, den
+Zugriff auf den Nix-Daemon auf administrative Benutzer zu beschränken.
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+  nix<span class="o">.</span>settings<span class="o">.</span><span class="ss">allowed-users</span> <span class="o">=</span> <span class="p">[</span> <span class="s2">"@wheel"</span> <span class="p">];</span>
+<span class="p">}</span>
+</code></pre></div></p>
+<h3 id="procfs">procfs<a class="headerlink" href="#procfs" title="Permanent link">&para;</a></h3>
+<p>Im Secrets Management Kapitel wurde erläutert, dass Benutzer mit bestimmten Rechten,
+beispielsweise ptrace, auf die Umgebungsvariablen anderer Prozessen zugreifen können.
+Mit der procfs Mount-Option <code>hidepid=2</code> lässt sich der Zugriff auf Prozessinformationen
+für andere Benutzer einschränken.
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+  fileSystems<span class="o">.</span><span class="s2">"/proc"</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="ss">fsType</span> <span class="o">=</span> <span class="s2">"proc"</span><span class="p">;</span>
+    <span class="ss">device</span> <span class="o">=</span> <span class="s2">"proc"</span><span class="p">;</span>
+    <span class="ss">options</span> <span class="o">=</span> <span class="p">[</span>
+      <span class="s2">"nosuid"</span>
+      <span class="s2">"nodev"</span>
+      <span class="s2">"noexec"</span>
+      <span class="s2">"hidepid=2"</span>
+    <span class="p">];</span>
+    <span class="ss">neededForBoot</span> <span class="o">=</span> <span class="no">true</span><span class="p">;</span>
+  <span class="p">};</span>
+<span class="p">}</span>
+</code></pre></div></p>
+<h3 id="usbguard">usbguard<a class="headerlink" href="#usbguard" title="Permanent link">&para;</a></h3>
+<p>Auf dedizierter Server-Hardware werden USB-Geräte häufig nur für Wartungsarbeiten
+verwendet. Tastatur, Installationsmedium oder externe Datenträger sind im laufenden
+Betrieb normalerweise nicht erforderlich. USBGuard kann deshalb dazu verwendet werden,
+nicht freigegebene USB-Geräte abzulehnen.</p>
+<p>Das reduziert beispielsweise das Risiko, dass ein sogenanntes BadUSB Gerät als
+Tastatur oder Netzwerkadapter auftritt.
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+  services<span class="o">.</span><span class="ss">usbguard</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="ss">enable</span> <span class="o">=</span> <span class="no">true</span><span class="p">;</span>
+    <span class="ss">IPCAllowedGroups</span> <span class="o">=</span> <span class="p">[</span> <span class="s2">"wheel"</span> <span class="p">];</span>
+    <span class="ss">presentControllerPolicy</span> <span class="o">=</span> <span class="s2">"apply-policy"</span><span class="p">;</span>
+    <span class="ss">rules</span> <span class="o">=</span> <span class="s s-Multiline">''</span>
+<span class="s s-Multiline">      # internals</span>
+<span class="s s-Multiline">      allow id 1d6b:0002 serial "0000:00:1a.0" name "EHCI Host Controller" hash "ej1WVedyLyUMLiQxzEcrwbY45zCodwV85Kzy7hm2Gv4=" parent-hash "e/RW0mMbM+TSFQxpRiMEfL7/3RJfKVdqffBm9F5qA+E=" with-interface 09:00:00</span>
+<span class="s s-Multiline">      allow id 1d6b:0001 serial "0000:01:00.4" name "UHCI Host Controller" hash "ne9MN86uM98TZw0LqhyL7OKEHJUygyWvOjNn1b7Bz+E=" parent-hash "EcoU0c5jMQvq9JSIgu5Ho4RdsdfPb6n13C6Y3wIzu8A=" with-interface 09:00:00</span>
+<span class="s s-Multiline">      allow id 1d6b:0002 serial "0000:00:14.0" name "xHCI Host Controller" hash "4G5jM1710eMHdxBgzKu2iYUFH6ol62c9Vx62XFHYQFM=" parent-hash "ej1WVedyLyUMLiQxzEcrwbY45zCodwV85Kzy7hm2Gv4=" with-interface 09:00:00</span>
+<span class="s s-Multiline">      allow id 1d6b:0003 serial "0000:00:14.0" name "xHCI Host Controller" hash "MMn/OTrO6E00ngK2hDw0p2Q5Qi8H5me5tOmYALU4gm8=" parent-hash "ej1WVedyLyUMLiQxzEcrwbY45zCodwV85Kzy7hm2Gv4=" with-interface 09:00:00</span>
+<span class="s s-Multiline">      allow id 8087:800a serial "" name "" hash "oHMq3XbdbTUsMz5PFkIzzYMCE7ad0v00udn0iZ88B2Q=" parent-hash "ej1WVedyLyUMLiQxzEcrwbY45zCodwV85Kzy7hm2Gv4=" via-port "1-1" with-interface 09:00:00</span>
+<span class="s s-Multiline">      allow id 8087:8002 serial "" name "" hash "qIGkfqX7sv9oTIomveqlZ93sazJ7vBpO2+lAls7F8UQ=" parent-hash "ej1WVedyLyUMLiQxzEcrwbY45zCodwV85Kzy7hm2Gv4=" via-port "2-1" with-interface 09:00:00</span>
+
+<span class="s s-Multiline">      # peripheral</span>
+<span class="s s-Multiline">      allow id 046a:c122 serial "" name "CHERRY USB Keyboard" hash "KDR4ikabgRgNdISC+g/6BjObDBJi8I8UuyiBNOevd3A=" with-interface { 03:01:01 03:00:00 }</span>
+<span class="s s-Multiline">    ''</span><span class="p">;</span>
+  <span class="p">};</span>
+<span class="p">}</span>
+</code></pre></div></p>
+<h3 id="firewall">Firewall<a class="headerlink" href="#firewall" title="Permanent link">&para;</a></h3>
+<p>Wie bei der Netzwerkkonfiguration unterstützt NixOS verschiedene Firewall-Implementierungen,
+darunter iptables, nftables und firewalld. In diesem Kapitel verwenden wir nftables, da es
+die umfangreiche Modulauswahl von iptables mit einer übersichtlicheren und besser lesbaren
+Regelsyntax verbindet.</p>
+<p>Das integrierte NixOS-Firewall-Modul eignet sich vor allem für einfache Regeln zu eingehenden
+Verbindungen. In unserer Infrastruktur benötigen wir jedoch zusätzlich Regeln für ausgehenden
+Datenverkehr. Später kommen auf dem Router außerdem Weiterleitungen und NAT-Regeln hinzu. Da
+das NixOS-Modul dafür nicht genügend Flexibilität bietet, definieren wir die Firewall-Regeln
+vollständig manuell mit nftables.</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+  networking<span class="o">.</span><span class="ss">nftables</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="ss">enable</span> <span class="o">=</span> <span class="no">true</span><span class="p">;</span>
+    tables<span class="o">.</span><span class="ss">nixos-fw</span> <span class="o">=</span> <span class="p">{</span>
+      <span class="ss">enable</span> <span class="o">=</span> <span class="no">true</span><span class="p">;</span>
+      <span class="ss">name</span> <span class="o">=</span> <span class="s2">"nixos-fw"</span><span class="p">;</span>
+      <span class="ss">family</span> <span class="o">=</span> <span class="s2">"inet"</span><span class="p">;</span>
+      <span class="ss">content</span> <span class="o">=</span> <span class="s s-Multiline">''</span>
+<span class="s s-Multiline">        chain input-allow {</span>
+<span class="s s-Multiline">          icmp type echo-request accept</span>
+<span class="s s-Multiline">          icmpv6 type {</span>
+<span class="s s-Multiline">            echo-request, echo-reply,</span>
+<span class="s s-Multiline">            nd-neighbor-solicit, nd-neighbor-advert,</span>
+<span class="s s-Multiline">            nd-router-solicit, nd-router-advert,</span>
+<span class="s s-Multiline">            parameter-problem, destination-unreachable, packet-too-big, time-exceeded</span>
+<span class="s s-Multiline">          } accept</span>
+
+<span class="s s-Multiline">          # SSH, HTTP und HTTPs (udp für HTTP/3 (QUIC))</span>
+<span class="s s-Multiline">          tcp dport ssh accept</span>
+<span class="s s-Multiline">          tcp dport http accept</span>
+<span class="s s-Multiline">          meta l4proto { tcp, udp } th dport https accept</span>
+<span class="s s-Multiline">        }</span>
+
+<span class="s s-Multiline">        chain output-allow {</span>
+<span class="s s-Multiline">          icmp type echo-request accept</span>
+<span class="s s-Multiline">          icmpv6 type {</span>
+<span class="s s-Multiline">            echo-request, echo-reply,</span>
+<span class="s s-Multiline">            nd-neighbor-solicit, nd-neighbor-advert,</span>
+<span class="s s-Multiline">            nd-router-solicit, nd-router-advert,</span>
+<span class="s s-Multiline">            parameter-problem, destination-unreachable, packet-too-big, time-exceeded</span>
+<span class="s s-Multiline">          } accept</span>
+
+<span class="s s-Multiline">          # DNS, NTP, HTTP und HTTPs (udp für HTTP/3 (QUIC))</span>
+<span class="s s-Multiline">          udp dport domain accept</span>
+<span class="s s-Multiline">          udp dport ntp accept</span>
+<span class="s s-Multiline">          tcp dport http accept</span>
+<span class="s s-Multiline">          meta l4proto { tcp, udp } th dport https accept</span>
+<span class="s s-Multiline">        }</span>
+
+<span class="s s-Multiline">        chain input {</span>
+<span class="s s-Multiline">          type filter hook input priority filter; policy drop;</span>
+
+<span class="s s-Multiline">          iifname "lo" accept comment "trusted interfaces"</span>
+
+<span class="s s-Multiline">          ct state vmap {</span>
+<span class="s s-Multiline">            established : accept,</span>
+<span class="s s-Multiline">            related : accept,</span>
+<span class="s s-Multiline">            invalid : drop,</span>
+<span class="s s-Multiline">            new : jump input-allow,</span>
+<span class="s s-Multiline">            untracked : jump input-allow</span>
+<span class="s s-Multiline">          }</span>
+<span class="s s-Multiline">        }</span>
+
+<span class="s s-Multiline">        chain output {</span>
+<span class="s s-Multiline">          type filter hook output priority filter; policy drop</span>
+
+<span class="s s-Multiline">          oifname lo accept comment "trusted interfaces"</span>
+
+<span class="s s-Multiline">          ct state vmap {</span>
+<span class="s s-Multiline">            established : accept,</span>
+<span class="s s-Multiline">            related : accept,</span>
+<span class="s s-Multiline">            invalid : drop,</span>
+<span class="s s-Multiline">            new : jump output-allow,</span>
+<span class="s s-Multiline">            untracked : jump output-allow</span>
+<span class="s s-Multiline">          }</span>
+
+<span class="s s-Multiline">          reject</span>
+<span class="s s-Multiline">        }</span>
+
+<span class="s s-Multiline">        chain forward {</span>
+<span class="s s-Multiline">          type filter hook forward priority filter; policy drop;</span>
+<span class="s s-Multiline">        }</span>
+<span class="s s-Multiline">      ''</span><span class="p">;</span>
+    <span class="p">};</span>
+  <span class="p">};</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>Das Regelwerk von nftables ist hierarchisch aufgebaut:
+Tables enthalten Chains, die wiederum aus Regeln bestehen.</p>
+<p>Die input Chain wird über eine type Definition direkt an einen Netfilter-Hook
+gebunden. Sie wird dadurch registriert und automatisch für den entsprechenden
+Paketpfad ausgewertet. Die Chain input-allow wird hingegen über einen Jump
+aus der registrierten input-Chain aufgerufen und dient ausschließlich der
+strukturierten Ablage von Regeln für erlaubte eingehende Verbindungen.</p>
+<p>Für das Verständnis von nftables ist der Paketpfad durch den Linux-Netzwerk-Stack
+entscheidend. Abhängig von Herkunft und Ziel durchläuft jedes Paket bestimmte
+Netfilter-Hooks:</p>
+<ul>
+<li>Pakete, die über ein Netzwerkinterface eintreffen, passieren zunächst den Hook prerouting.</li>
+<li>Anschließend entscheidet der Kernel anhand der Routing-Tabelle, ob das Paket für einen lokalen Prozess bestimmt ist oder weitergeleitet werden soll.</li>
+<li>Lokale Pakete durchlaufen den Hook input.</li>
+<li>Weiterzuleitende Pakete werden am Hook forward verarbeitet.</li>
+<li>Pakete, die von lokalen Prozessen erzeugt werden, beginnen am Hook output.</li>
+<li>Bevor ein Paket das System über ein Netzwerkinterface verlässt, wird es am Hook postrouting verarbeitet.</li>
+</ul>
+<p>Folgendes Diagramm visualisiert diesen Flow:</p>
+<!-- ![](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRN0tS6srkG7MM6Az7FXD5S9RNDh3gVJVym6bh20-i_rwIe3v9Z2RK6LtA&s=10) -->
+<!-- AI generated: -->
+<pre class="mermaid"><code>flowchart TB
+    %% classDef raw fill:#f6a5a5,stroke:#333,color:#000
+    %% classDef mangle fill:#a9dcf5,stroke:#333,color:#000
+    %% classDef nat fill:#6a3d8f,stroke:#333,color:#fff
+    %% classDef filter fill:#7ee37e,stroke:#333,color:#000
+    %% classDef plain fill:#fff,stroke:#333,color:#000
+
+    %% Spalte 1
+    incoming_packet@{ shape: cloud, label: "Incoming Packet" } --&gt; raw_prerouting[raw&lt;br&gt;PREROUTING] --&gt; connection_state_tracking[["Connection&lt;br&gt;(state)&lt;br&gt;Tracking"]] --&gt; mangle_prerouting[mangle&lt;br&gt;PREROUTING]
+    %% Spalte 2
+    nat_prerouting[nat&lt;br&gt;PREROUTING] --&gt; for_this_host{For this&lt;br&gt;host?}
+    for_this_host -- Y --&gt; mangle_input[mangle&lt;br&gt;INPUT] --&gt; filter_input[filter&lt;br&gt;INPUT] --&gt; local_processing([Local&lt;br&gt;Processing])
+    %% Spalte 3
+    for_this_host -- N --&gt; mangle_forward[mangle&lt;br&gt;FORWARD] --&gt; filter_forward[filter&lt;br&gt;FORWARD] --&gt; mangle_postrouting[mangle&lt;br&gt;POSTROUTING] --&gt; nat_postrouting[nat&lt;br&gt;POSTROUTING] --&gt; outgoing_packet@{ shape: cloud, label: "Outgoing Packet" }
+    %% Spalte 4
+    mangle_output[mangle&lt;br&gt;OUTPUT] --&gt; nat_output[nat&lt;br&gt;OUTPUT] --&gt; routing_decision2[[Routing&lt;br&gt;Decision]] --&gt; filter_output[filter&lt;br&gt;OUTPUT]
+    %% Spalte 5
+    locally_generated_packet([Locally-&lt;br&gt;generated&lt;br&gt;Packet]) --&gt; routing_decision[[Routing&lt;br&gt;Decision]] --&gt; raw_output[raw&lt;br&gt;OUTPUT] --&gt; connection_state_tracking2[["Connection&lt;br&gt;(state)&lt;br&gt;Tracking"]]
+
+    %% Rückwärts-Pfeile: Layout von oben nach unten, Pfeilspitze nur oben
+    nat_prerouting &lt;---- mangle_prerouting
+    mangle_postrouting &lt;--&gt; filter_output
+    mangle_output &lt;----&gt; connection_state_tracking2
+    locally_generated_packet &lt;-....-&gt; local_processing
+    linkStyle 18,19,20,21 marker-end:none
+
+    class raw_prerouting,raw_output raw
+    class mangle_prerouting,mangle_input,mangle_forward,mangle_postrouting,mangle_output mangle
+    class nat_prerouting,nat_postrouting,nat_output nat
+    class filter_input,filter_forward,filter_output filter
+    class incoming_packet,outgoing_packet,for_this_host,local_processing,locally_generated_packet,connection_state_tracking,connection_state_tracking2,routing_decision,routing_decision2 plain</code></pre>
+<h3 id="kernel">Kernel<a class="headerlink" href="#kernel" title="Permanent link">&para;</a></h3>
+<p>Der Linux-Kernel bildet die zentrale Grundlage des Systems und verfügt über weitreichende
+Zugriffsrechte. Eine gezielte Härtung reduziert daher die verfügbare Angriffsfläche,
+schränkt den Zugriff auf sensible Kernel- und Prozessinformationen ein und verhindert
+das Nachladen nicht benötigter Kernelkomponenten.
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+  <span class="ss">boot</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="ss">kernelParams</span> <span class="o">=</span> <span class="p">[</span> <span class="s2">"debugfs=off"</span> <span class="p">];</span>
+    kernel<span class="o">.</span>sysctl<span class="o">.</span><span class="s2">"kernel.yama.ptrace_scope"</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span>
+  <span class="p">};</span>
+  <span class="ss">security</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="ss">lockKernelModules</span> <span class="o">=</span> <span class="no">true</span><span class="p">;</span>
+    pam<span class="o">.</span><span class="ss">loginLimits</span> <span class="o">=</span> <span class="p">[</span>
+      <span class="p">{</span>
+        <span class="ss">domain</span> <span class="o">=</span> <span class="s2">"*"</span><span class="p">;</span>
+        <span class="ss">item</span> <span class="o">=</span> <span class="s2">"core"</span><span class="p">;</span>
+        <span class="ss">type</span> <span class="o">=</span> <span class="s2">"hard"</span><span class="p">;</span>
+        <span class="ss">value</span> <span class="o">=</span> <span class="s2">"0"</span><span class="p">;</span>
+      <span class="p">}</span>
+      <span class="p">{</span>
+        <span class="ss">domain</span> <span class="o">=</span> <span class="s2">"*"</span><span class="p">;</span>
+        <span class="ss">item</span> <span class="o">=</span> <span class="s2">"core"</span><span class="p">;</span>
+        <span class="ss">type</span> <span class="o">=</span> <span class="s2">"soft"</span><span class="p">;</span>
+        <span class="ss">value</span> <span class="o">=</span> <span class="s2">"0"</span><span class="p">;</span>
+      <span class="p">}</span>
+    <span class="p">];</span>
+  <span class="p">};</span>
+<span class="p">}</span>
+</code></pre></div>
+Durch die Anpassung der Kernel-Bootparameter wurde debugfs deaktiviert. Dieses
+Dateisystem dient primär als Diagnose- und Entwicklungswerkzeug und wird auf
+Produktionsservern normalerweise nicht benötigt. Seine Deaktivierung verhindert,
+dass darüber umfangreiche Informationen über den Kernelzustand und laufende
+Systemkomponenten ausgelesen werden können.</p>
+<p>Zusätzlich wurde der Laufzeitparameter <code>kernel.yama.ptrace_scope</code> so konfiguriert,
+dass die Verwendung von ptrace nur mit der Capability <code>CAP_SYS_PTRACE</code> möglich ist.
+ptrace ermöglicht es einem Prozess, andere Prozesse zu untersuchen und teilweise
+deren Speicher zu verändern. Die Einschränkung reduziert daher das Risiko, dass ein
+kompromittierter Prozess auf sensible Daten oder den Speicher anderer Prozesse zugreift.</p>
+<p>Das Deaktivieren des automatischen Nachladens von Kernelmodulen reduziert sowohl
+die Angriffsfläche als auch das Risiko einer kernelbasierten Persistenz. Ein Angreifer
+kann dadurch nicht ohne Weiteres ein zusätzliches oder manipuliertes Kernelmodul
+aktivieren, um eine Schwachstelle auszunutzen oder ein Rootkit dauerhaft im System
+zu verankern, das bei späteren Systemstarts automatisch geladen wird.</p>
+<p>Abschließend wurde die Erstellung von Core Dumps deaktiviert. Dabei handelt es sich um
+Speicherabbilder abgestürzter Prozesse, die zwar bei der Fehlersuche hilfreich sein können,
+unter Umständen jedoch Passwörter, kryptografische Schlüssel oder andere vertrauliche
+Laufzeitdaten enthalten. Auf Produktionsservern ist es daher sinnvoll, Core Dumps zu
+deaktivieren.</p>
+<h2 id="fortgeschrittene-konzepte">Fortgeschrittene Konzepte<a class="headerlink" href="#fortgeschrittene-konzepte" title="Permanent link">&para;</a></h2>
+<h3 id="speicherlayout">Speicherlayout<a class="headerlink" href="#speicherlayout" title="Permanent link">&para;</a></h3>
+<p>Im Kapitel <a href="#partitionierung">Installation -&gt; Partitionierung</a> wurde der
+Übersichtlichkeit halber zunächst eine einfache Speicheraufteilung verwendet.
+Neben der EFI-Systempartition bestand das Layout lediglich aus einer
+unverschlüsselten ext4-Partition für das root-Dateisystem.</p>
+<p>Im Folgenden werden verschiedene abweichende Konfigurationen vorgestellt.</p>
+<h4 id="luks-encrypted-root">LUKS encrypted root<a class="headerlink" href="#luks-encrypted-root" title="Permanent link">&para;</a></h4>
+<p>Das root Dateisystem sollte verschlüsselt werden. Zum Zeitpunkt der Installation
+kann die disk-config.nix entsprechend Angepasst werden. Disko fragt beim
+Partitionieren das Passwort für die Erstellung des Cryptsetups ab.
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+  disko<span class="o">.</span><span class="ss">devices</span> <span class="o">=</span> <span class="p">{</span>
+    disk<span class="o">.</span><span class="ss">disk1</span> <span class="o">=</span> <span class="p">{</span>
+      <span class="ss">device</span> <span class="o">=</span> <span class="s2">"/dev/sda"</span><span class="p">;</span>
+      <span class="ss">type</span> <span class="o">=</span> <span class="s2">"disk"</span><span class="p">;</span>
+      <span class="ss">content</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="ss">type</span> <span class="o">=</span> <span class="s2">"gpt"</span><span class="p">;</span>
+        <span class="ss">partitions</span> <span class="o">=</span> <span class="p">{</span>
+          <span class="ss">esp</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="ss">name</span> <span class="o">=</span> <span class="s2">"boot"</span><span class="p">;</span>
+            <span class="ss">size</span> <span class="o">=</span> <span class="s2">"511M"</span><span class="p">;</span>
+            <span class="ss">type</span> <span class="o">=</span> <span class="s2">"EF00"</span><span class="p">;</span> <span class="c1"># EFI system partition</span>
+            <span class="ss">content</span> <span class="o">=</span> <span class="p">{</span>
+              <span class="ss">type</span> <span class="o">=</span> <span class="s2">"filesystem"</span><span class="p">;</span>
+              <span class="ss">format</span> <span class="o">=</span> <span class="s2">"vfat"</span><span class="p">;</span>
+              <span class="ss">mountpoint</span> <span class="o">=</span> <span class="s2">"/boot"</span><span class="p">;</span>
+            <span class="p">};</span>
+          <span class="p">};</span>
+          <span class="ss">root</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="ss">name</span> <span class="o">=</span> <span class="s2">"root"</span><span class="p">;</span>
+            <span class="ss">size</span> <span class="o">=</span> <span class="s2">"100%"</span><span class="p">;</span>
+            <span class="ss">content</span> <span class="o">=</span> <span class="p">{</span>
+              <span class="ss">type</span> <span class="o">=</span> <span class="s2">"luks"</span><span class="p">;</span>
+              <span class="ss">name</span> <span class="o">=</span> <span class="s2">"cryptedroot"</span><span class="p">;</span>
+              <span class="ss">content</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="ss">type</span> <span class="o">=</span> <span class="s2">"filesystem"</span><span class="p">;</span>
+                <span class="ss">format</span> <span class="o">=</span> <span class="s2">"ext4"</span><span class="p">;</span>
+                <span class="ss">mountpoint</span> <span class="o">=</span> <span class="s2">"/"</span><span class="p">;</span>
+              <span class="p">};</span>
+            <span class="p">};</span>
+          <span class="p">};</span>
+        <span class="p">};</span>
+      <span class="p">};</span>
+    <span class="p">};</span>
+  <span class="p">};</span>
+<span class="p">}</span>
+</code></pre></div></p>
+<p>Ein Neustart des Servers führt zur Aufforderung das Passwort einzugeben.
+Während dies bei Clientsystemen typischerweise kein Problem darstellt, werden
+Server häufig auch über das Netzwerk neugestartet, teilweise ist physikalischer
+Zugriff auf die Maschinen gar nicht möglich. Um Systeme entfernt neustarten zu
+können, kann im initrd ein SSH server gestartet werden, der dann das entschlüsseln
+des systems über ssh ermöglicht. Hierbei ist auf die korrekte Angabe der für
+Netzwerk benötigten kernel module zu achten.
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+  boot<span class="o">.</span><span class="ss">initrd</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="ss">systemd</span> <span class="o">=</span> <span class="p">{</span>
+      <span class="ss">enable</span> <span class="o">=</span> <span class="no">true</span><span class="p">;</span>
+      network<span class="o">.</span><span class="ss">enable</span> <span class="o">=</span> <span class="no">false</span><span class="p">;</span>
+      <span class="ss">initrdBin</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">(</span>pkgs<span class="o">.</span>writeShellScriptBin <span class="s2">"systemctl-default"</span> <span class="s s-Multiline">''</span>
+<span class="s s-Multiline">          /bin/systemctl default</span>
+<span class="s s-Multiline">        ''</span><span class="p">)</span>
+      <span class="p">];</span>
+      users<span class="o">.</span>root<span class="o">.</span><span class="ss">shell</span> <span class="o">=</span> <span class="s2">"/bin/systemctl-default"</span><span class="p">;</span>
+    <span class="p">};</span>
+    <span class="ss">kernelModules</span> <span class="o">=</span> <span class="p">[</span> <span class="s2">"virtio_net"</span> <span class="p">];</span>
+    <span class="ss">network</span> <span class="o">=</span> <span class="p">{</span>
+      <span class="ss">enable</span> <span class="o">=</span> <span class="no">true</span><span class="p">;</span>
+      <span class="ss">ifstate</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="ss">enable</span> <span class="o">=</span> <span class="no">true</span><span class="p">;</span>
+        <span class="ss">allowIfstateToDrasticlyIncreaseInitrdSize</span> <span class="o">=</span> <span class="no">true</span><span class="p">;</span>
+        <span class="k">inherit</span> <span class="p">(</span>config<span class="o">.</span>networking<span class="o">.</span>ifstate<span class="p">)</span> settings<span class="p">;</span>
+      <span class="p">};</span>
+      <span class="ss">ssh</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="ss">enable</span> <span class="o">=</span> <span class="no">true</span><span class="p">;</span>
+        <span class="ss">hostKeys</span> <span class="o">=</span> <span class="p">[</span> <span class="l">/etc/ssh/ssh_host_ed25519_key</span> <span class="p">];</span>
+      <span class="p">};</span>
+    <span class="p">};</span>
+  <span class="p">};</span>
+
+<span class="p">}</span>
+</code></pre></div></p>
+<p>Alternativ lässt sich bei vorhandenem TPM-Chip der Remote Unlock durch eine
+im TPM gespeicherte Entsperrinformation ersetzen. Dazu kann systemd-cryptenroll
+verwendet werden. Die Einrichtung erfolgt beispielsweise mit folgendem Befehl:
+<div class="highlight"><pre><span></span><code>systemd-cryptenroll<span class="w"> </span>--tpm2-device<span class="o">=</span>auto<span class="w"> </span>--tpm2-pcrs<span class="o">=</span><span class="m">0</span><span class="w"> </span>/dev/sda2
+</code></pre></div></p>
+<h4 id="lvm">LVM<a class="headerlink" href="#lvm" title="Permanent link">&para;</a></h4>
+<p>Eine gemeinsam genutzte root-Partition kann zum Ausfall des Systems führen,
+wenn beispielsweise zu viele Logdateien geschrieben wurden und dadurch kein
+freier Speicherplatz mehr verfügbar ist. In der Folge können Dienste wie
+Datenbanken möglicherweise nicht mehr gestartet werden. Aus sicherheitstechnischer
+Sicht kann es außerdem sinnvoll sein, zusätzliche logische Volumes anzulegen, um
+darauf spezifische Mount-Optionen wie noexec oder nosuid anzuwenden.
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+  disko<span class="o">.</span><span class="ss">devices</span> <span class="o">=</span> <span class="p">{</span>
+    disk<span class="o">.</span><span class="ss">disk1</span> <span class="o">=</span> <span class="p">{</span>
+      <span class="ss">device</span> <span class="o">=</span> <span class="s2">"/dev/sda"</span><span class="p">;</span>
+      <span class="ss">type</span> <span class="o">=</span> <span class="s2">"disk"</span><span class="p">;</span>
+      <span class="ss">content</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="ss">type</span> <span class="o">=</span> <span class="s2">"gpt"</span><span class="p">;</span>
+        <span class="ss">partitions</span> <span class="o">=</span> <span class="p">{</span>
+          <span class="ss">esp</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="ss">name</span> <span class="o">=</span> <span class="s2">"boot"</span><span class="p">;</span>
+            <span class="ss">size</span> <span class="o">=</span> <span class="s2">"511M"</span><span class="p">;</span>
+            <span class="ss">type</span> <span class="o">=</span> <span class="s2">"EF00"</span><span class="p">;</span> <span class="c1"># EFI system partition</span>
+            <span class="ss">content</span> <span class="o">=</span> <span class="p">{</span>
+              <span class="ss">type</span> <span class="o">=</span> <span class="s2">"filesystem"</span><span class="p">;</span>
+              <span class="ss">format</span> <span class="o">=</span> <span class="s2">"vfat"</span><span class="p">;</span>
+              <span class="ss">mountpoint</span> <span class="o">=</span> <span class="s2">"/boot"</span><span class="p">;</span>
+            <span class="p">};</span>
+          <span class="p">};</span>
+          <span class="ss">luks</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="ss">size</span> <span class="o">=</span> <span class="s2">"100%"</span><span class="p">;</span>
+            <span class="ss">content</span> <span class="o">=</span> <span class="p">{</span>
+              <span class="ss">type</span> <span class="o">=</span> <span class="s2">"luks"</span><span class="p">;</span>
+              <span class="ss">name</span> <span class="o">=</span> <span class="s2">"crypted"</span><span class="p">;</span>
+              settings<span class="o">.</span><span class="ss">allowDiscards</span> <span class="o">=</span> <span class="no">true</span><span class="p">;</span>
+              <span class="ss">content</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="ss">type</span> <span class="o">=</span> <span class="s2">"lvm_pv"</span><span class="p">;</span>
+                <span class="ss">vg</span> <span class="o">=</span> <span class="s2">"pool"</span><span class="p">;</span>
+              <span class="p">};</span>
+            <span class="p">};</span>
+          <span class="p">};</span>
+        <span class="p">};</span>
+      <span class="p">};</span>
+    <span class="p">};</span>
+    <span class="ss">lvm_vg</span> <span class="o">=</span> <span class="p">{</span>
+      <span class="ss">pool</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="ss">type</span> <span class="o">=</span> <span class="s2">"lvm_vg"</span><span class="p">;</span>
+        <span class="ss">lvs</span> <span class="o">=</span> <span class="p">{</span>
+          <span class="ss">root</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="ss">size</span> <span class="o">=</span> <span class="s2">"2G"</span><span class="p">;</span>
+            <span class="ss">content</span> <span class="o">=</span> <span class="p">{</span>
+              <span class="ss">type</span> <span class="o">=</span> <span class="s2">"filesystem"</span><span class="p">;</span>
+              <span class="ss">format</span> <span class="o">=</span> <span class="s2">"ext4"</span><span class="p">;</span>
+              <span class="ss">mountpoint</span> <span class="o">=</span> <span class="s2">"/var/log"</span><span class="p">;</span>
+              <span class="ss">mountOptions</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="s2">"defaults"</span>
+                <span class="s2">"nosuid"</span>
+                <span class="s2">"nodev"</span>
+                <span class="s2">"noexec"</span>
+              <span class="p">];</span>
+            <span class="p">};</span>
+          <span class="p">};</span>
+          <span class="ss">root</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="ss">size</span> <span class="o">=</span> <span class="s2">"100%FREE"</span><span class="p">;</span>
+            <span class="ss">content</span> <span class="o">=</span> <span class="p">{</span>
+              <span class="ss">type</span> <span class="o">=</span> <span class="s2">"filesystem"</span><span class="p">;</span>
+              <span class="ss">format</span> <span class="o">=</span> <span class="s2">"ext4"</span><span class="p">;</span>
+              <span class="ss">mountpoint</span> <span class="o">=</span> <span class="s2">"/"</span><span class="p">;</span>
+              <span class="ss">mountOptions</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="s2">"defaults"</span>
+              <span class="p">];</span>
+            <span class="p">};</span>
+          <span class="p">};</span>
+        <span class="p">};</span>
+      <span class="p">};</span>
+    <span class="p">};</span>
+  <span class="p">};</span>
+<span class="p">}</span>
+</code></pre></div></p>
+<h4 id="zfs">ZFS<a class="headerlink" href="#zfs" title="Permanent link">&para;</a></h4>
+<p>ZFS ist ein modernes Dateisystem mit integriertem Volume-Management.
+Gegenüber der bisher verwendeten Kombination aus LVM und ext4 bietet
+es zusätzliche Funktionen zur Verwaltung und Absicherung von Speicher.</p>
+<p>Dazu zählen unter anderem RAID, Prüfsummen zur Erkennung von Datenfehlern,
+Snapshots, Replikation, transparente Kompression und native Verschlüsselung.</p>
+<p>Nachteile sind insbesondere der höhere RAM-Bedarf und der zusätzliche
+Verwaltungsaufwand. ZFS eignet sich daher besonders für dedizierte
+Hardware mit ausreichend Arbeitsspeicher und mehreren physischen
+Datenträgern. Der Einsatz in einer virtuellen Maschine ist ebenfalls möglich,
+setzt jedoch geeignete virtuelle Datenträger, ausreichend zugewiesene
+Ressourcen und die Unterstützung durch den Hypervisor voraus.</p>
+<p>Die native ZFS-Verschlüsselung schützt keine Metadaten. Je nach
+Anwendungsfall kann daher zusätzlich eine Full-Disk-Verschlüsselung mit
+LUKS sinnvoll sein. Datenhaltige ZFS-Datasets können dennoch ebenfalls
+durch ZFS verschlüsselt werden, um einfache verschlüsselte Backups mittels
+zfs send und zfs receive zu ermöglichen.</p>
+<p>Folgende Disko Konfiguration zeigt die Partitionierung mit zwei
+physikalischen Festplatten, LUKS und ZFS
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+  disko<span class="o">.</span><span class="ss">devices</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="ss">disk</span> <span class="o">=</span> <span class="p">{</span>
+      <span class="ss">disk1</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="ss">device</span> <span class="o">=</span> <span class="s2">"/dev/sda"</span><span class="p">;</span>
+        <span class="ss">type</span> <span class="o">=</span> <span class="s2">"disk"</span><span class="p">;</span>
+        <span class="ss">content</span> <span class="o">=</span> <span class="p">{</span>
+          <span class="ss">type</span> <span class="o">=</span> <span class="s2">"gpt"</span><span class="p">;</span>
+          <span class="ss">partitions</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="ss">esp</span> <span class="o">=</span> <span class="p">{</span>
+              <span class="ss">name</span> <span class="o">=</span> <span class="s2">"boot"</span><span class="p">;</span>
+              <span class="ss">size</span> <span class="o">=</span> <span class="s2">"511M"</span><span class="p">;</span>
+              <span class="ss">type</span> <span class="o">=</span> <span class="s2">"EF00"</span><span class="p">;</span> <span class="c1"># EFI system partition</span>
+              <span class="ss">content</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="ss">type</span> <span class="o">=</span> <span class="s2">"filesystem"</span><span class="p">;</span>
+                <span class="ss">format</span> <span class="o">=</span> <span class="s2">"vfat"</span><span class="p">;</span>
+                <span class="ss">mountpoint</span> <span class="o">=</span> <span class="s2">"/boot/efis/ESP1"</span><span class="p">;</span>
+              <span class="p">};</span>
+            <span class="p">};</span>
+            <span class="ss">luks</span> <span class="o">=</span> <span class="p">{</span>
+              <span class="ss">size</span> <span class="o">=</span> <span class="s2">"100%"</span><span class="p">;</span>
+              <span class="ss">content</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="ss">type</span> <span class="o">=</span> <span class="s2">"luks"</span><span class="p">;</span>
+                <span class="ss">name</span> <span class="o">=</span> <span class="s2">"disk1-crypted"</span><span class="p">;</span>
+                settings<span class="o">.</span><span class="ss">allowDiscards</span> <span class="o">=</span> <span class="no">true</span><span class="p">;</span>
+                <span class="ss">content</span> <span class="o">=</span> <span class="p">{</span>
+                  <span class="ss">type</span> <span class="o">=</span> <span class="s2">"zfs"</span><span class="p">;</span>
+                  <span class="ss">pool</span> <span class="o">=</span> <span class="s2">"rpool"</span><span class="p">;</span>
+                <span class="p">};</span>
+              <span class="p">};</span>
+            <span class="p">};</span>
+          <span class="p">};</span>
+        <span class="p">};</span>
+      <span class="p">};</span>
+      <span class="ss">disk2</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="ss">device</span> <span class="o">=</span> <span class="s2">"/dev/sdb"</span><span class="p">;</span>
+        <span class="ss">type</span> <span class="o">=</span> <span class="s2">"disk"</span><span class="p">;</span>
+        <span class="ss">content</span> <span class="o">=</span> <span class="p">{</span>
+          <span class="ss">type</span> <span class="o">=</span> <span class="s2">"gpt"</span><span class="p">;</span>
+          <span class="ss">partitions</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="ss">esp</span> <span class="o">=</span> <span class="p">{</span>
+              <span class="ss">name</span> <span class="o">=</span> <span class="s2">"boot"</span><span class="p">;</span>
+              <span class="ss">size</span> <span class="o">=</span> <span class="s2">"511M"</span><span class="p">;</span>
+              <span class="ss">type</span> <span class="o">=</span> <span class="s2">"EF00"</span><span class="p">;</span> <span class="c1"># EFI system partition</span>
+              <span class="ss">content</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="ss">type</span> <span class="o">=</span> <span class="s2">"filesystem"</span><span class="p">;</span>
+                <span class="ss">format</span> <span class="o">=</span> <span class="s2">"vfat"</span><span class="p">;</span>
+                <span class="ss">mountpoint</span> <span class="o">=</span> <span class="s2">"/boot/efis/ESP2"</span><span class="p">;</span>
+              <span class="p">};</span>
+            <span class="p">};</span>
+            <span class="ss">luks</span> <span class="o">=</span> <span class="p">{</span>
+              <span class="ss">size</span> <span class="o">=</span> <span class="s2">"100%"</span><span class="p">;</span>
+              <span class="ss">content</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="ss">type</span> <span class="o">=</span> <span class="s2">"luks"</span><span class="p">;</span>
+                <span class="ss">name</span> <span class="o">=</span> <span class="s2">"disk2-crypted"</span><span class="p">;</span>
+                settings<span class="o">.</span><span class="ss">allowDiscards</span> <span class="o">=</span> <span class="no">true</span><span class="p">;</span>
+                <span class="ss">content</span> <span class="o">=</span> <span class="p">{</span>
+                  <span class="ss">type</span> <span class="o">=</span> <span class="s2">"zfs"</span><span class="p">;</span>
+                  <span class="ss">pool</span> <span class="o">=</span> <span class="s2">"rpool"</span><span class="p">;</span>
+                <span class="p">};</span>
+              <span class="p">};</span>
+            <span class="p">};</span>
+          <span class="p">};</span>
+        <span class="p">};</span>
+      <span class="p">};</span>
+    <span class="p">};</span>
+    <span class="ss">zpool</span> <span class="o">=</span> <span class="p">{</span>
+      <span class="ss">rpool</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="ss">mode</span> <span class="o">=</span> <span class="p">{</span>
+          <span class="ss">topology</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="ss">type</span> <span class="o">=</span> <span class="s2">"topology"</span><span class="p">;</span>
+            <span class="ss">vdev</span> <span class="o">=</span> <span class="p">[</span>
+              <span class="p">{</span>
+                <span class="ss">mode</span> <span class="o">=</span> <span class="s2">"raidz1"</span><span class="p">;</span>
+                <span class="ss">members</span> <span class="o">=</span> <span class="p">[</span>
+                  <span class="s2">"/dev/mapper/disk1-crypt"</span>
+                  <span class="s2">"/dev/mapper/disk2-crypt"</span>
+                <span class="p">];</span>
+              <span class="p">}</span>
+            <span class="p">];</span>
+          <span class="p">};</span>
+        <span class="p">};</span>
+        <span class="ss">rootFsOptions</span> <span class="o">=</span> <span class="p">{</span>
+          <span class="ss">mountpoint</span> <span class="o">=</span> <span class="s2">"none"</span><span class="p">;</span>
+          <span class="ss">compression</span> <span class="o">=</span> <span class="s2">"zstd"</span><span class="p">;</span>
+          <span class="ss">acltype</span> <span class="o">=</span> <span class="s2">"posixacl"</span><span class="p">;</span>
+          <span class="ss">xattr</span> <span class="o">=</span> <span class="s2">"sa"</span><span class="p">;</span>
+          <span class="s2">"com.sun:auto-snapshot"</span> <span class="o">=</span> <span class="s2">"true"</span><span class="p">;</span>
+        <span class="p">};</span>
+        options<span class="o">.</span><span class="ss">ashift</span> <span class="o">=</span> <span class="s2">"12"</span><span class="p">;</span>
+        <span class="ss">datasets</span> <span class="o">=</span> <span class="p">{</span>
+          <span class="s2">"root"</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="ss">type</span> <span class="o">=</span> <span class="s2">"zfs_fs"</span><span class="p">;</span>
+            <span class="ss">mountpoint</span> <span class="o">=</span> <span class="s2">"/"</span><span class="p">;</span>
+          <span class="p">};</span>
+
+          <span class="s2">"nix"</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="ss">type</span> <span class="o">=</span> <span class="s2">"zfs_fs"</span><span class="p">;</span>
+            options<span class="o">.</span><span class="ss">mountpoint</span> <span class="o">=</span> <span class="s2">"/nix"</span><span class="p">;</span>
+            <span class="ss">mountpoint</span> <span class="o">=</span> <span class="s2">"/nix"</span><span class="p">;</span>
+          <span class="p">};</span>
+
+          <span class="s2">"log"</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="ss">type</span> <span class="o">=</span> <span class="s2">"zfs_fs"</span><span class="p">;</span>
+            options<span class="o">.</span><span class="ss">mountpoint</span> <span class="o">=</span> <span class="s2">"/var/log"</span><span class="p">;</span>
+            <span class="ss">mountpoint</span> <span class="o">=</span> <span class="s2">"/var/log"</span><span class="p">;</span>
+          <span class="p">};</span>
+        <span class="p">};</span>
+      <span class="p">};</span>
+    <span class="p">};</span>
+  <span class="p">};</span>
+<span class="p">}</span>
+</code></pre></div></p>
+<h3 id="weitere-installationsmoglichkeiten">Weitere Installationsmöglichkeiten<a class="headerlink" href="#weitere-installationsmoglichkeiten" title="Permanent link">&para;</a></h3>
+<p>Neben der im Kapitel <a href="#installation">Installation</a> beschriebenen Nutzung des offiziellen
+ISO-Images, lässt sich aufgrund des deklarativen Ansatzes auch ein angepasstes Image
+vergleichsweise einfach erstellen. Dabei können individuelle Konfigurationen direkt
+integriert werden:
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+  inputs<span class="o">.</span>nixpkgs<span class="o">.</span><span class="ss">url</span> <span class="o">=</span> <span class="s2">"nixpkgs/nixos-unstable"</span><span class="p">;</span>
+  <span class="ss">outputs</span> <span class="o">=</span>
+    <span class="p">{</span> nixpkgs<span class="p">,</span> <span class="o">...</span> <span class="p">}:</span>
+    <span class="p">{</span>
+      <span class="ss">nixosConfigurations</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="ss">customIso</span> <span class="o">=</span> nixpkgs<span class="o">.</span>lib<span class="o">.</span>nixosSystem <span class="p">{</span>
+          <span class="ss">system</span> <span class="o">=</span> <span class="s2">"x86_64-linux"</span><span class="p">;</span>
+          <span class="ss">modules</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s2">"</span><span class="si">${</span>nixpkgs<span class="si">}</span><span class="s2">/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"</span>
+            <span class="p">(</span>
+              <span class="p">{</span> lib<span class="p">,</span> pkgs<span class="p">,</span> <span class="o">...</span> <span class="p">}:</span>
+              <span class="p">{</span>
+                <span class="c1"># enable serial console</span>
+                boot<span class="o">.</span><span class="ss">kernelParams</span> <span class="o">=</span> <span class="p">[</span> <span class="s2">"console=ttyS0,115200n8"</span> <span class="p">];</span>
+
+                users<span class="o">.</span>users<span class="o">.</span><span class="ss">root</span> <span class="o">=</span> <span class="p">{</span>
+                  <span class="ss">initialHashedPassword</span> <span class="o">=</span> lib<span class="o">.</span>mkForce <span class="no">null</span><span class="p">;</span>
+                  <span class="ss">password</span> <span class="o">=</span> <span class="s2">"s3cr3tPasSw0rt"</span><span class="p">;</span>
+
+                  openssh<span class="o">.</span>authorizedKeys<span class="o">.</span><span class="ss">keys</span> <span class="o">=</span> <span class="p">[</span>
+                    <span class="s2">"ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICjJMDuek9Ug/Eqc1y6Sq65nLhrgLLSgJYTKlUEw6I13"</span>
+                  <span class="p">];</span>
+                <span class="p">};</span>
+
+                console<span class="o">.</span><span class="ss">keyMap</span> <span class="o">=</span> <span class="s2">"de"</span><span class="p">;</span>
+              <span class="p">}</span>
+            <span class="p">)</span>
+          <span class="p">];</span>
+        <span class="p">};</span>
+      <span class="p">};</span>
+    <span class="p">};</span>
+<span class="p">}</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>nix<span class="w"> </span>build<span class="w"> </span>.#nixosConfigurations.customIso.config.system.build.isoImage
+</code></pre></div></p>
+<p>Des Weiteren existieren Tools wie <a href="https://github.com/elitak/nixos-infect">github:elitak/nixos-infect</a>
+oder <a href="https://github.com/nix-community/nixos-anywhere">github:nix-community/nixos-anywhere</a>
+welche die Installation von NixOS aus nahezu jedem Linux-basierten System ermöglichen.
+Hierfür wird eine im Linux Kernel implementierte Funktion (kexec) verwendet, die ein
+neues Kernel-Image lädt und in dieses startet. Mithilfe dieser Werkzeuge kann NixOS auch
+auf einem Server installiert werden, wenn der Hosting-Anbieter weder ein NixOS-Image
+bereitstellt noch die Verwendung eigener ISO-Images erlaubt.</p>
+<h3 id="pki">PKI<a class="headerlink" href="#pki" title="Permanent link">&para;</a></h3>
+<p>Bisher wurden Zertifikate über die ACME-HTTP-01-Challenge von Let’s Encrypt
+bezogen. Bei dieser Challenge muss der HTTP-Endpunkt der jeweiligen Domain
+öffentlich erreichbar sein, damit Let’s Encrypt die Domainvalidierung
+durchführen kann. Für interne Dienste, die beispielsweise durch eine Firewall
+vor dem Internet geschützt sind, ist dieses Verfahren daher nicht geeignet.</p>
+<p>Eine Alternative stellt die ACME-DNS-01-Challenge dar. Dabei weist der
+ACME-Client die Kontrolle über eine Domain nach, indem er über eine
+DNS-API einen speziell erzeugten TXT-Record anlegt. Für die Validierung
+ist dadurch kein direkter Zugriff auf den eigentlichen Dienst erforderlich.
+Auf diese Weise können auch interne Dienste mit öffentlich vertrauenswürdigen
+Let’s-Encrypt-Zertifikaten betrieben werden.</p>
+<p>Allerdings werden die Namen solcher Zertifikate in Certificate-Transparency-Logs
+veröffentlicht. Dadurch können auch interne Hostnamen oder Subdomains nach außen
+bekannt werden. Für interne Dienste, die beispielsweise ausschließlich Administratoren
+zur Verfügung stehen, kann deshalb der Betrieb einer eigenen Public-Key-Infrastruktur
+(PKI) sinnvoller sein.</p>
+<p>Bei einer eigenen PKI wird eine interne Root-CA eingerichtet. Ihr Root-Zertifikat
+wird auf den Geräten der Administratoren als vertrauenswürdige Zertifizierungsstelle
+hinterlegt. Die internen Webserver erhalten anschließend Zertifikate, die von dieser
+CA oder einer untergeordneten Intermediate-CA signiert wurden. Browser und andere
+Clients können diese Zertifikate validieren, ohne dass sie von einer öffentlich
+vertrauenswürdigen CA ausgestellt sein müssen.</p>
+<p>Der private Schlüssel der Root-CA muss besonders geschützt werden und sollte
+idealerweise offline aufbewahrt werden. Für den laufenden Betrieb empfiehlt sich
+eine Intermediate-CA, welche für die Ausstellung von Leaf Zertifikaten verwendet
+wird.</p>
+<p>Darüber hinaus können mit einer eigenen PKI auch Clientzertifikate für Mutual TLS
+(mTLS) ausgestellt werden. Während bei gewöhnlichem TLS nur der Server seine Identität
+gegenüber dem Client nachweist, authentifizieren sich bei mTLS beide Kommunikationspartner
+gegenseitig. Der Server prüft dabei nicht nur, ob das präsentierte Clientzertifikat
+von der eigenen CA signiert wurde, sondern kann zusätzlich anhand von Zertifikatsattributen
+oder Seriennummern entscheiden, ob der jeweilige Client zugriffsberechtigt ist.</p>
+<p>Das ist insbesondere für administrative Schnittstellen und besonders schützenswerte
+interne Dienste sinnvoll. Administratoren oder Systeme ohne gültiges Clientzertifikat
+können bereits während des TLS-Verbindungsaufbaus abgewiesen werden. Sie erreichen
+dadurch weder die Webanwendung noch deren Anmeldeseite. Ein kompromittiertes oder
+erratenes Benutzerpasswort reicht dann allein nicht aus, um Zugriff zu erhalten, da
+zusätzlich ein gültiger privater Schlüssel zum Clientzertifikat benötigt wird.</p>
+<p>Die oben beschriebene Struktur könnte Beispielsweise so aussehen:</p>
+<pre class="mermaid"><code>flowchart TB
+  root[Root CA] --- inter[Intermediate CA]
+  mTLS[mTLS Client Certificates]
+  TLS[TLS Server Certificates]
+
+  inter --- TLS([TLS Server Certificates])
+  inter --- mTLS([mTLS Client Certificates])
+
+  TLS --- git[git.example.com]
+  TLS --- grafana[grafana.example.com]
+
+  mTLS --- nico</code></pre>
+<p>Die Konfiguration im nginx könnte dann beispielsweise so aussehen:
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+  services<span class="o">.</span><span class="ss">nginx</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="ss">commonHttpConfig</span> <span class="o">=</span> <span class="s s-Multiline">''</span>
+<span class="s s-Multiline">      map "$ssl_client_verify:$ssl_client_s_dn" $reject {</span>
+<span class="s s-Multiline">          default 1;</span>
+<span class="s s-Multiline">          "SUCCESS:CN=nico,O=example,C=DE" 0;</span>
+<span class="s s-Multiline">      }</span>
+<span class="s s-Multiline">    ''</span><span class="p">;</span>
+    virtualHosts<span class="o">.</span><span class="s2">"service.example.com"</span><span class="o">.</span><span class="ss">extraConfig</span> <span class="o">=</span> <span class="s s-Multiline">''</span>
+<span class="s s-Multiline">      ssl_client_certificate </span><span class="si">${</span><span class="l">./root-ca.pem</span><span class="si">}</span><span class="s s-Multiline">;</span>
+<span class="s s-Multiline">      ssl_verify_client on;</span>
+
+<span class="s s-Multiline">      if ($reject) { return 403; }</span>
+<span class="s s-Multiline">    ''</span><span class="p">;</span>
+  <span class="p">};</span>
+<span class="p">}</span>
+</code></pre></div></p>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+  
+
+
+
+      
+    </article>
+  </div>
+
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2020 - 2026 Nico Felbinger &nbsp; – &nbsp; <a href="/imprint.html">Imprint</a> &nbsp; – &nbsp; <a href="#__consent">Change cookie settings</a>
+    </div>
+  
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+      <div class="md-consent" data-md-component="consent" id="__consent" hidden>
+        <div class="md-consent__overlay"></div>
+        <aside class="md-consent__inner">
+          <form class="md-consent__form md-grid md-typeset" name="consent">
+            
+
+
+
+
+
+<h4>Cookie consent</h4>
+<p>We use cookies to recognize your repeated visits and preferences, as well as to measure the effectiveness of our documentation and whether users find what they're searching for. With your consent, you're helping us to make my documentation better.</p>
+<input class="md-toggle" type="checkbox" id="__settings" >
+<div class="md-consent__settings">
+  <ul class="task-list">
+    
+      
+      
+        
+        
+      
+      <li class="task-list-item">
+        <label class="task-list-control">
+          <input type="checkbox" name="analytics" >
+          <span class="task-list-indicator"></span>
+          Google Analytics
+        </label>
+      </li>
+    
+  </ul>
+</div>
+<div class="md-consent__controls">
+  
+    
+      <button class="md-button md-button--primary">Accept</button>
+    
+    
+    
+  
+    
+    
+    
+      <label class="md-button" for="__settings">Manage settings</label>
+    
+  
+    
+    
+      <button type="reset" class="md-button md-button--primary">Reject</button>
+    
+    
+  
+</div>
+          </form>
+        </aside>
+      </div>
+      <script>var consent=__md_get("__consent");if(consent)for(var input of document.forms.consent.elements)input.name&&(input.checked=consent[input.name]||!1);else"file:"!==location.protocol&&setTimeout((function(){document.querySelector("[data-md-component=consent]").hidden=!1}),250);var form=document.forms.consent;for(var action of["submit","reset"])form.addEventListener(action,(function(e){if(e.preventDefault(),"reset"===e.type)for(var n of document.forms.consent.elements)n.name&&(n.checked=!1);__md_set("__consent",Object.fromEntries(Array.from(new FormData(form).keys()).map((function(e){return[e,!0]})))),location.hash="",location.reload()}))</script>
+    
+    <script id="__config" type="application/json">{"base": "../../../..", "features": ["search.suggest", "search.highlight", "navigation.expand", "navigation.instant", "navigation.sections"], "search": "../../../../assets/javascripts/workers/search.6ce7567c.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../../../../assets/javascripts/bundle.88dd0f4e.min.js"></script>
+      
+        <script src="../../../../assets/external/cdnjs.cloudflare.com/ajax/libs/mermaid/11.15.0/mermaid.min.js"></script>
+      
+    
+  </body>
+</html>
