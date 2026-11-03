@@ -1,6 +1,7 @@
 ---
 date:
   created: 2026-11-02
+  updated: 2026-11-03
 authors:
 - nicof2000
 categories:
@@ -990,7 +991,7 @@ Ansatz hier nicht nutzen lässt.
 
 ### Single Sign-On (SSO)
 HedgeDoc kann die Authentifizierung an einen externen Identity Provider (IdP)
-auslagern. Benutzerkonte und Passwörter müssen dadurch nicht mehr ausschließlich
+auslagern. Benutzerkonten und Passwörter müssen dadurch nicht mehr ausschließlich
 in HedgeDoc verwaltet werden, sondern können zentral über den IdP gepflegt werden.
 
 Ein weiterer Vorteil ist Single Sign-on (SSO): Nach einer erfolgreichen Anmeldung
